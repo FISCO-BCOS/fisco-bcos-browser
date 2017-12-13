@@ -134,10 +134,10 @@ show databases;
 use test;
 ```
 
-> 建表，直接将bcos-browser/server/bcos-browser/script/db/bcos_browser_table.sql导入数据库(需绝对路径)
+> 建表，直接将fisco-bcos-browser/server/fisco-bcos-browser/script/db/bcos_browser_table.sql导入数据库(需绝对路径)
 
 ```sql
-source /home/app/bcos-browser/server/bcos-browser/script/db/bcos_browser_table.sql /*绝对路径*/
+source /home/app/fisco-bcos-browser/server/fisco-bcos-browser/script/db/bcos_browser_table.sql /*绝对路径*/
 show tables;
 ```
 
