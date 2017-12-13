@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--对应mapper接口-->
+<mapper namespace="org.bcos.browser.mapper.TbBlockMapper">
+    <resultMap id="TbBlockMap" type="org.bcos.browser.dto.TbBlockDto" >
+        <id column="pk_hash" jdbcType="VARCHAR" property="pkHash" javaType="java.lang.String" />
+        <result column="number" jdbcType="INTEGER" property="number" javaType="java.lang.Integer" />
+        <result column="parentHash" jdbcType="VARCHAR" property="parentHash" javaType="java.lang.String" />
+        <result column="miner" jdbcType="VARCHAR" property="miner" javaType="java.lang.String" />
+        <result column="genIndex" jdbcType="INTEGER" property="genIndex" javaType="java.lang.Integer" />
+        <result column="size" jdbcType="INTEGER" property="size" javaType="java.lang.Integer" />
+        <result column="gasLimit" jdbcType="BIGINT" property="gasLimit" javaType="java.math.BigInteger" />
+        <result column="gasUsed" jdbcType="BIGINT" property="gasUsed" javaType="java.math.BigInteger" />
+        <result column="avgGasPrice" jdbcType="DECIMAL" property="avgGasPrice" javaType="java.math.BigDecimal" />
+        <result column="timestamp" jdbcType="TIMESTAMP" property="timestamp" javaType="java.sql.Timestamp" />
+        <result column="txn" jdbcType="BIGINT" property="transactionNumber" javaType="java.math.BigInteger" />
+        <result column="extraData" jdbcType="VARCHAR" property="extraData" javaType="java.lang.String" />
+        <result column="detailInfo" jdbcType="VARCHAR" property="detailInfo" javaType="java.lang.String" />
+    </resultMap>
+
+
+    <!--字段-->
+    <sql id="ALL_COLUMN">
+       number,pk_hash,parentHash,miner,size,gasLimit,gasUsed,avgGasPrice,timestamp,txn,extraData,detailInfo,genIndex
+    </sql>
+
+    <!--查询区块表记录总数-->
+    <select id="getAllBlockCount" resultType="INTEGER">
+        SELECT count(1) blockCount FROM  tb_block
+    </select>
+
+    <!--分页查询区块表的记录（先查number再查对应表数据提高查询数度）-->
+    <select id="getBlockInfoByOffset" resultMap="TbBlockMap">
+        SELECT  b.number,b.pk_hash,b.parentHash,b.miner,b.size,b.gasLimit,b.gasUsed,b.avgGasPrice,b.timestamp,b.txn,b.extraData,b.detailInfo,b.genIndex
+        FROM ( SELECT number from tb_block ORDER BY number DESC limit #{offset},#{size} ) a
+        LEFT JOIN tb_block b on a.number=b.number
+    </select>
+
+    <!--根据块Hash查询块-->
+    <select id="getBlockDetailInfoByBlockHash" resultType="org.bcos.browser.dto.TbBlockDto">
+        SELECT <include refid="ALL_COLUMN"/>
+        FROM tb_block
+        WHERE pk_hash = #{blockHash}  limit 1;
+    </select>
+
+
+
+
+
+
+</mapper>

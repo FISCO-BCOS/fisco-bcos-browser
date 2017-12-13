@@ -1,0 +1,161 @@
+/*.wrapper{*/
+    /*background: #efefef;*/
+/*}*/
+
+ /*contain*/
+.profile .profile-body{
+    background: #efefef;
+    padding: 20px 30px 10px;
+}
+ .container-wrap{
+     background: #fff;
+ }
+ .service-block-blue{
+     background: url("../images/fisco/beijing2.png") no-repeat!important;
+ }
+ .col-xs-6{
+     text-align: center;
+ }
+
+.service-block-v3{
+    height: 225px!important;
+    padding: 40px!important;
+
+}
+.service-block-v3 .service-in small{
+    line-height: 2!important;
+}
+
+/*区块链内容*/
+#bWrap{
+    display: flex;
+    flex-wrap: wrap;
+}
+#bWrap>div{
+    margin: 10px;
+    width: 46%;
+    background-color: rgba(0,0,0,0.2);
+    height: 60px;
+}
+#bWrap>div:nth-of-type(1),#bWrap>div:nth-of-type(2){
+    margin-top: 0;
+}
+
+#bWrap>div:hover{
+    background-color:rgba(58,119,206,0.3) ;
+    cursor: pointer;
+}
+
+.pull-left>img{
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+.pull-right{
+    color: #989ba1;
+}
+
+.profile .profile-event{
+    padding: 7px 7px 7px 0;
+    margin-bottom: 2px;
+}
+.profile .profile-event .date-formats>span>a>font{
+    color:#3a77ce!important;
+}
+.profile .profile-event .date-formats>small{
+    color: #bcbcbc;
+}
+
+.profile .profile-event p{
+    color: #bcbcbc;
+}
+.profile .profile-event p>a{
+    width: 10px;
+    margin-right: 20px;
+    color: #bcbcbc;
+}
+.profile .profile-event p>a>b{
+    padding: 5px 10px;
+    background: #ff9d32;
+    color: #fff;
+}
+.profile .date-formats{
+    text-align: left;
+    background: none!important;
+    color: #000!important;
+    overflow: hidden;
+}
+
+.overflow-h{
+    text-align: right;
+}
+
+.profile .profile-post{
+    border-color:transparent!important;
+}
+.fa-hdd-o:before{
+    content: ''!important;
+}
+
+.table{
+    margin: 10px 0;
+}
+
+.table-responsive .table>thead>tr{
+
+    background: #b3d2ff!important;
+    color:#3a77ce;
+}
+.table-responsive .table>thead>tr>th{
+    padding-left: 50px;
+}
+#nodesInfoTableBody>tr>td{
+    padding-left: 50px;
+}
+
+/*分页*/
+/*button {*/
+    /*display: inline-block;*/
+    /*padding: 6px 12px;*/
+    /*font-weight: 400;*/
+    /*line-height: 1.42857143;*/
+    /*text-align: center;*/
+    /*vertical-align: middle;*/
+    /*cursor: pointer;*/
+    /*border: 1px solid transparent;*/
+    /*border-radius: 4px;*/
+    /*border-color: #28a4c9;*/
+    /*color: #fff;*/
+    /*background-color: #5bc0de;*/
+    /*margin: 20px 20px 0 0;*/
+/*}*/
+
+.box {
+    margin: 20px auto 0;
+    height: 34px;
+    margin-bottom: 20px;
+}
+.ui-pagination-container{
+    margin-left: 55%;
+    height: 34px;
+    line-height: 34px;
+    transform: translateX(-50%);
+}
+
+
+ /*底部内容*/
+ .profile-wrap{
+     /*background: #efefef;*/
+ }
+ .profile.container{
+     /*background: #efefef;*/
+ }
+ .service-block-blue .statistics{
+     margin-top:30px;
+     margin: 0 17%;
+ }
+
+
+ #result{
+     margin:0 15px;
+ }

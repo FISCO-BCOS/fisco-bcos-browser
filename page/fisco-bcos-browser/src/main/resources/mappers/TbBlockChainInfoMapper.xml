@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--对应mapper接口-->
+<mapper namespace="org.bcos.browser.mapper.TbBlockChainInfoMapper">
+    <resultMap id="userInfoMap" type="org.bcos.browser.dto.TbBlockChainInfoDto" >
+        <id column="pk_id" jdbcType="INTEGER" property="pkId" javaType="java.lang.Integer" />
+        <result column="lastBlock" jdbcType="INTEGER" property="lastBlock" javaType="java.lang.Integer" />
+        <result column="txn" jdbcType="BIGINT" property="transactionNumber" javaType="java.math.BigInteger" />
+        <result column="pendingTxn" jdbcType="BIGINT" property="pendingTxn" javaType="java.math.BigInteger" />
+        <result column="pbftView" jdbcType="INTEGER" property="pbftView" javaType="java.lang.Integer" />
+        <result column="avgTime" jdbcType="DECIMAL" property="avgTime" javaType="java.math.BigDecimal" />
+        <result column="gmt_create" jdbcType="DATE" property="gmtCreate" javaType="java.util.Date" />
+        <result column="gmt_modify" jdbcType="DATE" property="gmtModify" javaType="java.util.Date" />
+    </resultMap>
+
+    <!--字段-->
+    <sql id="ALL_COLUMN">
+      pk_id as pkId,lastBlock,txn as transactionNumber,pendingTxn,pbftView,avgTime
+    </sql>
+
+    <select id="getTbBlockChainInfo" resultType="org.bcos.browser.dto.TbBlockChainInfoDto">
+        select <include refid="ALL_COLUMN"/>
+        from tb_blockChainInfo limit 1
+    </select>
+</mapper>

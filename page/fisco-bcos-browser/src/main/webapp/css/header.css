@@ -1,0 +1,57 @@
+
+.header{
+    /*background: #efefef!important;*/
+    border-bottom: none!important;
+}
+.header .container{
+    background: url("../images/fisco/beijing.png") no-repeat;
+    background-size: contain;
+    background-color: #3a77ce;
+    width: 1280px!important;
+
+}
+.header .navbar-nav{
+    height: 80px!important;
+}
+.nav-left{
+    float: left;
+    color: #fff;
+    height: 80px;
+    line-height: 80px;
+    font-size: 36px;
+
+}
+.header .navbar-nav>li{
+    height: 80px;
+    line-height: 80px;
+}
+.header .navbar-nav>li>a{
+    color:#fff!important;
+    font-size:20px;
+    height: 80px;
+    line-height: 80px;
+
+}
+.header .dropdown-menu{
+    min-width: 138px!important;
+}
+.dropdown-menu>li{
+    text-align: center;
+
+}
+.dropdown-menu>li>a{
+    display: block;
+    color:#3A77CE!important;
+    font-size: 16px;
+    height: 50px;
+    line-height: 50px!important;
+    padding: 0!important;
+}
+ .header .dropdown-menu li>a:hover{
+    background: #b3d2ff!important;
+}
+
+ /*contain*/
+.profile .profile-body{
+    background: #fff;
+}

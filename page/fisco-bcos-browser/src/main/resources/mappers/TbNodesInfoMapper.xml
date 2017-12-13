@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--对应mapper接口-->
+<mapper namespace="org.bcos.browser.mapper.TbNodesInfoMapper">
+    <resultMap id="TbNodesInfoMap" type="org.bcos.browser.dto.TbNodesInfoDto" >
+        <id column="pk_id" jdbcType="VARCHAR" property="pkId" javaType="java.lang.String" />
+        <result column="addr" jdbcType="VARCHAR" property="addr" javaType="java.lang.String" />
+        <result column="blockNumber" jdbcType="INTEGER" property="blockNumber" javaType="java.lang.Integer" />
+    </resultMap>
+
+    <!--字段-->
+    <sql id="ALL_COLUMN">
+       pk_id,addr,blockNumber
+    </sql>
+
+    <!--获取节点的信息表的总记录数-->
+    <select id="getAllNodesInfoCount" resultType="INTEGER">
+        SELECT count(1) nodesInfoCount FROM tb_nodesInfo;
+    </select>
+
+    <!--分页查询节点的信息表的记录-->
+    <select id="getTbNodesInfoByOffset" resultMap="TbNodesInfoMap">
+        SELECT <include refid="ALL_COLUMN"/>
+        from tb_nodesInfo ORDER BY pk_id DESC limit #{offset},#{size}
+    </select>
+
+</mapper>

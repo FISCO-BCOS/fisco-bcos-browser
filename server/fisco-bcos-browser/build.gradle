@@ -1,0 +1,95 @@
+apply plugin: 'maven'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+//apply plugin: 'eclipse-wtp'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    maven { url "https://mvnrepository.com" }
+    mavenLocal()
+    mavenCentral()
+}
+
+//ch.qos.logback:logback-classic:1.1.3
+List logger = [
+	"org.slf4j:jul-to-slf4j:1.7.10",
+	"org.apache.logging.log4j:log4j-api:2.1",
+	"org.apache.logging.log4j:log4j-core:2.1",
+	"org.apache.logging.log4j:log4j-slf4j-impl:2.1",
+	"org.apache.logging.log4j:log4j-web:2.1"
+]
+
+def spring_version="4.1.8.RELEASE"
+List spring =[ 
+	"org.springframework:spring-core:$spring_version", 
+	"org.springframework:spring-beans:$spring_version", 
+	"org.springframework:spring-context:$spring_version", 
+	"org.springframework:spring-tx:$spring_version", 
+	"org.springframework:spring-jdbc:$spring_version", 
+	"org.springframework:spring-test:$spring_version",
+	"org.springframework:spring-context-support:$spring_version"
+]
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+    compile logger,spring
+    runtime logger,spring
+    
+   	compile 'mysql:mysql-connector-java:5.1.30'
+   	runtime 'mysql:mysql-connector-java:5.1.30'
+   	compile 'org.mybatis:mybatis:3.2.8'
+   	runtime 'org.mybatis:mybatis:3.2.8'
+   	compile 'org.mybatis:mybatis-spring:1.2.2'
+   	runtime 'org.mybatis:mybatis-spring:1.2.2'
+   	compile 'com.alibaba:druid:1.0.29'
+   	runtime 'com.alibaba:druid:1.0.29'
+   	compile 'org.quartz-scheduler:quartz:2.3.0'
+   	runtime 'org.quartz-scheduler:quartz:2.3.0'
+   	compile 'com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.1'
+   	runtime 'com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.1'
+   	
+   	compile files('libs/fastjson-1.2.29.jar')
+	runtime files('libs/fastjson-1.2.29.jar')
+}
+
+sourceSets {
+	main {
+		java {
+	        srcDir 'src/main/java'
+		}
+        resources  {
+            srcDir 'src/main/resources'
+        }
+	}
+}
+
+jar {
+	destinationDir file('fisco-bcos-server/apps')
+	archiveName project.name + '.jar'
+	exclude '**/*.xml'
+	exclude '**/*.properties'
+
+    doLast {
+        copy {
+            from file('src/main/resources/')
+            into 'fisco-bcos-server/conf'
+        }
+        copy {
+			from file('script/')
+			into 'fisco-bcos-server/script'
+		}
+		copy {
+			from configurations.runtime
+			into 'fisco-bcos-server/lib'
+		}
+		copy {
+			from file('.').listFiles().findAll{File f -> (f.name.endsWith('.bat') || f.name.endsWith('.sh') || f.name.endsWith('.env'))}
+			into 'fisco-bcos-server'
+		}
+	}
+}

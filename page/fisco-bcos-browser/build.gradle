@@ -1,0 +1,119 @@
+group 'org.bcos'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'war'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+repositories {
+    maven { url "https://mvnrepository.com" }
+    mavenLocal()
+    mavenCentral()
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        resources  {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+List servlet = ['javax.servlet:javax.servlet-api:3.1.0']
+//Json处理工具包
+List fastjson = ["com.alibaba:fastjson:1.2.33"]
+//数据库连接支持包
+List commonsdbcp = ["commons-dbcp:commons-dbcp:1.4"]
+//mysql连接驱动包
+List mysql = ["mysql:mysql-connector-java:5.1.38"]
+//mybatis核心包
+List mybatis = ["org.mybatis:mybatis:3.4.4"]
+//支持spring-mybatis包
+List springmybatis = ["org.mybatis:mybatis-spring:1.3.1"]
+
+//hibertnate 入参校验支持包
+List validate = [
+        "org.hibernate:hibernate-validator:5.4.1.Final",
+        "javax.validation:validation-api:2.0.0.Final"
+
+]
+
+//json映射支持包
+List jackson = [
+        "com.fasterxml.jackson.core:jackson-core:2.9.1",
+        "com.fasterxml.jackson.core:jackson-databind:2.9.1",
+        "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.1",
+        "net.sf.json-lib:json-lib:2.4:jdk15"
+]
+
+List apache_commons = [
+        "commons-codec:commons-codec:1.9",//处理常用的编码方法的工具类包
+        "commons-io:commons-io:2.5",//针对开发IO流功能的工具类库
+        "org.apache.commons:commons-lang3:3.6"//提供了一系列static的方法Utils类
+]
+
+//日志支持包
+def log4j_version="2.9.0"
+List logger = [
+        "org.apache.logging.log4j:log4j-api:$log4j_version",
+        "org.apache.logging.log4j:log4j-core:$log4j_version",
+        "org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version",
+        "org.apache.logging.log4j:log4j-web:$log4j_version",
+        "org.slf4j:jcl-over-slf4j:1.7.12"
+]
+
+
+def spring_version="4.3.11.RELEASE"
+List spring =[
+        "org.springframework:spring-core:$spring_version",//spring核心包
+        "org.springframework:spring-beans:$spring_version",//spring的bean支持包
+        "org.springframework:spring-context:$spring_version",//为Spring核心提供了大量扩展
+        "org.springframework:spring-context-support:$spring_version",
+        "org.springframework:spring-web:$spring_version",//web开发需要的核心包
+        "org.springframework:spring-webmvc:$spring_version",//webmvc支持包
+        "org.springframework:spring-jdbc:$spring_version",//jdbc支持包
+]
+
+dependencies {
+    compile apache_commons,servlet,logger,spring,fastjson,commonsdbcp,mysql,mybatis,springmybatis,jackson,validate
+}
+
+
+
+war {
+    destinationDir  file('dist/apps')
+    archiveName 'fisco-bcos-browser.war'
+
+    // remove jars that conflict with container
+    rootSpec.exclude '**/javax.servlet-api*.jar'
+    rootSpec.exclude '**/jsp-api*.jar'
+    rootSpec.exclude '**/junit*.jar'
+    rootSpec.exclude '**/mockito-all*.jar'
+    rootSpec.exclude '**/powermock*.jar'
+    rootSpec.exclude '**/servlet-api-2.5.jar'
+    rootSpec.exclude '**/log4j-1.*.jar'
+
+
+    doLast {
+        copy {
+            from file('src/main/resources/')
+            into 'dist/conf'
+        }
+        copy {
+            from configurations.runtime
+            into 'dist/lib'
+        }
+        copy {
+            from file('.').listFiles().findAll{File f -> (f.name.endsWith('.bat') || f.name.endsWith('.sh') || f.name.endsWith('.env'))}
+            into 'dist'
+        }
+    }
+}

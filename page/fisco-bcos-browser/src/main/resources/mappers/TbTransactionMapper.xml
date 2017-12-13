@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--对应mapper接口-->
+<mapper namespace="org.bcos.browser.mapper.TbTransactionMapper">
+    <resultMap id="tbTransactionMap" type="org.bcos.browser.dto.TbTransactionDto" >
+        <id column="pk_hash" jdbcType="VARCHAR" property="pkHash" javaType="java.lang.String" />
+        <result column="blockHash" jdbcType="VARCHAR" property="blockHash" javaType="java.lang.String" />
+        <result column="blockNumber" jdbcType="INTEGER" property="blockNumber" javaType="java.lang.Integer" />
+        <result column="blockTimestamp" jdbcType="TIMESTAMP" property="blockTimestamp" javaType="java.sql.Timestamp" />
+        <result column="blockGasLimit" jdbcType="BIGINT" property="blockGasLimit" javaType="java.math.BigInteger" />
+        <result column="transactionIndex" jdbcType="BIGINT" property="transactionIndex" javaType="java.math.BigInteger" />
+        <result column="transactionFrom" jdbcType="VARCHAR" property="transactionFrom" javaType="java.lang.String" />
+        <result column="transactionTo" jdbcType="VARCHAR" property="transactionTo" javaType="java.lang.String" />
+        <result column="gas" jdbcType="BIGINT" property="gas" javaType="java.math.BigInteger" />
+        <result column="gasPrice" jdbcType="DECIMAL" property="gasPrice" javaType="java.math.BigDecimal" />
+        <result column="cumulativeGas" jdbcType="BIGINT" property="cumulativeGas" javaType="java.math.BigInteger" />
+        <result column="randomId" jdbcType="VARCHAR" property="randomId" javaType="java.lang.String" />
+        <result column="inputText" jdbcType="VARCHAR" property="inputText" javaType="java.lang.String" />
+    </resultMap>
+
+
+
+    <!--字段-->
+    <sql id="ALL_COLUMN">
+       pk_hash as pkHash,blockHash,blockNumber,blockTimestamp,blockGasLimit,transactionIndex,transactionFrom,transactionTo,gas,
+       gasPrice,cumulativeGas,randomId,inputText
+    </sql>
+
+    <!--获取交易信息表的总记录数-->
+    <select id="getAllTransactionCount" resultType="INTEGER">
+        SELECT count(1) tranasctionCount FROM tb_transaction WHERE 1=1
+        <if test="blockHeight != null">
+            AND blockNumber = #{blockHeight}
+        </if>
+    </select>
+
+    <!--分页查询交易表的记录-->
+    <select id="getTbTransactionByOffset" resultMap="tbTransactionMap">
+        SELECT  b.pk_hash,b.blockHash,b.blockNumber,b.blockTimestamp,b.blockGasLimit,b.transactionIndex,b.transactionFrom,
+        b.transactionTo,b.gas,b.gasPrice,b.cumulativeGas,b.randomId,b.inputText
+        FROM (
+        SELECT pk_hash from tb_transaction WHERE 1=1
+        <if test="blockHeight != null">
+            AND blockNumber = #{blockHeight}
+        </if>
+        ORDER BY blockNumber DESC,transactionIndex DESC limit #{offset},#{size}
+        ) a
+        LEFT JOIN tb_transaction b on a.pk_hash=b.pk_hash
+    </select>
+
+    <!--根据pkHash查询交易表的记录-->
+    <select id="getTbTransactionByPkHash" resultType="org.bcos.browser.dto.TbTransactionDto">
+        SELECT <include refid="ALL_COLUMN"/>
+        from tb_transaction WHERE pk_hash = #{pkHash} limit 1;
+    </select>
+
+</mapper>

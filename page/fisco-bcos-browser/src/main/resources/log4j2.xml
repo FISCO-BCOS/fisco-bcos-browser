@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configuration>
+<Configuration status="info" monitorInterval="5">
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}|%t|%p|%F:%L| %m%n" />
+		</Console>
+		<RollingFile name="fixedTimeFileAppender" fileName="${sys:index.log.home}/fisco-bcos-browser.log"
+					 filePattern="${sys:index.log.home}/fisco-bcos-browser.log.%d{yyyy-MM-dd}.%i.log.gz">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}|%t|%p|%F:%L| %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="1024 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="512" />
+		</RollingFile>
+
+		<Async name="async" bufferSize="512" includeLocation="true">
+			<AppenderRef ref="fixedTimeFileAppender" />
+		</Async>
+
+	</Appenders>
+	<Loggers>
+		<Logger name="org.bcos.browser" level="info" additivity="false">
+			<AppenderRef ref="async" />
+		</Logger>
+
+		<Logger name="org.bcos.browser" level="debug" additivity="true">
+			<AppenderRef ref="console" />
+		</Logger>
+
+		<Root level="info">
+			<AppenderRef ref="console" />
+		</Root>
+	</Loggers>
+</Configuration>

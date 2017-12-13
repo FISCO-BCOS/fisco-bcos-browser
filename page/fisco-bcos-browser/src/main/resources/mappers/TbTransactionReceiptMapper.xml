@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--对应mapper接口-->
+<mapper namespace="org.bcos.browser.mapper.TbTransactionReceiptMapper">
+    <resultMap id="TbTransactionReceiptMap" type="org.bcos.browser.dto.TbTransactionReceiptDto" >
+        <id column="pk_hash" jdbcType="VARCHAR" property="pkHash" javaType="java.lang.String" />
+        <result column="blockHash" jdbcType="VARCHAR" property="blockHash" javaType="java.lang.String" />
+        <result column="blockNumber" jdbcType="INTEGER" property="blockNumber" javaType="java.lang.Integer" />
+        <result column="contractAddress" jdbcType="VARCHAR" property="contractAddress" javaType="java.lang.String" />
+        <result column="transactionIndex" jdbcType="BIGINT" property="transactionIndex" javaType="java.math.BigInteger" />
+        <result column="gasUsed" jdbcType="BIGINT" property="gasUsed" javaType="java.math.BigInteger" />
+        <result column="cumulativeGasUsed" jdbcType="BIGINT" property="cumulativeGasUsed" javaType="java.math.BigInteger" />
+        <result column="detailInfo" jdbcType="VARCHAR" property="detailInfo" javaType="java.lang.String" />
+        <result column="logs" jdbcType="VARCHAR" property="logs" javaType="java.lang.String" />
+    </resultMap>
+
+    <!--字段-->
+    <sql id="ALL_COLUMN">
+       pk_hash,blockHash,blockNumber,contractAddress,transactionIndex,gasUsed,cumulativeGasUsed,detailInfo,logs
+    </sql>
+
+
+    <!--根据pkHash查询交易回执信息-->
+    <select id="getTbTransactionReceiptByPkHash" resultMap="TbTransactionReceiptMap">
+        SELECT <include refid="ALL_COLUMN"/>
+        FROM tb_transactionReceipt WHERE 1=1
+        <if test="pkHash != null">
+            AND pk_hash = #{pkHash}
+        </if>
+        limit 1
+    </select>
+
+</mapper>

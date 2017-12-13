@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.bcos.browser.dao.GovernServiceDAO">
+
+	<select id="selectBlockChainHeigth" resultType="int">
+		select IFNULL(MAX(lastBlock), 0) as lastBlock from tb_blockChainInfo
+	</select>
+	
+	<select id="selectBlockHeigth" resultType="int">
+		select IFNULL(MAX(number), 0) as blockHeight from tb_block
+	</select>
+	
+	<select id="selectBlockInfoCount" resultType="int">
+		select count(*) as id from tb_block
+	</select>
+	
+	<select id="selectTransactionInfoCount" resultType="int">
+		select count(*) as id from tb_transaction
+	</select>
+	
+	<select id="selectPendingTransInfoCount" resultType="int">
+		select count(*) as id from tb_pendingTransaction
+	</select>
+	
+	<select id="selectTimestamp" resultType="java.sql.Timestamp">
+		select timestamp from tb_block order by timestamp desc limit 5000
+	</select>
+
+	<insert id="insertBlockChainInfo" parameterType="org.bcos.browser.dto.BlockChainInfoDTO" useGeneratedKeys="false">
+		insert into tb_blockChainInfo(
+			`lastBlock`,
+			`txn`,
+			`pendingTxn`,
+			`pbftView`,
+			`avgTime`,
+			`gmt_create`,
+			`gmt_modify`
+		) values (
+			#{lastBlock},
+			#{txn},
+			#{pendingTxn},
+			#{pbftView},
+			#{avgTime},
+			NOW(),
+			NOW()
+		)
+	</insert>
+	
+	<insert id="insertBlockInfo" parameterType="org.bcos.browser.dto.BlockInfoDTO" useGeneratedKeys="false">
+		insert into tb_block(
+			`pk_hash`,
+			`number`,
+			`parentHash`,
+			`miner`,
+			`genIndex`,
+			`size`,
+			`gasLimit`,
+			`gasUsed`,
+			`avgGasPrice`,
+			`timestamp`,
+			`txn`,
+			`extraData`,
+			`detailInfo`,
+			`gmt_create`,
+			`gmt_modify`
+		) values (
+			#{pk_hash},
+			#{number},
+			#{parentHash},
+			#{miner},
+			#{genIndex},
+			#{size},
+			#{gasLimit},
+			#{gasUsed},
+			#{avgGasPrice},
+			#{timestamp},
+			#{txn},
+			#{extraData},
+			#{detailInfo},
+			NOW(),
+			NOW()
+		)
+	</insert>
+	
+	<insert id="insertTransactionInfo" parameterType="org.bcos.browser.dto.TransactionInfoDTO" useGeneratedKeys="false">
+		insert into tb_transaction(
+			`pk_hash`,
+			`blockHash`,
+			`blockNumber`,
+			`blockTimestamp`,
+			`blockGasLimit`,
+			`transactionIndex`,
+			`transactionFrom`,
+			`transactionTo`,
+			`gas`,
+			`gasPrice`,
+			`cumulativeGas`,
+			`randomId`,
+			`inputText`,
+			`gmt_create`,
+			`gmt_modify`
+		) values (
+			#{pk_hash},
+			#{blockHash},
+			#{blockNumber},
+			#{blockTimestamp},
+			#{blockGasLimit},
+			#{transactionIndex},
+			#{transactionFrom},
+			#{transactionTo},
+			#{gas},
+			#{gasPrice},
+			#{cumulativeGas},
+			#{randomId},
+			#{inputText},
+			NOW(),
+			NOW()
+		)
+	</insert>
+	
+	<insert id="insertReceiptInfo" parameterType="org.bcos.browser.dto.ReceiptInfoDTO" useGeneratedKeys="false">
+		insert into tb_transactionReceipt(
+			`pk_hash`,
+			`blockHash`,
+			`blockNumber`,
+			`contractAddress`,
+			`transactionIndex`,
+			`gasUsed`,
+			`cumulativeGasUsed`,
+			`logs`,
+			`detailInfo`,
+			`gmt_create`,
+			`gmt_modify`
+		) values (
+			#{pk_hash},
+			#{blockHash},
+			#{blockNumber},
+			#{contractAddress},
+			#{transactionIndex},
+			#{gasUsed},
+			#{cumulativeGasUsed},
+			#{logs},
+			#{detailInfo},
+			NOW(),
+			NOW()
+		)
+	</insert>
+	
+	<insert id="insertPendingTransInfo" parameterType="org.bcos.browser.dto.TransactionInfoDTO" useGeneratedKeys="false">
+		insert into tb_pendingTransaction(
+			`pk_hash`,
+			`blockHash`,
+			`blockNumber`,
+			`transactionIndex`,
+			`transactionFrom`,
+			`transactionTo`,
+			`gas`,
+			`gasPrice`,
+			`cumulativeGas`,
+			`randomId`,
+			`inputText`,
+			`type`,
+			`gmt_create`,
+			`gmt_modify`
+		) values (
+			#{pk_hash},
+			#{blockHash},
+			#{blockNumber},
+			#{transactionIndex},
+			#{transactionFrom},
+			#{transactionTo},
+			#{gas},
+			#{gasPrice},
+			#{cumulativeGas},
+			#{randomId},
+			#{inputText},
+			#{type},
+			NOW(),
+			NOW()
+		)
+		<!-- on duplicate key update 
+			`from`=#{transactionFrom},
+			`to`=#{transactionTo},
+			`input`=#{inputText},
+			`gmt_modify`=NOW() -->
+	</insert>
+	
+	<insert id="insertNodeInfo" parameterType="org.bcos.browser.dto.NodeInfoDTO" useGeneratedKeys="false">
+		insert into tb_nodesInfo(
+			`pk_id`,
+			`addr`,
+			`blockNumber`,
+			`gmt_create`,
+			`gmt_modify`
+		) values (
+			#{pk_id},
+			#{addr},
+			#{blockNumber},
+			NOW(),
+			NOW()
+		)
+	</insert>
+	
+	<insert id="insertTxnByDayInfo" useGeneratedKeys="false">
+		replace into tb_txnByDay (pk_date,txn,gmt_create,gmt_modify)
+		select DATE_FORMAT(blockTimestamp,'%Y%m%d') as date,
+			   count(*) as txn,
+			   NOW(),
+			   NOW()
+		from tb_transaction
+		group by date
+	</insert>
+	
+	<update id="updateBlockInfo" parameterType="org.bcos.browser.dto.BlockChainInfoDTO">
+		update tb_blockChainInfo 
+		set lastBlock=#{lastBlock},
+			txn=#{txn},
+			pendingTxn=#{pendingTxn},
+			pbftView=#{pbftView},
+			avgTime=#{avgTime},
+			gmt_modify=NOW()
+	</update>
+	
+	<delete id="deletePendingTransInfo">
+		truncate table tb_pendingTransaction
+	</delete>
+	
+	<delete id="deleteNodeInfo">
+		truncate table tb_nodesInfo
+	</delete>
+
+</mapper>
