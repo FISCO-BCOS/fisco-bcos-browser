@@ -174,7 +174,7 @@ grant all on test.* to 'test'@'%';
 > 另开一个ssh测试用户是否可以登陆，并成功授权，登陆数据库
 
 ```shell
-mysql -utest -ptest@2107 -h 127.0.0.1 -P 3306
+mysql -utest -ptest1234 -h 127.0.0.1 -P 3306
 ```
 
 > 登陆成功后，执行sql语句，若出现错误，则用户授权不成功
