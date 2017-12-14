@@ -114,7 +114,7 @@ service mariadb start
 mysql -u root
 ```
 
-> 登录之后，创建账户。%表示任何IP都可以用test这个用户访问，密码是test@2107
+> 登录之后，创建账户。%表示任何IP都可以用test这个用户访问，密码是test1234
 
 ```sql
 /*授权test用户本地访问数据库*/
