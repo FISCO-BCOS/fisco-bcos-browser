@@ -153,7 +153,7 @@ BUILD SUCCESSFUL
 Total time: 15 mins 50.759 secs
 ```
 
-> 成功后在目录下得到文件夹fisco-bcos-browser，```ls fisco-bcos-browser/```可看到文件夹中的内容。
+> 成功后在目录下得到文件夹fisco-bcos-server，```ls fisco-bcos-server/```可看到文件夹中的内容。
 
 ```shell
 apps  conf  lib  script  serverStatus.sh  start.sh  stop.sh
@@ -163,7 +163,7 @@ apps  conf  lib  script  serverStatus.sh  start.sh  stop.sh
 
 ```shell
 # server/fisco-bcos-browser目录下
-cd fisco-bcos-browser/
+cd fisco-bcos-server/ #注意：需要进到生成的文件夹fisco-bcos-server中，再执行start.sh脚本
 sh start.sh		
 #若需要停止server服务
 sh stop.sh
