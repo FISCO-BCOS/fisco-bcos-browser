@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!--对应mapper接口-->
-<mapper namespace="org.bcos.browser.mapper.TbPendingTransactionMapper">
-    <resultMap id="TbPendingTransactionMap" type="org.bcos.browser.dto.TbPendingTransactionDto" >
+<mapper namespace="cn.webank.bcos.browser.mapper.TbPendingTransactionMapper">
+    <resultMap id="TbPendingTransactionMap" type="cn.webank.bcos.browser.dto.TbPendingTransactionDto" >
         <id column="pk_hash" jdbcType="VARCHAR" property="pkHash" javaType="java.lang.String" />
         <result column="blockHash" jdbcType="VARCHAR" property="blockHash" javaType="java.lang.String" />
         <result column="blockNumber" jdbcType="INTEGER" property="blockNumber" javaType="java.lang.Integer" />
@@ -18,25 +17,24 @@
         <result column="type" jdbcType="VARCHAR" property="queueType" javaType="java.lang.String" />
     </resultMap>
 
-    <!--字段-->
     <sql id="ALL_COLUMN">
        pk_hash,blockHash,blockNumber,transactionIndex,transactionFrom,transactionTo,gas,gasPrice,cumulativeGas,randomId,
        inputText,type
     </sql>
 
-    <!--获取正在处理但还未上链的交易表的总记录数-->
+    <!--Get the total number of records that are processing but not yet linked to the transaction table-->
     <select id="getAllPendingTransactionCount" resultType="INTEGER">
         SELECT count(1) tranasctionCount FROM tb_pendingTransaction;
     </select>
 
-    <!--分页查询正在处理但还未上链的交易表的记录-->
+    <!--Paging query records of transaction tables that are processed but not yet chained-->
     <select id="getTbPendingTransactionByOffset" resultMap="TbPendingTransactionMap">
         SELECT <include refid="ALL_COLUMN"/>
         from tb_pendingTransaction ORDER BY pk_hash DESC limit #{offset},#{size}
     </select>
 
-    <!--根据pkHash查询-->
-    <select id="getTbPendingTransactionByPkHash" resultType="org.bcos.browser.dto.TbPendingTransactionDto">
+    <!--According to pkHash query-->
+    <select id="getTbPendingTransactionByPkHash" resultType="cn.webank.bcos.browser.dto.TbPendingTransactionDto">
         SELECT <include refid="ALL_COLUMN"/>
         from tb_pendingTransaction WHERE pk_hash = #{pkHash} limit 1;
     </select>
