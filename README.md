@@ -14,7 +14,7 @@ page负责从数据库中拉取数据，并在Web中展示。
 
 ## 二、使用方式
 
-###1、环境
+### 1、环境
 
 | 环境     | 版本              |
 | ------ | --------------- |
@@ -64,7 +64,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 ```
 
-###2、gradle环境部署
+### 2、gradle环境部署
 
 此处给出简单步骤，供快速查阅。更详细的步骤，请参考[官网](http://www.gradle.org/downloads)。
 
