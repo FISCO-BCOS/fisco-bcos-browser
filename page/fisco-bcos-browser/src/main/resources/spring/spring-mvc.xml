@@ -10,29 +10,28 @@
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
-    <!--记载web层组件-->
-    <!-- 通过web.xml中的 org.springframework.web.servlet.DispatcherServlet 加载的  -->
-    <context:component-scan base-package="org.bcos.browser" use-default-filters="false">
+    <!-- Loaded via org.springframework.web.servlet.DispatcherServlet in web.xml -->
+    <context:component-scan base-package="cn.webank.bcos.browser" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
-    <!--启动MVC注解-->
+    <!--Start MVC comment-->
     <mvc:annotation-driven validator="validator">
         <mvc:message-converters register-defaults="true">
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-                <!--处理中文乱码-->
+                <!--Handling Chinese garbled-->
                 <constructor-arg value="UTF-8" />
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <!--hibernate validator 参数校验功能支持-->
+    <!--hibernate validator Parameter check function support-->
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
                <property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
                <!-- <property name="validationMessageSource" ref="hibernate_validator_messages"/>-->
     </bean>
 
-    <!--支持@ResponseBody 注解返回JSON-->
+    <!--Supports @ResponseBody annotation to return JSON-->
     <bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
         <property name="supportedMediaTypes">
             <list>
@@ -42,7 +41,7 @@
         </property>
     </bean>
 
-    <!-- 启动Spring MVC的注解功能，完成请求和注解POJO的映射 -->
+    <!-- Start Spring MVC annotations, complete the mapping of requests and annotation POJOs -->
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
         <property name="messageConverters">
             <list>
@@ -51,7 +50,7 @@
         </property>
     </bean>
 
-    <!--视图解释器-->
+    <!--View interpreter-->
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/pages/"/>
         <property name="suffix" value=".jsp"/>
