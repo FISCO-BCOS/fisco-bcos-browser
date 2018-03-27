@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.bcos.browser.dao.GovernServiceDAO">
+<mapper namespace="org.bcos.browser.bcos.browser.dao.GovernServiceDAO">
 
 	<select id="selectBlockChainHeigth" resultType="int">
 		select IFNULL(MAX(lastBlock), 0) as lastBlock from tb_blockChainInfo
@@ -27,7 +27,7 @@
 		select timestamp from tb_block order by timestamp desc limit 5000
 	</select>
 
-	<insert id="insertBlockChainInfo" parameterType="org.bcos.browser.dto.BlockChainInfoDTO" useGeneratedKeys="false">
+	<insert id="insertBlockChainInfo" parameterType="org.bcos.browser.bcos.browser.dto.BlockChainInfoDTO" useGeneratedKeys="false">
 		insert into tb_blockChainInfo(
 			`lastBlock`,
 			`txn`,
@@ -47,7 +47,7 @@
 		)
 	</insert>
 	
-	<insert id="insertBlockInfo" parameterType="org.bcos.browser.dto.BlockInfoDTO" useGeneratedKeys="false">
+	<insert id="insertBlockInfo" parameterType="org.bcos.browser.bcos.browser.dto.BlockInfoDTO" useGeneratedKeys="false">
 		insert into tb_block(
 			`pk_hash`,
 			`number`,
@@ -83,7 +83,7 @@
 		)
 	</insert>
 	
-	<insert id="insertTransactionInfo" parameterType="org.bcos.browser.dto.TransactionInfoDTO" useGeneratedKeys="false">
+	<insert id="insertTransactionInfo" parameterType="org.bcos.browser.bcos.browser.dto.TransactionInfoDTO" useGeneratedKeys="false">
 		insert into tb_transaction(
 			`pk_hash`,
 			`blockHash`,
@@ -97,6 +97,10 @@
 			`gasPrice`,
 			`cumulativeGas`,
 			`randomId`,
+			`contractName`,
+			`version`,
+			`method`,
+			`params`,
 			`inputText`,
 			`gmt_create`,
 			`gmt_modify`
@@ -113,13 +117,17 @@
 			#{gasPrice},
 			#{cumulativeGas},
 			#{randomId},
+			#{contractName},
+			#{version},
+			#{method},
+			#{params},
 			#{inputText},
 			NOW(),
 			NOW()
 		)
 	</insert>
 	
-	<insert id="insertReceiptInfo" parameterType="org.bcos.browser.dto.ReceiptInfoDTO" useGeneratedKeys="false">
+	<insert id="insertReceiptInfo" parameterType="org.bcos.browser.bcos.browser.dto.ReceiptInfoDTO" useGeneratedKeys="false">
 		insert into tb_transactionReceipt(
 			`pk_hash`,
 			`blockHash`,
@@ -147,7 +155,7 @@
 		)
 	</insert>
 	
-	<insert id="insertPendingTransInfo" parameterType="org.bcos.browser.dto.TransactionInfoDTO" useGeneratedKeys="false">
+	<insert id="insertPendingTransInfo" parameterType="org.bcos.browser.bcos.browser.dto.TransactionInfoDTO" useGeneratedKeys="false">
 		insert into tb_pendingTransaction(
 			`pk_hash`,
 			`blockHash`,
@@ -179,26 +187,23 @@
 			NOW(),
 			NOW()
 		)
-		<!-- on duplicate key update 
-			`from`=#{transactionFrom},
-			`to`=#{transactionTo},
-			`input`=#{inputText},
-			`gmt_modify`=NOW() -->
 	</insert>
 	
-	<insert id="insertNodeInfo" parameterType="org.bcos.browser.dto.NodeInfoDTO" useGeneratedKeys="false">
+	<insert id="insertNodeInfo" parameterType="org.bcos.browser.bcos.browser.dto.NodeInfoDTO" useGeneratedKeys="false">
 		insert into tb_nodesInfo(
 			`pk_id`,
 			`addr`,
 			`blockNumber`,
 			`gmt_create`,
-			`gmt_modify`
+			`gmt_modify`,
+			`active`
 		) values (
 			#{pk_id},
 			#{addr},
 			#{blockNumber},
 			NOW(),
-			NOW()
+			NOW(),
+			#{active}
 		)
 	</insert>
 	
@@ -212,7 +217,7 @@
 		group by date
 	</insert>
 	
-	<update id="updateBlockInfo" parameterType="org.bcos.browser.dto.BlockChainInfoDTO">
+	<update id="updateBlockInfo" parameterType="org.bcos.browser.bcos.browser.dto.BlockChainInfoDTO">
 		update tb_blockChainInfo 
 		set lastBlock=#{lastBlock},
 			txn=#{txn},
@@ -229,5 +234,40 @@
 	<delete id="deleteNodeInfo">
 		truncate table tb_nodesInfo
 	</delete>
-
+	
+	<delete id="deleteRpcNode" parameterType="org.bcos.browser.bcos.browser.dto.NodeInfoDTO">
+		delete from tb_nodesInfo where pk_id=#{pk_id}
+	</delete>
+	
+	<select id="selectPkId" resultType="java.lang.String" >
+		select pk_id from tb_nodesInfo
+	</select>
+	
+	<update id="updateActive" parameterType="org.bcos.browser.bcos.browser.dto.NodeInfoDTO">
+		update tb_nodesInfo 
+		set active=#{active}
+		where pk_id=#{pk_id}
+	</update>
+	
+	<update id="updateAllActive" parameterType="org.bcos.browser.bcos.browser.dto.NodeInfoDTO">
+		update tb_nodesInfo 
+		set active="false"
+	</update>
+	
+	<update id="updateBlocknum" parameterType="org.bcos.browser.bcos.browser.dto.NodeInfoDTO">
+		update tb_nodesInfo 
+		set blockNumber=#{blockNumber}
+		where pk_id=#{pk_id}
+	</update>
+	
+	<update id="updateIp" parameterType="org.bcos.browser.bcos.browser.dto.NodeInfoDTO">
+		update tb_nodesInfo 
+		set addr=#{addr}
+		where pk_id=#{pk_id}
+	</update>
+	
+	<select id="selectPeerRpc" resultType="org.bcos.browser.bcos.browser.dto.PeerRpcDTO" >
+		select pk_id,ip,rpcPort from tb_nodeConnection
+	</select>
+	
 </mapper>

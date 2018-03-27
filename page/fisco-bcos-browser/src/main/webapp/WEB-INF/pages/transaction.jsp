@@ -1,22 +1,23 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Transactions Information</title>
     <%--公共的css和js文件--%>
     <%@ include file="../pages/comm/JSandCSS.jsp"%>
+    <script type="text/javascript" src="../assets/js/dateUtils.js"></script>
 </head>
 <body>
 <input id="blockHeight" type="hidden" value="${blockHeight}">
 <div class="wrapper">
     <%@ include file="../pages/comm/header.jsp"%>
-</pre>
 
-    <div class="container left hidden-lg hidden-md" id="divmobilesearch" style="margin-top: 5px; margin-bottom: -18px; padding-right: 20px; padding-left: 20px;">
+<%--    <div class="container left hidden-lg hidden-md" id="divmobilesearch" style="margin-top: 5px; margin-bottom: -18px; padding-right: 20px; padding-left: 20px;">
         <form action="/search" method="GET">
             <input id="txtSearchInputMobile" type="text" placeholder="Search for Account, Tx Hash or Data" class="form-control" style="text-align: center;" name="q" maxlength="100" title="Address, Contract, Txn Hash or Data" />
         </form>
         <br /><br />
-    </div>
+    </div>--%>
 
 
 
@@ -34,17 +35,30 @@
 
 
     <div class="profile container" style="margin-top: 5px">
-        <br>
 
-        <%--分页--%>
         <div class="row">
-           <div class="col-md-6 hidden-xs">
-            </div>
-            <%--<div class="col-md-6">--%>
-                <%--<p class="blockPaginator" align="right">--%>
-                <%--</p>--%>
-            <%--</div>--%>
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">哈希值</label>
+                    <div class="col-sm-11">
+                        <input type="text" id="hashVal"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">交易时间</label>
+                    <div class="col-sm-11">
+                        <input type="text" id="transDateTime1"/><span style="font-size: 14px;"> 至：</span>
+                        <input type="text" id="transDateTime2"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">
+                        <button type="button" class="btn btn-info btn-sm" onclick="queryTransactionList()">查询</button>
+                    </label>
+                </div>
+             </form>
         </div>
+
         <div class="row">
             <div>
                 <div >
