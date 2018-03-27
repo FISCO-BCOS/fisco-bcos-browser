@@ -1,7 +1,8 @@
 apply plugin: 'maven'
 apply plugin: 'java'
 apply plugin: 'eclipse'
-//apply plugin: 'eclipse-wtp'
+apply plugin: 'war'
+apply plugin: 'eclipse-wtp'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -10,7 +11,9 @@ targetCompatibility = 1.8
 
 // In this section you declare where to find the dependencies of your project
 repositories {
-    maven { url "https://mvnrepository.com" }
+    maven {
+        url "https://mvnrepository.com"
+    }
     mavenLocal()
     mavenCentral()
 }
@@ -32,16 +35,30 @@ List spring =[
 	"org.springframework:spring-tx:$spring_version", 
 	"org.springframework:spring-jdbc:$spring_version", 
 	"org.springframework:spring-test:$spring_version",
-	"org.springframework:spring-context-support:$spring_version"
+	"org.springframework:spring-context-support:$spring_version",
+    "org.springframework:spring-web:$spring_version",//web开发需要的核心包
+    "org.springframework:spring-webmvc:$spring_version"//webmvc支持包
+]
+
+List servlet = [
+    'javax.servlet:javax.servlet-api:4.0.0'
+]
+
+/*hibertnate 入参校验支持包*/
+List validate = [
+        "org.hibernate:hibernate-validator:5.4.1.Final",
+        "javax.validation:validation-api:2.0.0.Final"
 ]
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    compile logger,spring
-    runtime logger,spring
+    compile logger,spring,servlet,validate
+    runtime logger,spring,servlet,validate
     
    	compile 'mysql:mysql-connector-java:5.1.30'
    	runtime 'mysql:mysql-connector-java:5.1.30'
+   	compile 'io.netty:netty-all:4.1.15.Final'
+    runtime 'io.netty:netty-all:4.1.15.Final'
    	compile 'org.mybatis:mybatis:3.2.8'
    	runtime 'org.mybatis:mybatis:3.2.8'
    	compile 'org.mybatis:mybatis-spring:1.2.2'
@@ -68,28 +85,16 @@ sourceSets {
 	}
 }
 
-jar {
+war {
 	destinationDir file('fisco-bcos-server/apps')
-	archiveName project.name + '.jar'
-	exclude '**/*.xml'
-	exclude '**/*.properties'
+	archiveName 'fisco-bcos-server.war'
+	rootSpec.exclude '**/javax.servlet-api*.jar'
+    rootSpec.exclude '**/jsp-api*.jar'
+    rootSpec.exclude '**/junit*.jar'
+    rootSpec.exclude '**/mockito-all*.jar'
+    rootSpec.exclude '**/powermock*.jar'
+    rootSpec.exclude '**/servlet-api-2.5.jar'
+    rootSpec.exclude '**/log4j-1.*.jar'
 
-    doLast {
-        copy {
-            from file('src/main/resources/')
-            into 'fisco-bcos-server/conf'
-        }
-        copy {
-			from file('script/')
-			into 'fisco-bcos-server/script'
-		}
-		copy {
-			from configurations.runtime
-			into 'fisco-bcos-server/lib'
-		}
-		copy {
-			from file('.').listFiles().findAll{File f -> (f.name.endsWith('.bat') || f.name.endsWith('.sh') || f.name.endsWith('.env'))}
-			into 'fisco-bcos-server'
-		}
-	}
+   
 }

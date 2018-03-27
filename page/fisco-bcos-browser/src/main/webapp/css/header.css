@@ -4,7 +4,7 @@
     border-bottom: none!important;
 }
 .header .container{
-    background: url("../images/fisco/beijing.png") no-repeat;
+    background: url("../images/webank/beijing.png") no-repeat;
     background-size: contain;
     background-color: #3a77ce;
     width: 1280px!important;
@@ -33,7 +33,7 @@
 
 }
 .header .dropdown-menu{
-    min-width: 138px!important;
+    min-width: 133px!important;
 }
 .dropdown-menu>li{
     text-align: center;
@@ -54,4 +54,8 @@
  /*contain*/
 .profile .profile-body{
     background: #fff;
+    overflow: hidden;
+}
+.navbar-nav>li:nth-of-type(2):hover .dropdown-menu{
+    display: block;
 }

@@ -1,4 +1,4 @@
-# 区块链浏览器page端说明
+# 区块链浏览器Page端说明
 
 ## 一、功能介绍
 
@@ -37,8 +37,8 @@ vim src/main/resources/jdbc.properties
 
 ```shell
 jdbc_url = jdbc:mysql://127.0.0.1/test
-jdbc_username = test
-jdbc_password = test1234
+jdbc_username = fisco-dev
+jdbc_password = fisco-dev1234
 ```
 
 **log目录**
@@ -50,7 +50,7 @@ vim src/main/resources/log4j2.xml
 > 修改RollingFile标签里的fileName和filePattern，指向需要log打印的位置。
 
 ```html
-<RollingFile name="fixedTimeFileAppender" fileName="/home/app/fisco-bcos-browser/page/logs/fisco-bcos-browser.log" filePattern="/home/app/fisco-bcos-browser/page/logs/fisco-bcos-browser.log.%d{yyyy-MM-dd}.%i.log.gz">
+<RollingFile name="fixedTimeFileAppender" fileName="/home/app/bcos-browser/page/logs/bcos-browser.log" filePattern="/home/app/bcos-browser/page/logs/bcos-browser.log.%d{yyyy-MM-dd}.%i.log.gz">
 ```
 
 （2）生成Web应用
@@ -108,17 +108,17 @@ Pending Transactions页，展示正在处理，但未上链的交易信息。
 
 （1）java文件夹
 
-​	org.bcos.browser.base：一些工具类和常用类
+​	cn.webank.bcos.browser.base：一些工具类和常用类
 
-​	org.bcos.browser.controller：一些控制器controller
+​	cn.webank.bcos.browser.controller：一些控制器controller
 
-​	org.bcos.browser.dto：程序对应数据库表的实体类
+​	cn.webank.bcos.browser.dto：程序对应数据库表的实体类
 
-​	org.bcos.browser.entity：页面出入参的实体类
+​	cn.webank.bcos.browser.entity：页面出入参的实体类
 
-​	org.bcos.browser.mapper：mybatis相关的数据库操作接口
+​	cn.webank.bcos.browser.mapper：mybatis相关的数据库操作接口
 
-​	org.bcos.browser.service：存放服务类
+​	cn.webank.bcos.browser.service：存放服务类
 
 （2）resources文件夹
 
@@ -141,3 +141,4 @@ Pending Transactions页，展示正在处理，但未上链的交易信息。
 ```shell
 tail -f fisco-bcos-browser.log
 ```
+

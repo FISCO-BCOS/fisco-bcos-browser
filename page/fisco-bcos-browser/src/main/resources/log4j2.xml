@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Configuration>
 <Configuration status="info" monitorInterval="5">
+	<!-- Define log file input location -->
+	<Properties>
+		<Property name="logPath">/home/app/fisco-bcos-browser/page/logs/</Property>
+	<!--	/home/app/fisco-bcos-browser/page/logs/-->
+	</Properties>
+
 	<Appenders>
 		<Console name="console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}|%t|%p|%F:%L| %m%n" />
 		</Console>
-		<RollingFile name="fixedTimeFileAppender" fileName="${sys:index.log.home}/fisco-bcos-browser.log"
-					 filePattern="${sys:index.log.home}/fisco-bcos-browser.log.%d{yyyy-MM-dd}.%i.log.gz">
+		<RollingFile name="fixedTimeFileAppender" fileName="${logPath}/fisco-bcos-browser.log"
+					 filePattern="${logPath}/fisco-bcos-browser.log.%d{yyyy-MM-dd}.%i.log.gz">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}|%t|%p|%F:%L| %m%n" />
 			<Policies>
 				<TimeBasedTriggeringPolicy />
@@ -21,11 +27,11 @@
 
 	</Appenders>
 	<Loggers>
-		<Logger name="org.bcos.browser" level="info" additivity="false">
+		<Logger name="cn.webank" level="info" additivity="false">
 			<AppenderRef ref="async" />
 		</Logger>
 
-		<Logger name="org.bcos.browser" level="debug" additivity="true">
+		<Logger name="cn.webank.bcos.browser" level="debug" additivity="true">
 			<AppenderRef ref="console" />
 		</Logger>
 

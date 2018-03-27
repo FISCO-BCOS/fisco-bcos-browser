@@ -2,6 +2,8 @@
     /*background: #efefef;*/
 /*}*/
 
+input{ border: 1px solid #ccc; border-radius: 4px; padding: 6px 10px}
+
  /*contain*/
 .profile .profile-body{
     background: #efefef;
@@ -11,7 +13,7 @@
      background: #fff;
  }
  .service-block-blue{
-     background: url("../images/fisco/beijing2.png") no-repeat!important;
+     background: url("../images/webank/beijing2.png") no-repeat!important;
  }
  .col-xs-6{
      text-align: center;

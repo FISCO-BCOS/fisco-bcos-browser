@@ -1,14 +1,18 @@
-# 区块链浏览器server端说明
+# 区块链浏览器Server端说明
 
 ## 一、功能介绍
 
 本工程是区块链浏览器后台服务，主要功能是获取区块链信息数据存储到数据库，以便前端调用数据显示。
 
-工程主要是通过定时任务获取区块链信息存储到数据库。分为三个任务：
-1、处理区块链全局信息（handleBlockChainInfo）：存储区块链全局信息和节点信息
-2、处理区块信息（handleBlockInfo）：存储各个区块信息及其包含交易信息和交易回执信息
-3、处理未上链交易信息（handlePendingTransInfo）：存储未上链交易信息
+（1）通过定时任务获取区块链信息存储到数据库。定时任务分别为：
 
+- 处理区块链全局信息（handleBlockChainInfo）：存储区块链全局信息和节点信息
+- 处理区块信息（handleBlockInfo）：存储各个区块信息及其包含交易信息和交易回执信息
+- 处理未上链交易信息（handlePendingTransInfo）：存储未上链交易信息
+
+（2）接收report agent服务上报数据
+
+- 接收report agent上报数据的url：http://IP:端口/fisco-bcos-server/browserFacade
 
 
 ## 二、使用方式
@@ -18,12 +22,16 @@
 | 环境     | 版本              |
 | ------ | --------------- |
 | Java   | jdk1.8.0_121    |
+| tomcat | 1.7或以上版本        |
 | gradle | gradle-2.1或以上版本 |
 | 数据库    | mysql-5.6或以上版本  |
 
+
 环境部署方法请参考[浏览器说明的常见问题](../../README.md)。
 
-### 2、部署
+### 2、手动部署
+
+在一键部署脚本中，已经包含了部署区块链浏览器server端。此处给出手动部署方式，供参考。
 
 ```shell
 cd server/fisco-bcos-browser
@@ -31,22 +39,21 @@ cd server/fisco-bcos-browser
 
 （1）配置
 
-**数据库、区块链接口**
+**数据库**
 
 ```shell
 vim src/main/resources/application.properties
 ```
 
-> 将下述变量修改为数据库对应的IP地址，端口，用户名，密码，数据库名。node.url指向对应区块链节点的RPC端口地址。
+> 将下述变量修改为数据库对应的IP地址，端口，用户名，密码，数据库名；其他配置使用默认即可。
 
 ```shell
 db.ip=127.0.0.1
 db.port=3306
-db.user=test
-db.password=test1234
+db.user=fisco-dev
+db.password=fisco-dev1234
 db.database=test
 
-node.url=http://127.0.0.1:8080
 ```
 
 **maven仓库修改**
@@ -64,6 +71,7 @@ repositories {
     mavenLocal()
     mavenCentral()
 }
+
 ```
 
 **log目录**
@@ -83,30 +91,32 @@ vim src/main/resources/log4j2.xml
 
 数据库的配置过程请参考常见问题 3、数据库部署。在数据库配置好后，进行建表操作。
 
-> 切换到root
+> 登录数据库
 
 ```shell
-sudo -s
-```
-
-> root账号登录数据库
-
-```shell
-mysql -u root
+mysql -uroot -h 127.0.0.1 -P 3306
 ```
 
 > 登陆之后，建数据库，进入数据库。
 
 ```sql
-create database test;
+create database `test` default character set utf8 collate utf8_general_ci;/*创建数据库，设置字符集*/
 show databases;
 use test;
 ```
 
-> 建表，直接将bcos-browser/server/fisco-bcos-browser/script/db/fisco-bcos-browser_table.sql导入数据库(需绝对路径)
+> 注意：建表前需先查看mysql触发器是否启动，命令如下：
 
 ```sql
-source /home/app/bcos-browser/server/fisco-bcos-browser/script/db/fisco_bcos_browser_table.sql /*绝对路径*/
+show variables like '%scheduler%'; /*查看触发器是否启动*/
+set global event_scheduler = 1;  /*启动触发器*/
+```
+
+> 建表，直接将fisco-bcos-browser/server/fisco-bcos-browser/script/db/文件夹下的文件导入数据库(需绝对路径)
+
+```sql
+source /home/app/fisco-bcos-browser/server/fisco-bcos-browser/script/db/bcos_browser_table.sql /*绝对路径*/
+source /home/app/fisco-bcos-browser/server/fisco-bcos-browser/script/db/bcos_browser_table_v2.sql /*绝对路径*/
 show tables;
 ```
 
@@ -114,31 +124,45 @@ show tables;
 
 ```sql
 show tables;
-+-----------------------+
-| Tables_in_bsp_acgs    |
-+-----------------------+
-| tb_block              |
-| tb_blockChainInfo     |
-| tb_nodesInfo          |
-| tb_pendingTransaction |
-| tb_transaction        |
-| tb_transactionReceipt |
-| tb_txnByDay           |
-+-----------------------+
-7 rows in set (0.00 sec)
++------------------------------+
+| Tables_in_test               |
++------------------------------+
+| tb_block                     |
+| tb_blockChainInfo            |
+| tb_nodesInfo                 |
+| tb_pendingTransaction        |
+| tb_single_stat_20171214      |
+| tb_stat_block_20171214       |
+| tb_stat_transaction_20171214 |
+| tb_transaction               |
+| tb_transactionReceipt        |
+| tb_txnByDay                  |
++------------------------------+
+10 rows in set (0.00 sec)
 ```
 
-> 创建表之后，将test数据库的表的权限授权给test用户
+> 创建表之后，给fisco-dev用户授权
 
 ```sql
-/*授权test用户本地访问数据库test的所有表*/
-grant all on test.* to 'test'@'localhost';
+/*授权fisco-dev用户本地访问数据库test的所有表*/
+grant all on test.* to 'fisco-dev'@'localhost';
 
-/*授权test用户从任意的远程IP访问数据库test的所有表*/
-grant all on test.* to 'test'@'%';
+/*授权fisco-dev用户从任意的远程IP访问数据库test的所有表*/
+grant all on test.* to 'fisco-dev'@'%';
+
+/*授权fisco-dev用户存储过程权限*/
+grant all on mysql.proc to 'fisco-dev'@'localhost';
+grant all on mysql.proc to 'fisco-dev'@'%';
+grant execute on procedure test.procedure_insert_table_tb_single_stat_by_day to 'fisco-dev'@'localhost';
+grant execute on procedure test.procedure_insert_table_tb_single_stat_by_day to 'fisco-dev'@'%';
+grant execute on procedure test.procedure_insert_table_tb_stat_transaction_by_day to 'fisco-dev'@'localhost';
+grant execute on procedure test.procedure_insert_table_tb_stat_transaction_by_day to 'fisco-dev'@'%';
+grant execute on procedure test.procedure_insert_table_tb_stat_block_by_day to 'fisco-dev'@'localhost';
+grant execute on procedure test.procedure_insert_table_tb_stat_block_by_day to 'fisco-dev'@'%';
+
 ```
 
-（3）生成server程序
+（3）生成web应用
 
 ```shell
 # server/fisco-bcos-browser目录下
@@ -153,47 +177,34 @@ BUILD SUCCESSFUL
 Total time: 15 mins 50.759 secs
 ```
 
-> 成功后在目录下得到文件夹fisco-bcos-server，```ls fisco-bcos-server/```可看到文件夹中的内容。
+> 成功后在目录下得到文件夹bcos-server，在apps目录中存在war包。
 
 ```shell
-apps  conf  lib  script  serverStatus.sh  start.sh  stop.sh
+/apps/bcos-server.war
 ```
 
-（4）启动server服务
+（4）发布Web应用
+
+将生成的war包拷贝Tomcat的webapps目录下
 
 ```shell
-# server/fisco-bcos-browser目录下
-cd fisco-bcos-server/ #注意：需要进到生成的文件夹fisco-bcos-server中，再执行start.sh脚本
-sh start.sh		
-#若需要停止server服务
-sh stop.sh
+cp bcos-server/apps/bcos-server.war /nemo/tomcat/webapps/bcos-server.war #拷贝war包到tomcat目录中
+cd /nemo/tomcat/bin
+./startup.sh #启动tomcat服务
 ```
+（5）接收上报数据接口访问
 
-> 若执行start.sh失败，请查阅常见问题。
->
-> 启动成功后输出
-
-```shell
-===============================================================================================
-Starting org.bcos.browser.service.Main ...(PID=21797)...[Success]
-===============================================================================================
-Nov 07, 2017 2:42:29 PM org.springframework.context.support.ClassPathXmlApplicationContext prepareRefresh
-INFO: Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@4b1c1ea0: startup date [Tue Nov 07 14:42:29 CST 2017]; root of context hierarchy
-Nov 07, 2017 2:42:29 PM org.springframework.beans.factory.xml.XmlBeanDefinitionReader loadBeanDefinitions
-INFO: Loading XML bean definitions from class path resource [applicationContext.xml]
-Nov 07, 2017 2:42:30 PM org.springframework.beans.factory.config.PropertyPlaceholderConfigurer loadProperties
-INFO: Loading properties file from class path resource [application.properties]
-Nov 07, 2017 2:42:31 PM org.springframework.context.support.DefaultLifecycleProcessor start
-INFO: Starting beans in phase 2147483647
-Nov 07, 2017 2:42:31 PM org.springframework.scheduling.quartz.SchedulerFactoryBean startScheduler
-INFO: Starting Quartz Scheduler now
+```url
+127.0.0.1:8080/bcos-server/browserFacade
 ```
+端口为tomcat中为server配置的端口。
 
 
 
 ## 三、详细说明
 
 ### 1、目录说明
+​	上报数据处理类：/fisco-bcos-browser/src/main/java/org/bcos/browser/controller
 
 ​	数据库操作接口：/fisco-bcos-browser/src/main/java/org/bcos/browser/dao
 
@@ -224,4 +235,3 @@ tail -f bcos-server.log
 ```shell
 tail -f monitor.log
 ```
-
