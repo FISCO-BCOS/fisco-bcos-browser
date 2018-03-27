@@ -78,13 +78,21 @@ tomcatpath="/software/tomcat/" #tomcat所在路径
 sh deploy_browser.sh
 ```
 
-### 2.3 节点上报程序（Report Agent）部署
+> 若执行成功，则浏览器服务会自动启动
 
-每个部署了区块链节点的机器都需要部署Report Agent。参考：[监控上报脚本部署](report/README.md)
+### 2.3 节点上报程序（report agent）部署
+
+每个部署了区块链节点的机器都需要部署report agent。参考：[监控上报脚本部署](report/README.md)
 
 
 
 ## 三、使用
+
+>打开chrome浏览器，访问URL，如：
+
+``` url
+http://192.168.1.100:8080/fisco-bcos-browser
+```
 
 ### 3.1 接入区块链节点
 
