@@ -15,6 +15,10 @@ $( document ).ready(function() {
     getPendingTransactionListByPage(pageNumberDefault,pageSizeDefault);
 });
 
+//定时十秒刷新一次
+setInterval("getTbStatBlockByPage(pageNumberDefault,pageSizeDefault)",30000);
+
+
 /**
  *@Description: 分页获取交易信息列表
  */
@@ -64,8 +68,7 @@ function getPendingTransactionListByPage(pageNumber,pageSize) {
                 }
 
             }else {
-                console.log("query fail:"+DATA);
-                alert("query fail:"+DATA.msg);
+                alert(DATA.msg);
             }
 
         },

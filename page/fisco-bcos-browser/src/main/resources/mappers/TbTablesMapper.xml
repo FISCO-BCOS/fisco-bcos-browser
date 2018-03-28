@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.webank.bcos.browser.mapper.TbTablesMapper">
+    <resultMap id="TbTablesMap" type="cn.webank.bcos.browser.dto.TbTablesDto" >
+        <result column="table_name" jdbcType="VARCHAR" property="tableName" javaType="java.lang.String" />
+        <result column="table_schema" jdbcType="VARCHAR" property="tableSchema" javaType="java.lang.String" />
+        <result column="table_comment" jdbcType="VARCHAR" property="tableComment" javaType="java.lang.String" />
+    </resultMap>
+
+    <sql id="COMM_COLUMN">
+      table_name as tableName,table_schema as tableSchema,table_comment as tableComment
+    </sql>
+
+    <!--Query the table in the database-->
+    <select id="getTableByName" resultType="cn.webank.bcos.browser.dto.TbTablesDto">
+        SELECT <include refid="COMM_COLUMN"/>
+        FROM information_schema.tables
+        where table_schema = #{dbName}
+        AND table_name = #{tableName}
+    </select>
+
+
+</mapper>

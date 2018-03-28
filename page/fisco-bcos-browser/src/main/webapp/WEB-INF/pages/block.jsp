@@ -1,9 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Blocks Information</title>
     <%--公共的css和js文件--%>
     <%@ include file="../pages/comm/JSandCSS.jsp"%>
+    <script type="text/javascript" src="../assets/js/dateUtils.js"></script>
+
 </head>
 <body>
 <input id="blockHeight" type="hidden" value="${blockHeight}">
@@ -30,156 +33,78 @@
 
 
     <div class="profile container " style="margin-top: 5px">
-        <br />
         <div class="row">
-            <div class="col-md-6 hidden-xs">
-            </div>
-            <%--<div class="col-md-6">--%>
-                <%--<p class="blockPaginator" align="right">--%>
-                <%--</p>--%>
-            <%--</div>--%>
-        </div>
-        <div class="row">
-            <div>
-                <div>
-                    <div class="table-responsive block">
-                        <table class="table table-hover">
-                            <thead>
-                            <tr style="border-color: #E1E1E1; border-width: 1px; background-color: #F9F9F9; border-top-style: solid;">
-                                <th>块高</th>
-                                <th>生成时间</th>
-                                <th>交易数量</th>
-                                <th>出块者</th>
-                                <th>Gas消耗量</th>
-                                <th>Gas上限</th>
-                            </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <%--<p class="blockPaginator" align="right">--%>
-                <%--</p>--%>
-                    <div class="row">
-                        <div class="box">
-                            <div id="pagination3" class="page fl"></div>
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">哈希值</label>
+                        <div class="col-sm-11">
+                            <input type="text" id="hashVal"/>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">生成时间</label>
+                        <div class="col-sm-11">
+                            <input type="text" id="blockDateTime1"/><span style="font-size: 14px;"> 至：</span>
+                            <input type="text" id="blockDateTime2"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">
+                            <button type="button" class="btn btn-info btn-sm" onclick="queryBlockList()">查询</button>
+                        </label>
+                    </div>
+                </form>
         </div>
 
-        <br /><br />
+
+<div class="row">
+    <div class="col-md-6 hidden-xs">
     </div>
+    <%--<div class="col-md-6">--%>
+    <%--<p class="blockPaginator" align="right">--%>
+    <%--</p>--%>
+    <%--</div>--%>
+</div>
+<div class="row">
+    <div>
+        <div>
+            <div class="table-responsive block">
+                <table class="table table-hover">
+                    <thead>
+                    <tr style="border-color: #E1E1E1; border-width: 1px; background-color: #F9F9F9; border-top-style: solid;">
+                        <th>块高</th>
+                        <th>生成时间</th>
+                        <th>交易数量</th>
+                        <th>出块者</th>
+                        <th>哈希</th>
+                        <th>Gas消耗量</th>
+                        <th>Gas上限</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <%--<p class="blockPaginator" align="right">--%>
+        <%--</p>--%>
+        <div class="row">
+            <div class="box">
+                <div id="pagination3" class="page fl"></div>
+            </div>
+        </div>
+    </div>
+
+    <br /><br />
+</div>
 
 </div>
 </body>
 <script type="text/javascript" src="../js/block.js"></script>
-<%--<script>--%>
-    <%--/**--%>
-     <%--*@Description: block页面的js--%>
-     <%--*@Author: v_wbsqwu--%>
-     <%--*@Date: 2017/10/17 10:19--%>
-     <%--*/--%>
 
-<%--//请求参数--%>
-    <%--var paramData = {--%>
-        <%--pageNumber: 1,//默认第一页--%>
-        <%--pageSize:20//默认每页查询20条数据--%>
-    <%--}--%>
-
-
-    <%--$( document ).ready(function() {--%>
-        <%--/*提示工具*/--%>
-        <%--$("[rel='tooltip']").tooltip({ html: true });--%>
-
-        <%--//分页获取区块表信息列表--%>
-        <%--getBlocksListByPage();--%>
-    <%--});--%>
-
-    <%--/**--%>
-     <%--*@Description: 分页获取区块表信息列表--%>
-     <%--*/--%>
-    <%--function getBlocksListByPage() {--%>
-        <%--//清空table body--%>
-        <%--$("#tableBody").html("");--%>
-
-        <%--$.ajax({--%>
-            <%--url:'../block/getTbBlockInfoByPage.json',//URI--%>
-            <%--contentType:"application/json;charset=UTF-8",//设置头信息--%>
-            <%--type:'post',--%>
-            <%--cache:false,--%>
-            <%--dataType:'json',--%>
-            <%--data:JSON.stringify(paramData),--%>
-            <%--success:function(DATA) {--%>
-                <%--if(DATA.status==0){--%>
-                    <%--var blockList = DATA.list;--%>
-                    <%--if(blockList.length>0){--%>
-                        <%--var htmlStr = "";--%>
-                        <%--for(var index in blockList){--%>
-                            <%--var rowData = blockList[index];--%>
-                            <%--var GasUsedPercent = rowData.gasUsed/rowData.gasLimit;//取商--%>
-                            <%--var GasUsedPercentStr = Math.round(GasUsedPercent*10000)/100+"%";//转换成百分比--%>
-
-                            <%--htmlStr +='<tr>'--%>
-                                <%--+'<td><a href="../block/getTbBlockDetailPage.page?blockHash='+rowData.pkHash+'"">'+rowData.number+'</a></td>'--%>
-                                <%--+' <td>'+rowData.dateTimeStr+'</td>'--%>
-                                <%--+'<td><a href="../transaction/transaction.page?blockHeight='+rowData.number+'">'+rowData.transactionNumber+'</a></td>'--%>
-                                <%--+'<td>'+rowData.miner+'</td>'--%>
-                                <%--+'<td>'+rowData.gasUsed+' <span style="font-family: Monospace;">('+GasUsedPercentStr+')</span></td>'--%>
-                                <%--+' <td>'+rowData.gasLimit+'</td>'--%>
-                                <%--+' <td>'+rowData.avgGasPrice+'</td>'--%>
-                                <%--+'</tr>'--%>
-                        <%--}--%>
-                        <%--$("#tableBody").html(htmlStr);--%>
-
-                        <%--//添加分页--%>
-                        <%--addPaginator(DATA.pageNumber,DATA.pageSize,DATA.pageTotal);--%>
-                    <%--}--%>
-
-                <%--}else {--%>
-                    <%--console.log("query fail:"+DATA);--%>
-                <%--}--%>
-
-            <%--},--%>
-            <%--error : function(DATA) {--%>
-                <%--console.log("query fail:"+DATA);--%>
-            <%--}--%>
-        <%--});--%>
-    <%--}--%>
-
-
-
-    <%--/**--%>
-     <%--*@Description: 添加分页--%>
-     <%--*/--%>
-    <%--function addPaginator(pageNumber,pageSize,totalPages) {--%>
-
-        <%--$("#pagination3").pagination({--%>
-            <%--currentPage: pageNumber,--%>
-            <%--totalPage: totalPages,--%>
-            <%--isShow: true,--%>
-            <%--count: 7,--%>
-            <%--homePageText: "首页",--%>
-            <%--endPageText: "尾页",--%>
-            <%--prevPageText: "上一页",--%>
-            <%--nextPageText: "下一页",--%>
-            <%--callback: function (currentPage) {--%>
-                <%--onPaginatorClick(currentPage,pageSize);--%>
-            <%--}--%>
-        <%--});--%>
-    <%--}--%>
-
-    <%--//点击分页按钮之后--%>
-    <%--function onPaginatorClick(pageNumber,pageSize) {--%>
-        <%--paramData.pageNumber = pageNumber;//页码--%>
-        <%--paramData.pageSize = pageSize;//页面大小--%>
-        <%--getBlocksListByPage();--%>
-    <%--}--%>
-
-<%--</script>--%>
 </html>
 
