@@ -30,7 +30,7 @@
 
 **注意：本版本兼容FISCO-BCOS V2.0.0，不兼容FISCO-BCOS V1.0.0。请先确认连接的区块链节点是FISCO-BCOS V2.0.0+**
 
-> 拉取最新代码，请确认最新代码是v1.1.0，若不是，则需要拉取v1.1.0的代码。
+> 拉取最新代码，请确认最新代码是v2.0.0，若不是，则需要拉取v2.0.0的代码。
 
 ``` shell
 git clone http://github.com/FISCO-BCOS/fisco-bcos-browser.git
