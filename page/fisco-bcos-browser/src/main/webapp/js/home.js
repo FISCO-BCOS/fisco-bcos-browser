@@ -25,6 +25,13 @@ $( document ).ready(function() {
     //查询节点的信息表的数据
     getTbNodesInfoList();
 });
+//指定10秒刷新一次
+setInterval("getTbBlockChainInfo()",10000);
+setInterval("getTxnByLastFourteenDay()",10000);
+setInterval("getBlocksList()",10000);
+setInterval("getTransactionList()",10000);
+setInterval("getTbNodesInfoList()",10000);
+
 
 
 /**
@@ -71,7 +78,7 @@ function showEchart(transactionDataArr,dataArr) {
     var dayNum = dataArr.length;
     var option = {
         title: {
-            text:'最近'+ dayNum+' 天的历史交易数据',//题目
+            text:'最近有交易的'+ dayNum+' 天交易量',//题目
             textStyle: {
                 fontSize: 13,//题目文字大小
                 fontWeight:'bold'//题目文字粗细
@@ -196,7 +203,7 @@ function getBlocksList() {
                                 +'       <span><a href="../block/getTbBlockDetailPage.page?blockHash='+rowData.pkHash+'"><font size="2" color="white">区块 '+rowData.number+'</font></a></span>'
                                 +'       <small>'+rowData.dateTimeStr+'</small>'
                                 +'   </div>'
-                                +'   <div class="overflow-h"><p>出块者 <a href="#" class="address-tag">'+rowData.genIndex+'</a></p>'
+                                +'   <div class="overflow-h"><p>出块者 <span class="address-tag" style="cursor: pointer" title="'+rowData.miner+'">'+rowData.miner+'</span></p>'
                                 +'       <p><a href="../transaction/transaction.page?blockHeight='+rowData.number+'" title="块内交易"><b>'+rowData.transactionNumber+' txns</b></a></p>'
                                 +'   </div>'
                                 +'</div>'
@@ -246,7 +253,7 @@ function getTransactionList(){
                     for(var index in transactionList){
                         var rowData = transactionList[index];
                         htmlStr +='<div class="profile-post"><span class="profile-post-numb"><i class="fa fa-hdd-o"></i></span>'
-                                +'<div class="profile-post-in"><h3 class="heading-xs">交易 <a href="../transaction/getTbTransactionDetailPage.page?pkHash='+rowData.pkHash+'" class="hash-tag-frontpage" title="交易 ：'+rowData.pkHash+'"><font color="#3498db">'+rowData.pkHash+'</font></a><span class="pull-right" style="font-size: small">'+rowData.blockTimesStr+' &nbsp;</span></h3><p> <a href="#" class="address-tag" title="发送者：'+rowData.transactionFrom+'">'+rowData.transactionFrom+'</a> <img style="width: 15;height: 15;" src="../images/green-arrow-right.png" > <a href="#" class="address-tag" title="接收者：'+rowData.transactionTo+'">'+rowData.transactionTo+'</a></p>'
+                                +'<div class="profile-post-in"><h3 class="heading-xs">交易 <a href="../transaction/getTbTransactionDetailPage.page?pkHash='+rowData.pkHash+'" class="hash-tag-frontpage" title="交易 ：'+rowData.pkHash+'"><font color="#3498db">'+rowData.pkHash+'</font></a><span class="pull-right" style="font-size: small">'+rowData.blockTimesStr+' &nbsp;</span></h3><p> <span class="address-tag" title="发送者：'+rowData.transactionFrom+'">'+rowData.transactionFrom+'</span> <img style="width: 15;height: 15;" src="../images/green-arrow-right.png" > <span class="address-tag" title="接收者：'+rowData.transactionTo+'">'+rowData.transactionTo+'</span></p>'
                                 +'</div>'
                                 +'</div>'
                     }
@@ -292,10 +299,17 @@ function getTbNodesInfoList() {
                     var htmlStr = "";
                     for(var index in blockList){
                         var rowData = blockList[index];
+
+                        var activeStr = "是";
+                        if(rowData.active != undefined && rowData.active=="false"){
+                            activeStr = "<font style='color: #ac2925'>否</font>"
+                        }
+
                         htmlStr +='<tr>'
                             +'<td><span class="address-tag" style="cursor: pointer" title="'+rowData.pkId+'">'+rowData.pkId+'</span></td>'
                             +'<td>'+rowData.addr+'</td>'
                             +'<td>'+rowData.blockNumber+'</td>'
+                            +'<td>'+activeStr+'</td>'
                             +'</tr>'
                     }
                     $("#nodesInfoTableBody").html(htmlStr);

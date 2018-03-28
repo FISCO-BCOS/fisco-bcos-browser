@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.webank.bcos.browser.mapper.TbStatTransactionMapper">
+    <resultMap id="TbStatTransactionMap" type="cn.webank.bcos.browser.dto.TbStatTransactionDto" >
+        <id column="pk_id" jdbcType="INTEGER" property="pkId" javaType="java.lang.Integer" />
+        <result column="hash" jdbcType="VARCHAR" property="hash" javaType="java.lang.String" />
+        <result column="startMsg" jdbcType="VARCHAR" property="startMsg" javaType="java.lang.String" />
+        <result column="startTime" jdbcType="VARCHAR" property="startTime" javaType="java.lang.String" />
+        <result column="onChainMsg" jdbcType="VARCHAR" property="onChainMsg" javaType="java.lang.String" />
+        <result column="onChainTime" jdbcType="VARCHAR" property="onChainTime" javaType="java.lang.String" />
+        <result column="detailInfo" jdbcType="VARCHAR" property="detailInfo" javaType="java.lang.String" />
+        <result column="object" jdbcType="VARCHAR" property="object" javaType="java.lang.String" />
+        <result column="collectTimestamp" jdbcType="TIMESTAMP" property="collectTimestamp" javaType="java.sql.Timestamp" />
+    </resultMap>
+
+    <sql id="ALL_COLUMN">
+        pk_id,hash,startMsg,startTime,onChainMsg,onChainTime,detailInfo,object,collectTimestamp
+    </sql>
+
+    <!--Query transaction process statistics list total records-->
+    <select id="countTbStatTransaction" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(hash) AllCOUNT FROM ${tableName}   WHERE  1=1
+        <if test="hash != null and hash != ''">
+            AND hash LIKE CONCAT('%',#{hash},'%')
+        </if>
+        <if test="timeStartStr != null and timeStartStr != ''">
+            AND DATE_FORMAT(collectTimestamp,'%H:%i:%s') &gt;=  #{timeStartStr}
+        </if>
+        <if test="timeEndStr != null and timeEndStr != ''">
+            AND DATE_FORMAT(collectTimestamp,'%H:%i:%s') &lt;= #{timeEndStr}
+        </if>
+    </select>
+
+    <!--Paging query transaction process statistics list, does not contain detailInfo field (this field is too large, affect the speed)-->
+    <select id="listTbStatTransaction" parameterType="java.util.Map" resultMap="TbStatTransactionMap">
+        SELECT b.pk_id,b.hash,b.startMsg,b.startTime,b.onChainMsg,b.onChainTime,b.object,b.collectTimestamp FROM (
+        SELECT pk_id FROM ${tableName}  WHERE  1=1
+        <if test="hash != null and hash != ''">
+            AND hash LIKE CONCAT('%',#{hash},'%')
+        </if>
+        <if test="timeStartStr != null and timeStartStr != ''">
+            AND DATE_FORMAT(collectTimestamp,'%H:%i:%s') &gt;=  #{timeStartStr}
+        </if>
+        <if test="timeEndStr != null and timeEndStr != ''">
+            AND DATE_FORMAT(collectTimestamp,'%H:%i:%s') &lt;= #{timeEndStr}
+        </if>
+        ORDER BY collectTimestamp DESC limit #{offset},#{size}
+        ) a
+        LEFT JOIN ${tableName} b ON (a.pk_id=b.pk_id)
+    </select>
+</mapper>
