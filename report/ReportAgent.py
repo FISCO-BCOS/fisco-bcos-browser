@@ -27,8 +27,8 @@ HOST_IP = "123.207.123.123" #本机器的外网IP，仅作为浏览器端区分�
 BROWSER_SERVER_IP = "192.168.1.106" #上报server端的IP
 BROWSER_SERVER_PORT = "8080" #上报server端的端口
 
-node0 = ["node0", "/bcos-data/node0/log/", 8545] #node的名字，node的log目录, RPC端口号
-node1 = ["node1", "/bcos-data/node1/log/", 8546] #node的名字，node的log目录, RPC端口号
+node0 = ["node0", "/bcos-data/node0/log.conf", 8545] #node的名字, log.conf的路径, RPC端口号, node的log目录(可选)
+node1 = ["node1", "/bcos-data/node1/log.conf", 8546, "/bcos-data/node0/log/"] #node的名字, log.conf的路径, RPC端口号, log.conf的路径(可选)
 
 #nodes = [node0]
 nodes = [node0, node1]
@@ -222,11 +222,22 @@ __report_key_rule = {
 }
 __alert_key = { STAT_PBFT_VIEWCHANGE_TAG : "timeout and viewchange" }
 
-def statFilename(less_hour=0):
+def statFilename(log_filename_format, less_time=0):
     # find log file
-    # tmp = time.localtime(time.time())
-    # suffix = "%04d%02d%02d%02d.log" % (tmp.tm_year, tmp.tm_mon, tmp.tm_mday, int(tmp.tm_hour) - int(less_hour))
-    logtime = (datetime.datetime.now() - datetime.timedelta(hours=int(less_hour))).strftime("%Y%m%d%H")
+    # 按log.conf中的文件名格式进行文件名生成，减少的时间为格式最后一位的时间单位
+    # 如配置为 "%Y%M%d%H" 日志为 YYYYMMDDHH , 那么就减少HH个单位对应的less_time时间生成文件名
+    flag = log_filename_format[-1]
+    t = datetime.timedelta(hours=int(less_time))
+    if flag == "H":
+        pass
+    elif flag == "m":
+        t = datetime.timedelta(minutes=int(less_time))
+    elif flag == "d":
+        t = datetime.timedelta(days=int(less_time))
+    elif flag == "s":
+        t = datetime.timedelta(seconds=int(less_time))
+    logtime = (datetime.datetime.now() - t).strftime(log_filename_format)
+    # logtime = (datetime.datetime.now() - datetime.timedelta(hours=int(less_hour))).strftime("%Y%m%d%H")
     suffix = logtime + '.log'
     return "stat_log_" + suffix
     
@@ -377,15 +388,88 @@ def parseBlockFlowLog(logstr):
     return m
 
 
+def timeStrToStand(s):
+    d = {
+        r'%M':r'%m',
+        r'%m':r'%M',
+        r'%s':r'%S',
+        r'%g':r'%f',
+    }
+    # p = r'\b(' + '|'.join(d.keys()) + r')\b'
+    p = '|'.join(d.keys())
+    pattern = re.compile(p)
+    return pattern.sub(lambda x: d[x.group()], s)
+
+
+def parseLogConf(logconf, nodename):
+    try:
+        time_format = ""
+        file_format = ""
+        dir_path = ""
+        with open(logconf) as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith("*"):
+                    if line.find("GLOBAL"): # only pickup GLOBAL block
+                        for i in f:
+                            line = i.strip()
+                            if line.startswith("*"):
+                                break # jump two level loop
+                            # parse
+                            if line.startswith("FORMAT"):
+                                m = re.match(r'.*\{(.*)\}.*', line)
+                                if m is not None and m.group(1): # pick up time format
+                                    time_format = timeStrToStand(m.group(1))
+                            elif line.startswith("FILENAME"):
+                                m = re.match(r'(.*\"(.+)\/.*)?\{(.*)\}.*', line)
+                                if m is not None and m.group(3): # pick up time format
+                                    dir_path = m.group(2)
+                                    file_format = timeStrToStand(m.group(3))
+                        else: # pair with for
+                            continue
+                break
+
+        if time_format and file_format and dir_path:
+            return (time_format, file_format, dir_path)
+        print "Not found related value(FORMAT, FILENAME, DIR_PATH)[", time_format, file_format, dir_path, "] in GLOBAL block in log.conf for node:" + nodename
+        return None
+    except Exception, e:
+        print "file:" + logconf + " not exist or other error: " + e + " for node:" + nodename
+    return None
+
+
 class NodeState(object):
-    def __init__(self, node_name):
-        self.node_name = node_name
+    def __init__(self, node):
+        self.node_name = node[0]
         self.last_alert = dict()
         self.filter_time = 0
         self.flow_filter_time = 0
         self.tx_flow_log = []
         self.block_flow_log = []
         self.lock = threading.Lock()
+
+        self.log_time_format = '%Y-%m-%d %H:%M:%S'
+        self.log_filename_format = "%Y%M%d%H"
+        self.dir_path = ""
+
+        logconf = node[1]
+        ret = parseLogConf(logconf, node[0])
+        if ret is None:
+            print "node:" + node[0] + ", some thing wrong for parsing log.conf"
+            exit(1)
+        self.log_time_format = ret[0]
+        self.log_filename_format = ret[1]
+        self.dir_path = ret[2]
+
+        if len(node) >= 4: # [name, logconf, port, logpath]
+            self.dir_path = node[3]
+            
+        if not self.dir_path.startswith("/"):
+            print 'node:' + node[0] + ", "\
+                'the dir_path is [' + self.dir_path + \
+                '] in log.conf or parse log.conf error. We suggest to use absolute path for dir_path to find log file. ' + \
+                'Add absolute path as the 4th params in node, e.g. ["node0", "/bcos-data/node0/log.conf", 8545, "/bcos-data/node0/log/"]'
+            exit(1)
 
     def getLastReport(self, attr_name):
         return self.last_alert.get(attr_name, 0)
@@ -506,18 +590,10 @@ __timeFilterPattern = re.compile(r'\w+\|((\w|-|:| |)+)\|(.+)')
 __pattern = re.compile(r'.+\[\d+\]\[(.*)\]\[.*\](.+)')
 
 
-def parser(line, node):
+def parser(line, node_state):
     if not line.startswith("##State"):
         return
-        # state = nodes_state.get(node, None)
-        # if state is None:
-        #     return
-        
-        # if line.startswith("[tx]"):
-        #     state.logTxFlow(line)
-        # elif line.startswith("[block]"):
-        #     state.logBlockFlow(line)
-        # return
+
     m = __pattern.match(line)
     if m is None or len(m.groups()) != 2:
         print "error in parser: \n" + line
@@ -527,7 +603,7 @@ def parser(line, node):
     item = s.split("|")
     
     if name in __alert_key: # 发警告信息    
-        postAlert(node, name, 4, __alert_key[name], currentMs())
+        postAlert(node_state.node_name, name, 4, __alert_key[name], currentMs())
         return 
 
     # 正常上报
@@ -539,44 +615,50 @@ def parser(line, node):
                 value = ret[1].strip()
                 key = __report_key_rule[name][ATTR_NAME] + NORMAL_SEP_SYMBLE + rawkey
                 report_key = __report_real_name[name] + " " + SEP_SYMBLE + " " + __report_real_name[rawkey]
-                postToBrowserServer(node, key, report_key, __report_key_rule[name][rawkey](value), currentMs())
+                postToBrowserServer(node_state.node_name, key, report_key, __report_key_rule[name][rawkey](value), currentMs())
     pass
 
 
-def parser2(line, node):
-    if not line.startswith("##State Report"):
-        state = nodes_state.get(node, None)
-        if state is None:
-            return
-        
+def parser2(line, node_state):
+    if not line.startswith("##State Report"):       
         if line.startswith("[tx]"):
-            state.logTxFlow(line)
+            node_state.logTxFlow(line)
         elif line.startswith("[block]"):
-            state.logBlockFlow(line)
+            node_state.logBlockFlow(line)
 
 
-def timeCompare(t, node):
-    tmp = t.split(' ')[1].split(':')
-    # print tmp
-    now = (int(tmp[0]) * 60 + int(tmp[1])) * 60 + int(tmp[2])
-    if now > nodes_state[node].filter_time:
-        nodes_state[node].filter_time = now - TAIL_TIME_GAP
-        return True 
-#    return now > nodes_state[node].filter_time
-    return False
+def logtimeparser(t, format):
+    # return time.mktime(time.strptime(t, '%Y-%m-%d %H:%M:%S'))
+    return time.mktime(time.strptime(t, format))
 
 
-def timeCompare2(t, node):
-    tmp = t.split(' ')[1].split(':')
-    now = (int(tmp[0]) * 60 + int(tmp[1])) * 60 + int(tmp[2])
-    if now > nodes_state[node].flow_filter_time:
-        nodes_state[node].flow_filter_time = now - 1 # TODO 修改成宏定义
+def timeCompare(t, node_state):
+    now = 0
+    try:
+        now = logtimeparser(t, node_state.log_time_format)
+    except:
         return True
-    # return now > nodes_state[node].flow_filter_time
+
+    if now > node_state.filter_time:
+        node_state.filter_time = now - TAIL_TIME_GAP
+        return True 
     return False
 
 
-def handleLine(line, node, compare, callback):  # filter time and line header 
+def timeCompare2(t, node_state):
+    now = 0
+    try:
+        now = logtimeparser(t, node_state.log_time_format)
+    except:
+        return True
+
+    if now > node_state.flow_filter_time:
+        node_state.flow_filter_time = now - 1 # TODO 修改成宏定义
+        return True
+    return False
+
+
+def handleLine(line, node_state, compare, callback):  # filter time and line header 
     m = __timeFilterPattern.match(line)
     if m is None or len(m.groups()) != 3:
         print "error in handleLine parser: \n" + line
@@ -584,79 +666,56 @@ def handleLine(line, node, compare, callback):  # filter time and line header
     t = m.group(1)
     s = m.group(3)
     #print line
-    if compare(t.strip(), node):
+    if compare(t.strip(), node_state):
         # print line
-        callback(s.strip(), node)
+        callback(s.strip(), node_state)
         pass
 
 
-def handleFile(line, node):
-    handleLine(line.strip(), node, timeCompare, parser)
+def handleFile(line, node_state):
+    handleLine(line.strip(), node_state, timeCompare, parser)
 
 
-def handleFile2(line, node):
-    handleLine(line.strip(), node, timeCompare2, parser2)
+def handleFile2(line, node_state):
+    handleLine(line.strip(), node_state, timeCompare2, parser2)
 
 
-def readFile(filename, node):
-#    tmp = time.localtime(time.time())
- #   nodes_state[node].filter_time =  (tmp.tm_hour * 60 + tmp.tm_min) * 60 + tmp.tm_sec - TAIL_TIME_GAP # s
-
-    #print "readFile"    
+def readFile(filename, node_state):
     py_tail = Tail(filename, handleFile)
-    py_tail.n(TAIL_LINE_NUM, node)
+    py_tail.n(TAIL_LINE_NUM, node_state)
 
 
-def readFile2(filename, node):
-    # tmp = time.localtime(time.time())
-    # nodes_state[node].flow_filter_time =  (tmp.tm_hour * 60 + tmp.tm_min) * 60 + tmp.tm_sec - 1 # s
-    
+def readFile2(filename, node_state):
     py_tail = Tail(filename, handleFile2)
-    py_tail.n(500, node)
+    py_tail.n(500, node_state)
 
 
-def accessFile(node, dir_path, callback, recursive_deep=0):
-    filename = statFilename(recursive_deep) # 每次递归减少1小时
-    if len(dir_path) == 0:
-        pass
-    elif dir_path[-1] == '/':
-        filename = dir_path + filename
-    elif len(dir_path) != 0:
-        filename = dir_path + '/' + filename
+def accessFile(node_state, callback, recursive_deep=0):
+    name = statFilename(node_state.log_filename_format, recursive_deep) # 每次递归减少1单位对应时间
+    filename = node_state.dir_path + "/" + name
     
     if os.path.isfile(filename):
-        # set filter time
-        state = nodes_state.get(node, None)
-        if state is None:
-            # todo add other alert
-            print "node state isn't init!"
-            return
-        callback(filename, node)
-        # tmp = time.localtime(time.time())
-        # state.filter_time =  (tmp.tm_hour * 60 + tmp.tm_min - TAIL_TIME_GAP) * 60 + tmp.tm_sec # s
-        
-        # py_tail = Tail(filename, handleFile)
-        # py_tail.n(TAIL_LINE_NUM, node)
+        callback(filename, node_state)
     else:
-        if recursive_deep == 1: # 只递归一次就出去
+        if recursive_deep == 3: # 递归三次就出去,相当于向前找3个文件
             # todo can't find file
             print "can't find file for:" + filename
-            postAlert(node, "logfile access ERROR", 5, "can't find file for:" + filename + ", try to find prev log file", currentMs())
+            postAlert(node_state.node_name, "logfile access ERROR", 5, "can't find file for:" + filename + ", try to find prev log file", currentMs())
         else:
-            accessFile(node, dir_path, callback, recursive_deep + 1)
+            accessFile(node_state, callback, recursive_deep + 1)
     pass
 
 
-def accessLog(node, dir_path='', interval=60):
+def accessLog(node_state, interval=60):
     for sec in range(interval) :
         #流程统计上报interval次，每隔1s上报一次
         time.sleep(1)
-        accessFile(node, dir_path, readFile2)
-        postToBrowserServer(node, TX_FLOW, __report_real_name[TX_FLOW], nodes_state[node].popTxFlowLog(), currentMs())
-        postToBrowserServer(node, BLOCK_FLOW, __report_real_name[BLOCK_FLOW], nodes_state[node].popBlockFlowLog(), currentMs())        
+        accessFile(node_state, readFile2)
+        postToBrowserServer(node_state.node_name, TX_FLOW, __report_real_name[TX_FLOW], node_state.popTxFlowLog(), currentMs())
+        postToBrowserServer(node_state.node_name, BLOCK_FLOW, __report_real_name[BLOCK_FLOW], node_state.popBlockFlowLog(), currentMs())        
 
     #单点统计在sleep了interal后再统一上报
-    accessFile(node, dir_path, readFile)
+    accessFile(node_state, readFile)
     # TODO 1秒一次
 
     pass
@@ -780,11 +839,12 @@ def accessNodeByTime(interval, node):
     while True:
         print "accessNodeInfo " + node[0] + " " + node[1] + " " + str(node[2])
         accessRpc(node[0], node[2])
-        accessLog(node[0], node[1], interval) #与accessRpc不同，accessLog中，流程统计跑interval次，每1s上报一次，待interval后，将单点统计统一上报
+        # accessLog(node[0], node[1], interval) #与accessRpc不同，accessLog中，流程统计跑interval次，每1s上报一次，待interval后，将单点统计统一上报
+        accessLog(nodes_state[node[0]], interval)
 
 def main():
     for node in nodes:
-        nodes_state[node[0]] = NodeState(node[0]) # init node state
+        nodes_state[node[0]] = NodeState(node) # init node state
         #每个node一个Agent线程
         t = threading.Thread(target = accessNodeByTime,
                              args = (ACCESS_NODE_INTERVAL, node),
@@ -792,17 +852,4 @@ def main():
         t.start()
 
 if __name__ == "__main__":
-    # nodes_state["node"] = NodeState("node")
-    # accessLog("node", ".")
     main()
-    # s = "[block] | start[from viewchange]: 17:0:25:347 | execed[#empty hash:b8e74420… height:7]: 17:0:26:348 | viewchange start[ view:333012]: 17:0:26:348 | viewchanged[new_view:333013 m_change_cycle:1]: 17:0:26:352"
-    # s = "[block][Leader] | start[from viewchange]: 17:0:26:352 | sealed[hash:2f224475… height:7 txnum:0]: 17:0:27:350 | viewchange start[ view:333013]: 17:0:27:351 | viewchanged[new_view:333014 m_change_cycle:1]: 17:0:27:356"
-    # s = "[block][Leader] | start[from viewchange]: 10:35:46:115 | sealed[hash:4a419307… height:53 txnum:1]: 10:35:47:122 | execed[hash:a8b85490…]: 10:35:47:127 | signed[ ]: 10:35:47:128 | commited[ ]: 10:35:47:128 | onChain[blk:53 hash:a8b85490… idx:0 next:54]: 10:35:47:134"
-    # s = "[block][Leader] start[from viewchange]: 10:36:3:263 | sealed[hash:9c325682… height:54 txnum:0]: 10:36:4:263 | viewchange_start[ view:16]: 10:36:4:263 | viewchanged[new_view:17 m_change_cycle:1]: 10:36:4:263"
-    # s = "[block] start[from viewchange]: 10:36:3:263 | sealed[hash:9c325682… height:54 txnum:0]: 10:36:4:263 | viewchange_start[ view:16]: 10:36:4:263 | viewchanged[new_view:17 m_change_cycle:1]: 10:36:4:263"
-
-    # s = "[block] start[from viewchange]: 17:0:25:347 | execed[#empty hash:b8e74420… height:7]: 17:0:26:348 | viewchange start[ view:333012]: 17:0:26:348 | viewchanged[new_view:333013 m_change_cycle:1]: 17:0:26:352"
-    # s = "[block][Leader] start[from viewchange]: 17:0:26:352 | sealed[hash:2f224475… height:7 txnum:0]: 17:0:27:350 | viewchange start[ view:333013]: 17:0:27:351 | viewchanged[new_view:333014 m_change_cycle:1]: 17:0:27:356"
-    # print parseBlockFlowLog(s)
-
-

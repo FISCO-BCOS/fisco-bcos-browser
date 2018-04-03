@@ -51,17 +51,17 @@ function getAttrList() {
         success:function(DATA) {
             if(DATA.status==0){
                 var attrArr = DATA.data;
-                for(var i=0;i<attrArr.length;i++){
-                    var data = attrArr[i];
-                    if(data.attrName=="区块高度"){
-                        attrCheckBok += "<input type='checkbox' name='attrs' checked='checked' value='" + data.attr + "'/>"+ data.attrName +"&nbsp&nbsp&nbsp";
-                    }else {
-                        attrCheckBok += "<input type='checkbox' name='attrs' value='" + data.attr + "'/>"+ data.attrName +"&nbsp&nbsp&nbsp";
+                if(attrArr != null && attrArr.length>0){
+                    for(var i=0;i<attrArr.length;i++){
+                        var data = attrArr[i];
+                        if(data.attrName=="区块高度"){
+                            attrCheckBok += "<input type='checkbox' name='attrs' checked='checked' value='" + data.attr + "'/>"+ data.attrName +"&nbsp&nbsp&nbsp";
+                        }else {
+                            attrCheckBok += "<input type='checkbox' name='attrs' value='" + data.attr + "'/>"+ data.attrName +"&nbsp&nbsp&nbsp";
+                        }
                     }
-
+                    $("#attrView").append(attrCheckBok);
                 }
-                $("#attrView").append(attrCheckBok);
-
             }else {
                 alert(DATA.msg);
             }
@@ -183,46 +183,46 @@ function queryStstList() {
         success:function(DATA) {
             if(DATA.status==0){
                 var statArr = DATA.data;
-                for(var i=0;i<statArr.length;i++){
-                    var dataArr=[];
-                    var timeArr=[];
-                    var objArr = statArr[i];
-                    for(var j=0;j<objArr.length;j++){
-                        var obj = objArr[j];
-                        var date = new Date(obj.collectTimestamp);
-                        var hour = date.getHours();
-                        var minute = date.getMinutes();
-                        if (minute >= 0 && minute <= 9) {
-                            minute = "0" + minute;
+                if(statArr != null && statArr.length>0){
+                    for(var i=0;i<statArr.length;i++){
+                        var dataArr=[];
+                        var timeArr=[];
+                        var objArr = statArr[i];
+                        if(objArr != null && objArr.length>0){
+                            for(var j=0;j<objArr.length;j++){
+                                var obj = objArr[j];
+                                var date = new Date(obj.collectTimestamp);
+                                var hour = date.getHours();
+                                var minute = date.getMinutes();
+                                if (minute >= 0 && minute <= 9) {
+                                    minute = "0" + minute;
+                                }
+                                var timeStr = hour+":"+minute;
+                                timeArr.push(timeStr);//时间
+                                dataArr.push(obj.metricValue);//属性值
+                            }
                         }
-                        var timeStr = hour+":"+minute;
-                        timeArr.push(timeStr);//时间
-                        dataArr.push(obj.metricValue);//属性值
+
+                        //存放echart表格的容器
+                        var $containerStr = "<div class='col-sm-6 tag-box tag-box-v2 box-shadow shadow-effect-1 container"+i+"' style='border-right-color: #3498db; border-right-style: solid; border-right-width: 2px; margin-bottom: 0px; background-color: #FFFFFF;'>"
+                            + "<div id='echartView"+i+"' style='min-width: 300px; height: 200px; margin: 0 auto'></div>"
+                            + "</div>";
+
+                        //echart视图
+                        $allEchartContainer.append($containerStr);
+
+                        var titleStr = objArr[0].object + "|" + objArr[0].attrName;
+
+                        //设置echart视图
+                        (function (i) {
+                            var echartViewId = "echartView"+i;
+                            var $echartView = $("#allEchartContainer").find('#'+echartViewId)[0]
+                            //console.log($echartView.attr('id'))
+                            setEchartView(titleStr,timeArr,dataArr,$echartView);
+                        })(i)
+
                     }
-
-                    //存放echart表格的容器
-                    var $containerStr = "<div class='col-sm-6 tag-box tag-box-v2 box-shadow shadow-effect-1 container"+i+"' style='border-right-color: #3498db; border-right-style: solid; border-right-width: 2px; margin-bottom: 0px; background-color: #FFFFFF;'>"
-                        + "<div id='echartView"+i+"' style='min-width: 300px; height: 200px; margin: 0 auto'></div>"
-                        + "</div>";
-
-                    //echart视图
-                    $allEchartContainer.append($containerStr);
-
-
-                    var titleStr = objArr[0].object + "|" + objArr[0].attrName;
-
-
-
-                    //设置echart视图
-                    (function (i) {
-                        var echartViewId = "echartView"+i;
-                        var $echartView = $("#allEchartContainer").find('#'+echartViewId)[0]
-                        //console.log($echartView.attr('id'))
-                        setEchartView(titleStr,timeArr,dataArr,$echartView);
-                    })(i)
-
                 }
-
             }else {
                 alert(DATA.msg);
             }

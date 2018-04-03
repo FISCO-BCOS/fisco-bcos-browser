@@ -197,9 +197,11 @@ function openEditModal(pkId) {
         success:function(DATA) {
             if(DATA.status==0){
                 var rowData = DATA.data;
-                $("#editId").val(rowData.pkId);
-                $("#editIp").val(rowData.ip);
-                $("#editRPC").val(rowData.rpcPort);
+                if(rowData != null){
+                    $("#editId").val(rowData.pkId);
+                    $("#editIp").val(rowData.ip);
+                    $("#editRPC").val(rowData.rpcPort);
+                }
             }else {
                 alert(DATA.msg);
             }
