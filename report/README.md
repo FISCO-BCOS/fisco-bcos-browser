@@ -22,6 +22,8 @@ vim config.json
 "statlog": "ON",
 ```
 
+**注意：若修改了config.json，则需要重启节点才会生效。**
+
 ### 2、配置参数
 
 > 进入区块链浏览器根目录下的report文件夹，修改ReportAgent.py
@@ -39,7 +41,7 @@ vim ReportAgent.py
 >
 > （3）配置server端接收上报数据的端口：BROWSER_SERVER_PORT
 >
-> （4）配置节点信息对象。若有多个节点，则依次按照举例定义。
+> （4）配置节点信息对象。若有多个节点，则依次按照举例进行，填入各个参数。最后一个参数可选，若不设置则默认从log.conf中读取，但需保证log.conf中的log路径为绝对路径。
 >
 > （5）将定义的节点信息对象写入全局数组（```nodes```）中。
 
@@ -50,8 +52,9 @@ HOST_IP = "123.207.123.123" #本机器的外网IP，仅作为浏览器端区分�
 BROWSER_SERVER_IP = "10.107.105.138" #上报server端的IP
 BROWSER_SERVER_PORT = "8088" #上报server端的端口
 
-node0 = ["node0", "/bcos-data/node0/log/", 8545] #node的名字，node的log目录, RPC端口号
-node1 = ["node1", "/bcos-data/node1/log/", 8546] #node的名字，node的log目录, RPC端口号
+#node的名字, log.conf的路径, RPC端口号, node的log目录(可选)
+node0 = ["node0", "/bcos-data/node0/log.conf", 8545]
+node1 = ["node1", "/bcos-data/node1/log.conf", 8546, "/bcos-data/node0/log/"] 
 
 nodes = [node0, node1]
 ```
