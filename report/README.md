@@ -54,7 +54,7 @@ BROWSER_SERVER_PORT = "8080" #上报server端的端口
 
 #node的名字, log.conf的路径, RPC端口号, node的log目录(可选)
 node0 = ["node0", "/bcos-data/node0/log.conf", 8545]
-node1 = ["node1", "/bcos-data/node1/log.conf", 8546, "/bcos-data/node0/log/"] 
+node1 = ["node1", "/bcos-data/node1/log.conf", 8546, "/bcos-data/node1/log/"] 
 
 nodes = [node0, node1]
 ```
