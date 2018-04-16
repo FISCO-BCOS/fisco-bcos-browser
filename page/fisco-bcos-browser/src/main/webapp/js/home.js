@@ -48,17 +48,19 @@ function getTxnByLastFourteenDay() {
         success:function(DATA) {
             if(DATA.status==0){
                 var data = DATA.data;
-                var transactionDataArr = new Array();//交易数据的数组
-                var dataArr = new Array();//日期的数组
-               for(var index in data){
-                   dataArr[index] = data[index].pkDateStr;
-                   transactionDataArr[index] = data[index].transactionNumber;
-               }
+                if(data!=null&&data.length>0){
+                    var transactionDataArr = new Array();//交易数据的数组
+                    var dataArr = new Array();//日期的数组
+                    for(var index in data){
+                        dataArr[index] = data[index].pkDateStr;
+                        transactionDataArr[index] = data[index].transactionNumber;
+                    }
 
-               //显示折线图
-                showEchart(transactionDataArr,dataArr);
+                    //显示折线图
+                    showEchart(transactionDataArr,dataArr);
+                }
             }else {
-                    console.log("query fail:"+DATA);
+                console.log("query fail:"+DATA);
             }
 
         },
@@ -155,11 +157,12 @@ function getTbBlockChainInfo() {
         success:function(DATA) {
             if(DATA.status==0){
                 var data = DATA.data;
-                $("#LastBlockNumber").html(data.lastBlock);//最新块高
-                $("#TransactionsNumber").html(data.transactionNumber);//交易数
-                $("#pendingTxnNumber").html(data.pendingTxn);//当前正在处理但还未上链的交易的个数
-                $("#pbftViewNumber").html(data.pbftView);
-
+                if(data!=null) {
+                    $("#LastBlockNumber").html(data.lastBlock);//最新块高
+                    $("#TransactionsNumber").html(data.transactionNumber);//交易数
+                    $("#pendingTxnNumber").html(data.pendingTxn);//当前正在处理但还未上链的交易的个数
+                    $("#pbftViewNumber").html(data.pbftView);
+                }
             }else {
                 console.log("query fail:"+DATA);
             }
@@ -192,7 +195,7 @@ function getBlocksList() {
         success:function(DATA) {
             if(DATA.status==0){
                 var blockList = DATA.list;
-                if(blockList.length>0){
+                if(blockList!=null&&blockList.length>0){
                     //清空block
                     $("#scrollbar2").empty();
                     var htmlStr = "";
@@ -246,7 +249,7 @@ function getTransactionList(){
         success:function(DATA) {
             if(DATA.status==0){
                 var transactionList = DATA.list;
-                if(transactionList.length>0){
+                if(transactionList!=null&&transactionList.length>0){
                     //清空div
                     $("#scrollbar").empty();
                     var htmlStr = "";

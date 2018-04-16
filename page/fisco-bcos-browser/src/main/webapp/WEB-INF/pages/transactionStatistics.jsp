@@ -12,12 +12,14 @@
 <div class="wrapper">
     <%@ include file="../pages/comm/header.jsp"%>
 
+<%--
     <div class="container left hidden-lg hidden-md" id="divmobilesearch" style="margin-top: 5px; margin-bottom: -18px; padding-right: 20px; padding-left: 20px;">
         <form action="/search" method="GET">
             <input id="txtSearchInputMobile" type="text" placeholder="Search for Account, Tx Hash or Data" class="form-control" style="text-align: center;" name="q" maxlength="100" title="Address, Contract, Txn Hash or Data" />
         </form>
         <br /><br />
     </div>
+--%>
 
     <div class="breadcrumbs">
         <div class="container">
