@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="../assets/css/profile.css">
     <%--公共的css和js文件--%>
     <%@ include file="../pages/comm/JSandCSS.jsp"%>
-    <script src="../cdn-cgi/apps/head/XCcIJUja65t7SLXcpK7gLzF5XFY.js"></script>
     <script type="text/javascript" src="../echarts/js/echarts.min.js"></script>
 </head>
 <body>
