@@ -11,7 +11,7 @@
        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
     <!-- Loaded via org.springframework.web.servlet.DispatcherServlet in web.xml -->
-    <context:component-scan base-package="cn.webank.bcos.browser" use-default-filters="false">
+    <context:component-scan base-package="org.bcos.browser" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 

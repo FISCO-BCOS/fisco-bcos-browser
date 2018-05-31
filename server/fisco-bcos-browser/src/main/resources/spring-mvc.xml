@@ -10,7 +10,7 @@
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
-    <context:component-scan base-package="org.bcos.browser.bcos.browser" use-default-filters="false">
+    <context:component-scan base-package="cn.bcos.browser" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 

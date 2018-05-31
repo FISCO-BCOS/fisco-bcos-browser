@@ -30,12 +30,12 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="daSource"/>
         <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
-        <property name="typeAliasesPackage" value="cn.webank.bcos.browser.dto"/>
+        <property name="typeAliasesPackage" value="org.bcos.browser.dto"/>
         <property name="mapperLocations" value="classpath:mappers/*.xml" />
     </bean>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage"  value="cn.webank.bcos.browser.mapper" />
+        <property name="basePackage"  value="org.bcos.browser.mapper" />
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
     </bean>
 </beans>

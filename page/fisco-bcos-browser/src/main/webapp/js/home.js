@@ -1,7 +1,23 @@
 ﻿/**
- *@Description: home页面的js
- *@Author: v_wbsqwu
- *@Date: 2017/10/13 15:20
+ * This file is part of FISCO BCOS Browser.
+ *
+ * FISCO BCOS Browser is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * FISCO BCOS Browser is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with FISCO BCOS Browser.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ * @file: home.js
+ * @author: v_wbsqwu
+ * @date: 2018
  */
 var pageNumber = 1;//列表查询的起始页
 var pageSize = 10;//列表查询的页面大小
@@ -96,8 +112,7 @@ function showEchart(transactionDataArr,dataArr) {
             trigger: 'axis',//坐标轴触发，主要在柱状图，折线图等会使用类目轴的图表中使用。
             formatter: function(data){//自定义显示格式
                 return '<span style="font-size:10px">' + data[0].name + '</span><br><table ><tr><td style="padding:0">' +
-                    '<span style="font-size:10px;color:white">交易量：' + data[0].value + '</a></span><br>'
-                '</td></tr></table>';
+                    '<span style="font-size:10px;color:white">交易量：' + data[0].value + '</a></span><br></td></tr></table>';
             }
         },
         grid:{
