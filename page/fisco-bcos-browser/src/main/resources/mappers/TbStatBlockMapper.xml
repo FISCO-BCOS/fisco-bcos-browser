@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.webank.bcos.browser.mapper.TbStatBlockMapper">
-    <resultMap id="TbStatBlockMap" type="cn.webank.bcos.browser.dto.TbStatBlockDto" >
+<mapper namespace="org.bcos.browser.mapper.TbStatBlockMapper">
+    <resultMap id="TbStatBlockMap" type="org.bcos.browser.dto.TbStatBlockDto" >
         <id column="pk_id" jdbcType="INTEGER" property="pkId" javaType="java.lang.Integer" />
         <result column="height" jdbcType="INTEGER" property="height" javaType="java.lang.Integer" />
         <result column="hash" jdbcType="VARCHAR" property="hash" javaType="java.lang.String" />

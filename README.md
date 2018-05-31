@@ -15,7 +15,7 @@
 **server端**
 
 - 定时从区块链节点的RPC接口中查数据，写入数据库中。
-- 接收report agnet上报的数据，写入数据库中。
+- 接收report agent上报的数据，写入数据库中。
 
 **page端**
 
@@ -255,7 +255,9 @@ service mariadb start
 
 （4）初始化root用户
 
-> 登录数据库
+```sql
+/*授权test用户本地访问数据库*/
+create user 'test'@'localhost' identified by 'test1234';
 
 ```shell
 mysql -u root
@@ -267,6 +269,24 @@ mysql -u root
 SET PASSWORD FOR 'root'@'localhost' = PASSWORD('123456');
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
 ```
+
+（6）测试是否成功
+
+> 另开一个ssh测试用户是否可以登陆，并成功授权，登陆数据库
+
+```shell
+mysql -utest -ptest@2107 -h 127.0.0.1 -P 3306
+```
+
+> 登陆成功后，执行sql语句，若出现错误，则用户授权不成功
+
+```sql
+show databases;
+use test;
+select * from tb_txnByDay;
+```
+
+
 
 ### 4、Tomcat操作
 
@@ -309,7 +329,6 @@ http://127.0.0.1:8080/fisco-bcos-browser
 ```shell
 [Fatal Error] spring-core-4.1.8.RELEASE.pom:2:127: XML document structures must start and end within the same entity.
 ```
-
 
 
 

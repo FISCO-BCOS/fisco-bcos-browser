@@ -1,4 +1,4 @@
-group 'cn.webank'
+group 'org.bcos.browser'
 version '1.0'
 
 apply plugin: 'java'
@@ -10,7 +10,10 @@ targetCompatibility = 1.8
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
 repositories {
-    maven { url "https://mvnrepository.com" }
+    maven {
+	url "https://mvnrepository.com" 
+	}
+   
     mavenLocal()
     mavenCentral()
 }
