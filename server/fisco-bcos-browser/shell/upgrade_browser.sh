@@ -42,10 +42,10 @@ set global event_scheduler = 1;
 
 alter table tb_block modify column miner varchar(256);
 
-alter table tb_transaction add contractName varchar(256) COMMENT '合约名';
-alter table tb_transaction add version varchar(256) COMMENT '合约版本';
-alter table tb_transaction add method varchar(256) COMMENT '被调用的合约中的函数名';
-alter table tb_transaction add params varchar(4096) COMMENT '被调用的函数的参数';
+alter table tb_transaction add contractName longtext COMMENT '合约名';
+alter table tb_transaction add version longtext COMMENT '合约版本';
+alter table tb_transaction add method longtext COMMENT '被调用的合约中的函数名';
+alter table tb_transaction add params longtext COMMENT '被调用的函数的参数';
 
 alter table tb_nodesInfo modify column pk_id varchar(128) NOT NULL;
 alter table tb_nodesInfo modify column addr varchar(32) NOT NULL;
