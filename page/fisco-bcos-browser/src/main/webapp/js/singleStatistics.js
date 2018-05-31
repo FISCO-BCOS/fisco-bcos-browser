@@ -230,6 +230,9 @@ function queryStstList() {
                         $allEchartContainer.append($containerStr);
 
 
+                        //echart视图
+                        $allEchartContainer.append($containerStr);
+
                         var titleStr = null;
                         if(objArr != null && objArr != undefined){
                             var obj = objArr[0];
