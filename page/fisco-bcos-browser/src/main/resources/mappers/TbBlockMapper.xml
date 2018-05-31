@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.webank.bcos.browser.mapper.TbBlockMapper">
-    <resultMap id="TbBlockMap" type="cn.webank.bcos.browser.dto.TbBlockDto" >
+<mapper namespace="org.bcos.browser.mapper.TbBlockMapper">
+    <resultMap id="TbBlockMap" type="org.bcos.browser.dto.TbBlockDto" >
         <id column="pk_hash" jdbcType="VARCHAR" property="pkHash" javaType="java.lang.String" />
         <result column="number" jdbcType="INTEGER" property="number" javaType="java.lang.Integer" />
         <result column="parentHash" jdbcType="VARCHAR" property="parentHash" javaType="java.lang.String" />
@@ -56,7 +56,7 @@
     </select>
 
     <!--According to Block Hash Query Block-->
-    <select id="getBlockDetailInfoByBlockHash" resultType="cn.webank.bcos.browser.dto.TbBlockDto">
+    <select id="getBlockDetailInfoByBlockHash" resultType="org.bcos.browser.dto.TbBlockDto">
         SELECT <include refid="ALL_COLUMN"/>
         FROM tb_block
         WHERE pk_hash = #{blockHash}  limit 1;

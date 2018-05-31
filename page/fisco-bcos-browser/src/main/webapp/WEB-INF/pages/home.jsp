@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="../assets/css/profile.css">
     <%--公共的css和js文件--%>
     <%@ include file="../pages/comm/JSandCSS.jsp"%>
-    <script src="../cdn-cgi/apps/head/XCcIJUja65t7SLXcpK7gLzF5XFY.js"></script>
     <script type="text/javascript" src="../echarts/js/echarts.min.js"></script>
 </head>
 <body>
@@ -129,7 +128,7 @@
                             <div class="col-sm-6 sm-margin-bottom-20">
                                 <div class="panel panel-profile no-bg">
                                     <div class="panel-heading overflow-h">
-                                        <h2 class="panel-title heading-sm pull-left"><img src="../images/webank/qukuai.png">区块</h2>
+                                        <h2 class="panel-title heading-sm pull-left"><img src="../images/qukuai.png">区块</h2>
                                         <a href="../block/block.page" class="btn-brd-hover btn-u-dark btn-u-xs pull-right">更多&nbsp;&nbsp;></a>
                                     </div>
                                     <div id="scrollbar2" class="panel-body no-padding mCustomScrollbar pre-scrollable" data-mcs-theme="minimal-dark" style="height: 580px">
@@ -139,7 +138,7 @@
                             <div class="col-sm-6">
                                 <div class="panel panel-profile no-bg">
                                     <div class="panel-heading overflow-h">
-                                        <h2 class="panel-title heading-sm pull-left"><img src="../images/webank/jiaoyi.png" alt="">交易</h2>
+                                        <h2 class="panel-title heading-sm pull-left"><img src="../images/jiaoyi.png" alt="">交易</h2>
                                         <span style="color: #999999; font-size: 11px; margin-bottom: -20px; padding-bottom: 0px;"></span>
                                         <a href="../transaction/transaction.page" class="btn-brd-hover btn-u-dark btn-u-xs pull-right">更多&nbsp;&nbsp;></a>
                                     </div>

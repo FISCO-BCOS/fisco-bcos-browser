@@ -19,7 +19,7 @@
     http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
 
 	<context:annotation-config />
-	<context:component-scan base-package="org.bcos.browser" />
+	<context:component-scan base-package="cn.bcos" />
 
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
@@ -31,7 +31,7 @@
 
 	<bean id="start" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
-			<bean class="org.bcos.browser.bcos.browser.service.GovernService" />
+			<bean class="cn.bcos.browser.service.GovernService" />
 		</property>
 		<property name="targetMethod" value="start" />
 		<property name="concurrent" value="false" />
@@ -39,7 +39,7 @@
 	
 	<bean id="handleBlockInfo" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
-			<bean class="org.bcos.browser.bcos.browser.service.GovernService" />
+			<bean class="cn.bcos.browser.service.GovernService" />
 		</property>
 		<property name="targetMethod" value="handleBlockInfo" />
 		<property name="concurrent" value="false" />
@@ -47,11 +47,20 @@
 	
 	<bean id="handlePendingTransInfo" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
-			<bean class="org.bcos.browser.bcos.browser.service.GovernService" />
+			<bean class="cn.bcos.browser.service.GovernService" />
 		</property>
 		<property name="targetMethod" value="handlePendingTransInfo" />
 		<property name="concurrent" value="false" />
 	</bean>
+	
+	<bean id="handleNodeInfo" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean class="cn.bcos.browser.service.GovernService" />
+		</property>
+		<property name="targetMethod" value="handleNodeInfo" />
+		<property name="concurrent" value="false" />
+	</bean>
+	
 
 	<bean id="startTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="start" />
@@ -67,13 +76,20 @@
 		<property name="jobDetail" ref="handlePendingTransInfo" />
 		<property name="cronExpression" value="${pendingTransTrigger.schedule.time}" />
 	</bean>
+	
+	<bean id="NodeInfoTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="handleNodeInfo" />
+		<property name="cronExpression" value="${NodeInfoTrigger.schedule.time}" />
+	</bean>
+	
 
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
          			<ref bean="startTrigger" />       
             		<ref bean="blockInfoTrigger" />              
-           		    <ref bean="pendingTransTrigger" />                 
+           		    <ref bean="pendingTransTrigger" /> 
+           		    <ref bean="NodeInfoTrigger" />                 
 			</list>
 		</property>
 	</bean>
@@ -101,7 +117,7 @@
 	</bean>
 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="org.bcos.browser.bcos.browser.dao" />
+		<property name="basePackage" value="cn.bcos.browser.dao" />
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
 	</bean>
 
