@@ -1,25 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <div class="header">
-    <%--<div class="container" style="background-color: #3a77ce">
-
-        <a class="logo" href="../" title="Home Page">
-            <div >
-                <img style="margin-left: 74px;" height="74px" src="../images/webank/logo.png">
-            </div>
-        </a>&lt;%&ndash;BCOS-Browser&ndash;%&gt;
-        <div class="topbar hidden-xs hidden-sm ">
-            <form action="/search" method="GET">
-                <ul class="loginbar pull-right">
-                    <li>
-                        <div style="display: inline;">
-                        </div>
-                    </li>
-                </ul>
-            </form>
-        </div>
-    </div>--%>
-
     <div class="collapse navbar-collapse mega-menu navbar-responsive-collapse">
         <div class="container">
             <div class="nav-left"><font style="margin-left: 10px;" height="74px">FISCO BCOS</font></div>

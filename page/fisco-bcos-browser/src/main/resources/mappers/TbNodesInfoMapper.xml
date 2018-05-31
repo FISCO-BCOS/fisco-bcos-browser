@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.webank.bcos.browser.mapper.TbNodesInfoMapper">
-    <resultMap id="TbNodesInfoMap" type="cn.webank.bcos.browser.dto.TbNodesInfoDto" >
+<mapper namespace="org.bcos.browser.mapper.TbNodesInfoMapper">
+    <resultMap id="TbNodesInfoMap" type="org.bcos.browser.dto.TbNodesInfoDto" >
         <id column="pk_id" jdbcType="VARCHAR" property="pkId" javaType="java.lang.String" />
         <result column="addr" jdbcType="VARCHAR" property="addr" javaType="java.lang.String" />
         <result column="blockNumber" jdbcType="INTEGER" property="blockNumber" javaType="java.lang.Integer" />

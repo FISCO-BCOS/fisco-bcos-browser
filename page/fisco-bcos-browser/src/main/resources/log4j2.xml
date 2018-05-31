@@ -27,11 +27,11 @@
 
 	</Appenders>
 	<Loggers>
-		<Logger name="cn.webank" level="info" additivity="false">
+		<Logger name="org.bcos.browser" level="info" additivity="false">
 			<AppenderRef ref="async" />
 		</Logger>
 
-		<Logger name="cn.webank.bcos.browser" level="debug" additivity="true">
+		<Logger name="org.bcos.browser" level="debug" additivity="true">
 			<AppenderRef ref="console" />
 		</Logger>
 

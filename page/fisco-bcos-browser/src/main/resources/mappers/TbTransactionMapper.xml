@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.webank.bcos.browser.mapper.TbTransactionMapper">
-    <resultMap id="tbTransactionMap" type="cn.webank.bcos.browser.dto.TbTransactionDto" >
+<mapper namespace="org.bcos.browser.mapper.TbTransactionMapper">
+    <resultMap id="tbTransactionMap" type="org.bcos.browser.dto.TbTransactionDto" >
         <id column="pk_hash" jdbcType="VARCHAR" property="pkHash" javaType="java.lang.String" />
         <result column="blockHash" jdbcType="VARCHAR" property="blockHash" javaType="java.lang.String" />
         <result column="blockNumber" jdbcType="INTEGER" property="blockNumber" javaType="java.lang.Integer" />
@@ -72,7 +72,7 @@
     </select>
 
     <!--根据pkHash查询交易表的记录-->
-    <select id="getTbTransactionByPkHash" resultType="cn.webank.bcos.browser.dto.TbTransactionDto">
+    <select id="getTbTransactionByPkHash" resultType="org.bcos.browser.dto.TbTransactionDto">
         SELECT <include refid="ALL_COLUMN"/>
         from tb_transaction WHERE pk_hash = #{pkHash} limit 1;
     </select>

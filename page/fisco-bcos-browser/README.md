@@ -108,17 +108,17 @@ Pending Transactions页，展示正在处理，但未上链的交易信息。
 
 （1）java文件夹
 
-​	cn.webank.bcos.browser.base：一些工具类和常用类
+​	org.bcos.browser.base：一些工具类和常用类
 
-​	cn.webank.bcos.browser.controller：一些控制器controller
+​	org.bcos.browser.controller：一些控制器controller
 
-​	cn.webank.bcos.browser.dto：程序对应数据库表的实体类
+​	org.bcos.browser.dto：程序对应数据库表的实体类
 
-​	cn.webank.bcos.browser.entity：页面出入参的实体类
+​	org.bcos.browser.entity：页面出入参的实体类
 
-​	cn.webank.bcos.browser.mapper：mybatis相关的数据库操作接口
+​	org.bcos.browser.mapper：mybatis相关的数据库操作接口
 
-​	cn.webank.bcos.browser.service：存放服务类
+​	org.bcos.browser.service：存放服务类
 
 （2）resources文件夹
 
@@ -141,4 +141,3 @@ Pending Transactions页，展示正在处理，但未上链的交易信息。
 ```shell
 tail -f fisco-bcos-browser.log
 ```
-
