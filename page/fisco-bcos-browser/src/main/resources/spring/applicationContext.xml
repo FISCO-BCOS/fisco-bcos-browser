@@ -12,14 +12,14 @@
 
     <!--Loading non-web layer components-->
     <!--Loaded via org.springframework.web.context.ContextLoaderListener in web.xml  -->
-    <context:component-scan base-package="cn.webank.bcos.browser">
+    <context:component-scan base-package="org.bcos.browser">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
     <!-- Loading properties files -->
     <util:properties id="jdbc" location="classpath:jdbc.properties"/>
 
-    <bean class="cn.webank.bcos.browser.base.utils.SpringContextUtil" lazy-init="false"/>
+    <bean class="org.bcos.browser.base.utils.SpringContextUtil" lazy-init="false"/>
 
     <!-- Spring cited database configuration file -->
     <import resource="classpath*:/spring/spring-dao.xml" />

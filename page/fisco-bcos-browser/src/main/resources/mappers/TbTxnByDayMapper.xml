@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.webank.bcos.browser.mapper.TbTxnByDayMapper">
-    <resultMap id="tbTxnByDayMap" type="cn.webank.bcos.browser.dto.TbTxnByDayDto" >
+<mapper namespace="org.bcos.browser.mapper.TbTxnByDayMapper">
+    <resultMap id="tbTxnByDayMap" type="org.bcos.browser.dto.TbTxnByDayDto" >
         <id column="pk_date" jdbcType="DATE" property="pkDate" javaType="java.util.Date"/>
         <result column="txn" jdbcType="BIGINT" property="transactionNumber" javaType="java.math.BigInteger" />
     </resultMap>

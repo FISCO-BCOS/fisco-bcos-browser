@@ -34,8 +34,7 @@ startbroswer="${tomcatpath}/bin"
 ###################### 配置数据库 ######################
 echo "开始配置数据库..." 
  
-# execute sql stat
-#新建用户和数据库
+#新建数据库
 mysql -uroot -p${passwordRoot} --silent -h ${dbIp} -e "
 
 drop database if exists ${dbName};
@@ -44,11 +43,30 @@ create database ${dbName} default character set utf8 collate utf8_general_ci;
 
 set global event_scheduler = 1;
 
+quit"
+
+
+#删除用户
+mysql -uroot -p${passwordRoot} --silent -h ${dbIp} -e "
+
+delete from mysql.user where User='${userName}';
+
+drop user ${userName}@'%';
+
+drop user ${userName}@'localhost';
+
+quit">/dev/null 2>&1
+
+
+#新建用户
+mysql -uroot -p${passwordRoot} --silent -h ${dbIp} -e "
+
 create user '${userName}'@'localhost' identified by '${password}';
 
 create user '${userName}'@'%' identified by '${password}';
 
 quit"
+
 
 #导入数据库的表
 mysql -uroot -p${passwordRoot} -h ${dbIp} -e "
@@ -102,6 +120,7 @@ db.minEvictableIdleTimeMillis=300000
 startTrigger.schedule.time=0/3 * * * * ?
 blockInfoTrigger.schedule.time=0/5 * * * * ?
 pendingTransTrigger.schedule.time=0/1 * * * * ?
+NodeInfoTrigger.schedule.time=0/5 * * * * ?
 
 " > ${serverpath}/src/main/resources/application.properties
 
