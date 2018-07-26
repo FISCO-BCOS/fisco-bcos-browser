@@ -209,7 +209,7 @@ export PATH=$JAVA_HOME/bin:$PATH
 export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 ```
 
-###2、gradle环境部署
+### 2、gradle环境部署
 
 此处给出简单步骤，供快速查阅。更详细的步骤，请参考[官网](http://www.gradle.org/downloads)。
 
@@ -255,14 +255,14 @@ service mariadb start
 
 （4）初始化root用户
 
-```sql
-/*授权test用户本地访问数据库*/
-create user 'test'@'localhost' identified by 'test1234';
-
 ```shell
 mysql -u root
 ```
 
+```sql
+/*授权test用户本地访问数据库*/
+create user 'test'@'localhost' identified by 'test1234';
+```
 > 用SQL语句给root分配密码
 
 ``` sql
@@ -285,8 +285,6 @@ show databases;
 use test;
 select * from tb_txnByDay;
 ```
-
-
 
 ### 4、Tomcat操作
 
