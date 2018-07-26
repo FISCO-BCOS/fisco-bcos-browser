@@ -263,7 +263,7 @@ mysql -u root
 /*授权test用户本地访问数据库*/
 create user 'test'@'localhost' identified by 'test1234';
 ```
-> 用SQL语句给root分配密码
+（5）用SQL语句给root分配密码
 
 ``` sql
 SET PASSWORD FOR 'root'@'localhost' = PASSWORD('123456');
