@@ -19,7 +19,7 @@
  * @author: v_sfqiliu
  * @date: 2018
  */
-
+ 
 package cn.bcos.browser.service;
 
 import static cn.bcos.browser.util.Constants.*;
@@ -121,6 +121,7 @@ public class GovernService {
 			getMonitorLogger().info(CODE_MONI_10001, endtTime - startTime, MSG_MONI_10001);
 			return;
 		} else {
+			governServiceDAO.insertTxnByDayInfo();
 			for (int i = dbBlockHeight + 1; i <= blockHeight; i++) {
 				if (i == 1) {
 					handleBlockInfo(0);
@@ -129,7 +130,6 @@ public class GovernService {
 					handleBlockInfo(i);
 				}
 			}
-			governServiceDAO.insertTxnByDayInfo();
 		}
 		endtTime = System.currentTimeMillis();
 		getMonitorLogger().info(CODE_MONI_10001, endtTime - startTime, MSG_MONI_10001);
@@ -193,6 +193,8 @@ public class GovernService {
 		JSONArray jsonArr = json.getJSONArray("transactions");
 		logger.debug("###transactions：{}###", jsonArr);
 		long jsonSize = jsonArr.size();
+		map.put("transCount", jsonSize);
+		map.put("gasPriceTotal", gasPriceTotal);
 		for (int j = 0; j < jsonSize; j++) {
 			JSONObject jsonTrans = jsonArr.getJSONObject(j);
 			gasPriceTotal = gasPriceTotal + Long.parseLong(jsonTrans.getString("gasPrice").substring(2), 16);
@@ -228,13 +230,14 @@ public class GovernService {
 			transactionInfoDTO.setVersion(null!=jsonTrans.getJSONObject("operation")?jsonTrans.getJSONObject("operation").getString("version"):"");
 			transactionInfoDTO.setMethod(null!=jsonTrans.getJSONObject("operation")?jsonTrans.getJSONObject("operation").getString("method"):"");
 			transactionInfoDTO.setParams(null!=jsonTrans.getJSONObject("operation")?jsonTrans.getJSONObject("operation").getString("params"):"");
-			governServiceDAO.insertTransactionInfo(transactionInfoDTO);
-			
+			String pk_hash=governServiceDAO.selectPkHash(jsonTrans.getString("hash") );
+			if("".equals(pk_hash)||null==pk_hash){
+				governServiceDAO.insertTransactionInfo(transactionInfoDTO);
+			}else{
+				return map;
+			}
 			handleTransReceiptInfo(jsonTrans.getString("hash"));
 		}
-
-		map.put("transCount", jsonSize);
-		map.put("gasPriceTotal", gasPriceTotal);
 		return map;
 	}
 	
