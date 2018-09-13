@@ -45,6 +45,14 @@
 		<property name="concurrent" value="false" />
 	</bean>
 	
+	<bean id="startQueue" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<bean class="cn.bcos.browser.service.GovernService" />
+		</property>
+		<property name="targetMethod" value="startQueue" />
+		<property name="concurrent" value="false" />
+	</bean>
+	
 	<bean id="handlePendingTransInfo" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
 			<bean class="cn.bcos.browser.service.GovernService" />
@@ -72,6 +80,12 @@
 		<property name="cronExpression" value="${blockInfoTrigger.schedule.time}" />
 	</bean>
 	
+	<bean id="queueTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+		<property name="jobDetail" ref="startQueue" />
+		<property name="startDelay" value="0" />
+		<property name="repeatCount" value="0"/>
+	</bean>
+	
 	<bean id="pendingTransTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="handlePendingTransInfo" />
 		<property name="cronExpression" value="${pendingTransTrigger.schedule.time}" />
@@ -86,8 +100,9 @@
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-         			<ref bean="startTrigger" />       
-            		<ref bean="blockInfoTrigger" />              
+         			<ref bean="startTrigger" />
+         			<ref bean="blockInfoTrigger" />       
+            		<ref bean="queueTrigger" />              
            		    <ref bean="pendingTransTrigger" /> 
            		    <ref bean="NodeInfoTrigger" />                 
 			</list>
@@ -125,6 +140,15 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="mapperLocations" value="classpath:/mapper/*.xml" />
 	</bean>
+    <bean id="threadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="50" />
+		<property name="maxPoolSize" value="100" />
+		<property name="queueCapacity" value="500" />
+		<property name="keepAliveSeconds" value="60" />
+		<property name="rejectedExecutionHandler">
+			<bean class="java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy" />
+		</property>
+    </bean>
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

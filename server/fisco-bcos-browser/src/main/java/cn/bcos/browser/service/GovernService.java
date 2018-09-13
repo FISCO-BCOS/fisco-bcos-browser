@@ -31,10 +31,12 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -55,9 +57,89 @@ import cn.bcos.browser.dto.TransactionInfoDTO;
 @Component
 public class GovernService {
 	private Logger logger = LoggerFactory.getLogger(GovernService.class);
-
+	@Autowired
+	private ThreadPoolTaskExecutor threadPool;
+	
+	private static LinkedBlockingDeque<BlockInfoDTO> blockQueue = new LinkedBlockingDeque<>(10000);
+	private static LinkedBlockingDeque<TransactionInfoDTO> transQueue = new LinkedBlockingDeque<>(100000);
+	private static LinkedBlockingDeque<ReceiptInfoDTO> receiptQueue = new LinkedBlockingDeque<>(100000);
+	
 	public void start(){
 		handleBlockChainInfo();
+	}
+	
+	/**
+	 * start queue
+	 */
+	public void startQueue(){
+		threadPool.execute(new popBlockQueue());
+		threadPool.execute(new popTransQueue());
+		threadPool.execute(new popReceiptQueue());
+	}
+	
+	/**
+	 * insert block
+	 *
+	 */
+	class popBlockQueue implements Runnable{
+		@Override
+		public void run() {
+			BlockInfoDTO block = null;
+			while(true){
+				try {
+					block = blockQueue.take();
+					governServiceDAO.insertBlockInfo(block);
+				} catch (InterruptedException e) {
+					logger.error("popBlockQueue Exception!"+e.getMessage());
+				} catch (Exception e) {
+					logger.error("popBlockQueue nocatch Exception!"+e.getMessage());
+				}
+			}
+		}		
+	}
+	/**
+	 * insert trans
+	 *
+	 */
+	class popTransQueue implements Runnable{
+
+		@Override
+		public void run() {
+			TransactionInfoDTO trans = null;
+			while(true){
+				try {
+					trans = transQueue.take();
+					governServiceDAO.insertTransactionInfo(trans);
+				} catch (InterruptedException e) {
+					logger.error("popTransQueue Exception!"+e.getMessage());
+				} catch (Exception e) {
+					logger.error("popTransQueue nocatch Exception!"+e.getMessage());
+				}
+			}
+		}
+		
+	}
+	/**
+	 * insert receipt
+	 *
+	 */
+	class popReceiptQueue implements Runnable{
+		@Override
+		public void run() {
+			ReceiptInfoDTO receipt = null;
+			while(true){
+				try {
+					receipt = receiptQueue.take();
+					governServiceDAO.insertReceiptInfo(receipt);
+				} catch (InterruptedException e) {
+					logger.error("popReceiptQueue Exception!"+e.getMessage());
+				} catch (Exception e) {
+					logger.error("popReceiptQueue nocatch Exception!"+e.getMessage());
+				}
+
+				
+			}
+		}		
 	}
 
 	/**
@@ -110,18 +192,23 @@ public class GovernService {
 		int blockHeight = Integer.parseInt(lastBlock.substring(2), 16);
 		logger.debug("###handleBlockInfo the latest blockHeight：{}###", blockHeight);
 		long startTime1 = System.currentTimeMillis();
-		int dbBlockHeight = governServiceDAO.selectBlockHeigth();
+		int currentHeight;
+		if(blockQueue.isEmpty()){
+			currentHeight = governServiceDAO.selectBlockHeigth();
+		}else{
+			currentHeight = blockQueue.getLast().getNumber();
+		}
 		long endtTime1 = System.currentTimeMillis();
 		getMonitorLogger().info(CODE_MONI_10004, endtTime1 - startTime1, MSG_MONI_10004);
-		logger.debug("###handleBlockInfo db blockHeight：{}###", dbBlockHeight);
+		logger.debug("###handleBlockInfo current blockHeight：{}###", currentHeight);
 		
 		long endtTime = 0;
-		if (blockHeight == 0 || blockHeight == dbBlockHeight) {
+		if (blockHeight == 0 || blockHeight == currentHeight) {
 			endtTime = System.currentTimeMillis();
 			getMonitorLogger().info(CODE_MONI_10001, endtTime - startTime, MSG_MONI_10001);
 			return;
 		} else {
-			for (int i = dbBlockHeight + 1; i <= blockHeight; i++) {
+			for (int i = currentHeight + 1; i <= blockHeight; i++) {
 				if (i == 1) {
 					handleBlockInfo(0);
 					handleBlockInfo(1);
@@ -132,10 +219,8 @@ public class GovernService {
 			governServiceDAO.insertTxnByDayInfo();
 		}
 		endtTime = System.currentTimeMillis();
-		getMonitorLogger().info(CODE_MONI_10001, endtTime - startTime, MSG_MONI_10001);
-		
+		getMonitorLogger().info(CODE_MONI_10001, endtTime - startTime, MSG_MONI_10001);		
 	}
-
 	/**
 	 * handle block info
 	 * 
@@ -177,8 +262,12 @@ public class GovernService {
 		blockInfoDTO.setTxn(Long.parseLong(map.get("transCount").toString()));
 		blockInfoDTO.setExtraData(json.getString("extraData"));
 		blockInfoDTO.setDetailInfo(json.toString());
-		
-		governServiceDAO.insertBlockInfo(blockInfoDTO);
+		try {
+			blockQueue.put(blockInfoDTO);
+		} catch (InterruptedException e) {
+			logger.error("putBlockQueue Exception!");
+		}
+		//governServiceDAO.insertBlockInfo(blockInfoDTO);
 	}
 
 	/**
@@ -228,11 +317,14 @@ public class GovernService {
 			transactionInfoDTO.setVersion(null!=jsonTrans.getJSONObject("operation")?jsonTrans.getJSONObject("operation").getString("version"):"");
 			transactionInfoDTO.setMethod(null!=jsonTrans.getJSONObject("operation")?jsonTrans.getJSONObject("operation").getString("method"):"");
 			transactionInfoDTO.setParams(null!=jsonTrans.getJSONObject("operation")?jsonTrans.getJSONObject("operation").getString("params"):"");
-			governServiceDAO.insertTransactionInfo(transactionInfoDTO);
-			
+			//governServiceDAO.insertTransactionInfo(transactionInfoDTO);
+			try {
+				transQueue.put(transactionInfoDTO);
+			} catch (InterruptedException e) {
+				logger.error("putTransQueue Exception!");
+			}			
 			handleTransReceiptInfo(jsonTrans.getString("hash"));
 		}
-
 		map.put("transCount", jsonSize);
 		map.put("gasPriceTotal", gasPriceTotal);
 		return map;
@@ -248,6 +340,8 @@ public class GovernService {
 			return;
 		}
 		JSONObject receiptJson = JSONObject.parseObject(JSON.toJSONString(receiptInfo));
+		logger.debug("###receipt：{}###", receiptJson);
+		receiptInfoDTO = new ReceiptInfoDTO();
 		receiptInfoDTO.setPk_hash(receiptJson.getString("transactionHash"));
 		receiptInfoDTO.setBlockHash(receiptJson.getString("blockHash"));
 		receiptInfoDTO.setBlockNumber(Integer.parseInt(receiptJson.getString("blockNumber")));
@@ -257,8 +351,13 @@ public class GovernService {
 		receiptInfoDTO.setCumulativeGasUsed(Long.parseLong(receiptJson.getString("cumulativeGasUsed").substring(2), 16));
 		receiptInfoDTO.setLogs(receiptJson.getString("logs"));
 		receiptInfoDTO.setDetailInfo(receiptJson.toString());
-		governServiceDAO.insertReceiptInfo(receiptInfoDTO);
-
+		//governServiceDAO.insertReceiptInfo(receiptInfoDTO);
+		try {
+			receiptQueue.put(receiptInfoDTO);
+			logger.debug("receiptQueue isempty："+receiptQueue.isEmpty());
+		} catch (InterruptedException e) {
+			logger.error("putReceiptQueue Exception!");
+		}
 	}
 
 	/**

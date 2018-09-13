@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="info">
 	<Properties>
-        <Property name="logPath">/home/app/fisco-bcos-browser/server/logs/</Property>
+        <Property name="logPath">/BCOS/app/server/</Property>
     </Properties>
 	<Appenders>
 		<Console name="console" target="SYSTEM_OUT">
