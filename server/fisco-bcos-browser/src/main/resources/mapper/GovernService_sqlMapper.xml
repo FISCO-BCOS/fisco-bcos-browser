@@ -26,6 +26,10 @@
 	<select id="selectTimestamp" resultType="java.sql.Timestamp">
 		select timestamp from tb_block order by timestamp desc limit 5000
 	</select>
+	
+	<select id="selectPkHash" resultType="string">
+		select pk_hash from tb_transaction where pk_hash=#{pk_hash}
+	</select>
 
 	<insert id="insertBlockChainInfo" parameterType="cn.bcos.browser.dto.BlockChainInfoDTO" useGeneratedKeys="false">
 		insert into tb_blockChainInfo(
