@@ -25,6 +25,7 @@ package cn.bcos.browser.dao;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +55,8 @@ public interface GovernServiceDAO {
 	public void insertBlockInfo(BlockInfoDTO blockInfo);
 	
 	public void insertBlockChainInfo(BlockChainInfoDTO blockChainInfo);
+	
+	public String selectPkHash(@Param("pk_hash")String pk_hash);
 	
 	public void insertTransactionInfo(TransactionInfoDTO transactionInfo);
 	
