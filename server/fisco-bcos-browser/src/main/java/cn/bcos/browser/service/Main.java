@@ -22,10 +22,17 @@
 
 package cn.bcos.browser.service;
 
+import java.util.List;
+
+import org.bcos.web3j.abi.datatypes.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.alibaba.fastjson.JSONObject;
+
+import cn.bcos.browser.contract.Contract;
 
 
 /**
@@ -38,8 +45,8 @@ public class Main {
 	
 	public static void main(String[] args) throws Throwable {
 		logger.debug("initialize GovernService");
-
+		System.out.println("1");
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-
+		System.out.println("2");
 	}
 }

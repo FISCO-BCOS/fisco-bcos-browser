@@ -1,0 +1,3 @@
+server/fisco-bcos-browser/.*
+server/.DS_Store
+server/fisco-bcos-browser/bin/

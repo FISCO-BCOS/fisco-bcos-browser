@@ -26,21 +26,32 @@ import static cn.bcos.browser.util.Constants.*;
 import static cn.bcos.browser.util.LogUtils.getMonitorLogger;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bcos.web3j.abi.FunctionReturnDecoder;
+import org.bcos.web3j.abi.TypeReference;
+import org.bcos.web3j.abi.datatypes.Type;
+import org.bcos.web3j.protocol.core.methods.response.AbiDefinition;
+import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.googlecode.jsonrpc4j.JsonRpcHttpClient;
 
+import cn.bcos.browser.contract.BuildSolidityParams;
+import cn.bcos.browser.contract.Contract;
+import cn.bcos.browser.contract.EventResult;
 import cn.bcos.browser.dao.GovernServiceDAO;
 import cn.bcos.browser.dto.BlockChainInfoDTO;
 import cn.bcos.browser.dto.BlockInfoDTO;
@@ -48,7 +59,9 @@ import cn.bcos.browser.dto.NodeInfoDTO;
 import cn.bcos.browser.dto.PeerRpcDTO;
 import cn.bcos.browser.dto.ReceiptInfoDTO;
 import cn.bcos.browser.dto.TransactionInfoDTO;
+import cn.bcos.browser.dto.WarrantTransferEventDTO;
 
+import static org.bcos.web3j.abi.Utils.convert;
 /**
  * blockChain management service
  */
@@ -57,7 +70,9 @@ public class GovernService {
 	private Logger logger = LoggerFactory.getLogger(GovernService.class);
 
 	public void start(){
+	    System.out.println("Start");
 		handleBlockChainInfo();
+		System.out.println("end");
 	}
 
 	/**
@@ -71,6 +86,7 @@ public class GovernService {
 		}
 		int blockHeight = Integer.parseInt(lastBlock.substring(2), 16);
 		logger.debug("###handleBlockChainInfo the latest blockHeight：{}###", blockHeight);
+		System.out.println("###handleBlockChainInfo the latest blockHeight："+blockHeight);
 		if (blockHeight == 0) {
 			return;
 		} 
@@ -193,6 +209,7 @@ public class GovernService {
 		JSONArray jsonArr = json.getJSONArray("transactions");
 		logger.debug("###transactions：{}###", jsonArr);
 		long jsonSize = jsonArr.size();
+		System.out.println("Tx number: "+jsonArr.size());
 		map.put("transCount", jsonSize);
 		map.put("gasPriceTotal", gasPriceTotal);
 		for (int j = 0; j < jsonSize; j++) {
@@ -261,7 +278,44 @@ public class GovernService {
 		receiptInfoDTO.setLogs(receiptJson.getString("logs"));
 		receiptInfoDTO.setDetailInfo(receiptJson.toString());
 		governServiceDAO.insertReceiptInfo(receiptInfoDTO);
-
+		
+		TransactionReceipt receipt = JSONObject.parseObject(JSON.toJSONString(receiptJson),TransactionReceipt.class);
+		handleWarrantTransferEvent(receipt);
+	}
+	
+	public void handleWarrantTransferEvent(TransactionReceipt receipt) {
+	    AbiDefinition ABI = BuildSolidityParams.toABI(Contract.WarrantEvent_transfer[1]);
+        List<EventResult> events =  Contract.parseTransactionReceipt(receipt, ABI);
+        if(events != null){
+            WarrantTransferEventDTO warrantTransferEventDTO = new WarrantTransferEventDTO();
+            for(EventResult event:events) {
+                warrantTransferEventDTO.setBlockNumber(receipt.getBlockNumber().intValue());
+                warrantTransferEventDTO.setBlockHash(receipt.getBlockHash());
+                warrantTransferEventDTO.setTransactionIndex(receipt.getTransactionIndex().longValue());
+                warrantTransferEventDTO.setTransactionHash(receipt.getBlockHash());
+                warrantTransferEventDTO.setEventIndex(event.getIndex());
+                
+                //使用eth_call实时获取链上数据
+                List<Type> ret = Contract.call(Contract.Ok_get,receipt.getBlockNumberRaw());
+                
+                //TODO 补全数据
+                warrantTransferEventDTO.setTransferToAddress(ret.get(0).getValue().toString());
+                
+                
+                //检查数据有无重复
+                String blockHash = governServiceDAO.selectTransferEvent(
+                                                        receipt.getBlockNumber().intValue(), 
+                                                        receipt.getTransactionIndex(),
+                                                        event.getIndex());
+                if(blockHash == null) 
+                {   //插入数据库
+                    governServiceDAO.insertWarrantTransferEvent(warrantTransferEventDTO);
+                }else{
+                    //有重复数据直接返回
+                    return;
+                }
+            }
+        }
 	}
 
 	/**
@@ -381,7 +435,6 @@ public class GovernService {
 		getMonitorLogger().info(CODE_MONI_10005, endtTime - startTime, MSG_MONI_10005);
 	}
 	
-	
 	/**
 	 * get node rpc info
 	 * 
@@ -389,27 +442,23 @@ public class GovernService {
 	 * @param params
 	 * @return Object
 	 */
-	public Object getInfoByMethod(String methodName, Object[] params)  {
+	public static Object getInfoByMethod(String methodName, Object[] params)  {
 		Object object=null;
 		try {
-			JsonRpcHttpClient client = null;
-			List<PeerRpcDTO> list=governServiceDAO.selectPeerRpc();
-			for (int i=0;i<list.size();i++){
-				client = new JsonRpcHttpClient(new URL("http://"+list.get(i).getIp()+":"+list.get(i).getRpcPort()));
-				try {
-					Object currentNodeInfo = client.invoke(ADMIN_NODE_INFO, null, Object.class);
-					JSONObject currentJson = JSONObject.parseObject(JSON.toJSONString(currentNodeInfo));
-					object = client.invoke(methodName, params, Object.class);
-					if(null !=currentJson){
-						break;
-					}
-				} catch (Exception e) {
-					logger.error(list.get(i).getIp()+":"+list.get(i).getRpcPort()+"node die！");
-				}
-			}
+            JsonRpcHttpClient client = null;
+            client = new JsonRpcHttpClient(
+                    new URL("http://192.168.22.251" + ":" + "8545"));
+            try {
+                Object currentNodeInfo = client.invoke(ADMIN_NODE_INFO, null,
+                        Object.class);
+                JSONObject currentJson = JSONObject
+                        .parseObject(JSON.toJSONString(currentNodeInfo));
+                object = client.invoke(methodName, params, Object.class);
+            } catch (Exception e) {
+            }
 			return object;
 		} catch (Throwable e) {
-			logger.error("rpc Exception!!!");
+			//logger.error("rpc Exception!!!");
 			return object;
 		}
 	}

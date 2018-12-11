@@ -30,6 +30,10 @@
 	<select id="selectPkHash" resultType="string">
 		select pk_hash from tb_transaction where pk_hash=#{pk_hash}
 	</select>
+	
+	<select id="selectTransferEvent" resultType="string">
+        select blockHash from WarrantTransferEvent where blockNumber=#{blockNumber} and transactionIndex=#{transactionIndex} and eventIndex=#{eventIndex}
+    </select>
 
 	<insert id="insertBlockChainInfo" parameterType="cn.bcos.browser.dto.BlockChainInfoDTO" useGeneratedKeys="false">
 		insert into tb_blockChainInfo(
@@ -220,6 +224,42 @@
 		from tb_transaction
 		group by date
 	</insert>
+	
+	   <insert id="insertWarrantTransferEvent" parameterType="cn.bcos.browser.dto.WarrantTransferEventDTO" useGeneratedKeys="false">
+        insert into WarrantTransferEvent(
+            `blockNumber`,
+            `blockHash`,
+            `transactionIndex`,
+            `transactionHash`,
+            `eventIndex`,
+            `transferFromAddress`,
+            `transferFromID`,
+            `transferFromName`,
+            `transferFromGroup`,
+            `transferToAddress`,
+            `transferToID`,
+            `transferToName`,
+            `transferToGroup`,
+            `warrantID`,
+            `warrantDetail`
+        ) values (
+            #{blockNumber},
+            #{blockHash},
+            #{transactionIndex},
+            #{transactionHash},
+            #{eventIndex},
+            #{transferFromAddress},
+            #{transferFromID},
+            #{transferFromName},
+            #{transferFromGroup},
+            #{transferToAddress},
+            #{transferToID},
+            #{transferToName},
+            #{transferToGroup},
+            #{warrantID},
+            #{warrantDetail}
+        )
+    </insert>
 	
 	<update id="updateBlockInfo" parameterType="cn.bcos.browser.dto.BlockChainInfoDTO">
 		update tb_blockChainInfo 
