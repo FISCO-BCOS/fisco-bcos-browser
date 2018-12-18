@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.bcos.browser.mapper.TbMarketAuctionSuccessEventMapper">
+    <resultMap id="TbMarketAuctionSuccessEventMap" type="org.bcos.browser.dto.TbMarketAuctionSuccessEventDto" >
+        <result column="blockNumber" jdbcType="INTEGER" property="blockNumber" javaType="java.lang.Integer" />
+        <result column="blockHash" jdbcType="VARCHAR" property="blockHash" javaType="java.lang.String" />
+        <result column="contractAddress" jdbcType="VARCHAR" property="contractAddress" javaType="java.lang.String" />
+        <result column="contractAddress" jdbcType="VARCHAR" property="contractName" javaType="java.lang.String" />
+        <result column="transactionIndex" jdbcType="BIGINT" property="transactionIndex" javaType="java.math.BigInteger" />
+        <result column="transactionHash" jdbcType="VARCHAR" property="transactionHash" javaType="java.lang.String" />
+        <result column="eventIndex" jdbcType="VARCHAR" property="eventIndex" javaType="java.lang.Integer" />
+        <result column="transferFromAddress" jdbcType="VARCHAR" property="transferFromAddress" javaType="java.lang.String" />
+        <result column="transferFromID" jdbcType="VARCHAR" property="transferFromID" javaType="java.lang.String" />
+        <result column="transferFromName" jdbcType="VARCHAR" property="transferFromName" javaType="java.lang.String" />
+        <result column="transferToAddress" jdbcType="VARCHAR" property="transferToAddress" javaType="java.lang.String" />
+        <result column="transferToID" jdbcType="VARCHAR" property="transferToID" javaType="java.lang.String" />
+        <result column="transferToName" jdbcType="VARCHAR" property="transferToName" javaType="java.lang.String" />
+        <result column="warrantID" jdbcType="VARCHAR" property="warrantID" javaType="java.lang.String" />
+        <result column="price" jdbcType="VARCHAR" property="price" javaType="java.lang.String" />
+        <result column="warrantDetail" jdbcType="VARCHAR" property="warrantDetail" javaType="java.lang.String" />
+        <result column="blockTimestamp" jdbcType="VARCHAR" property="blockTimestamp" javaType="java.sql.Timestamp" />
+    </resultMap>
+
+    <sql id="ALL_COLUMN">
+        blockNumber,blockHash,contractAddress,contractAddress,transactionIndex,transactionHash,eventIndex,
+        transferFromAddress,transferFromID,transferFromName,transferToAddress,transferToID,transferToName,
+        warrantID,price,warrantDetail,blockTimestamp
+    </sql>
+
+    <select id="getAllMarketAuctionSuccessEvent" resultType="org.bcos.browser.dto.TbMarketAuctionSuccessEventDto">
+        select <include refid="ALL_COLUMN"/>
+        from MarketAuctionSuccessEvent
+    </select>
+    <select id="getMarketAuctionSuccessEventByID" resultType="org.bcos.browser.dto.TbMarketAuctionSuccessEventDto">
+        select <include refid="ALL_COLUMN"/>
+        from MarketAuctionSuccessEvent where warrantID = #{warrantID}
+    </select>
+</mapper>

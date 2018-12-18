@@ -25,7 +25,9 @@ package org.bcos.browser.base;
 import java.util.List;
 
 import org.bcos.browser.dto.TbAddWarrantEventDto;
+import org.bcos.browser.dto.TbMarketAuctionSuccessEventDto;
 import org.bcos.browser.service.TbAddWarrantEventService;
+import org.bcos.browser.service.TbMarketAuctionSuccessService;
 import org.bcos.browser.service.TbNodesInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,17 +50,38 @@ public class Main {
 		logger.debug("initialize GovernService");
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring/applicationContext.xml");
 		
-		TbAddWarrantEventService service = context.getBean(TbAddWarrantEventService.class);
-		//查询所有的仓单。TODO 分页查询？
-		List<TbAddWarrantEventDto> results = service.getAllAddWarrantEvent();
-		if(results == null) return;
-		for(TbAddWarrantEventDto result:results)
-		{
-		    System.out.println(result);
+		{//测试获取AddWarrantEvent表的数据
+    		TbAddWarrantEventService service = context.getBean(TbAddWarrantEventService.class);
+    		//查询所有的仓单。TODO 分页查询？
+    		List<TbAddWarrantEventDto> results = service.getAllAddWarrantEvent();
+    		if(results == null) return;
+    		for(TbAddWarrantEventDto result:results)
+    		{
+    		    System.out.println(result);
+    		}
+    		//按照仓单ID，查询单个仓单
+    		TbAddWarrantEventDto result = service.getAddWarrantEventByID("10");
+    		System.out.println(result);
 		}
-		//按照仓单ID，查询单个仓单
-		TbAddWarrantEventDto result = service.getAddWarrantEventByID("10");
-		System.out.println(result);
+		
+		{//测试获取MarketAuctionSuccessEvent表的数据
+		    TbMarketAuctionSuccessService service = context.getBean(TbMarketAuctionSuccessService.class);
+	        //查询所有的交易记录。TODO 分页查询？
+	        List<TbMarketAuctionSuccessEventDto> results = service.getAllMarketAuctionSuccessEvent();
+	        if(results == null) return;
+	        for(TbMarketAuctionSuccessEventDto result:results)
+	        {
+	            System.out.println(result);
+	        }
+	        //按照仓单ID，查询单个仓单的所有交易记录
+	        results = service.getMarketAuctionSuccessEventByID("10");
+	        for(TbMarketAuctionSuccessEventDto result:results)
+            {
+                System.out.println(result);
+            }
+		}
+		
+		
 		
 	}
 }
