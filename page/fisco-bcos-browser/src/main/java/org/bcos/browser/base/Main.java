@@ -49,12 +49,16 @@ public class Main {
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring/applicationContext.xml");
 		
 		TbAddWarrantEventService service = context.getBean(TbAddWarrantEventService.class);
+		//查询所有的仓单。TODO 分页查询？
 		List<TbAddWarrantEventDto> results = service.getAllAddWarrantEvent();
 		if(results == null) return;
 		for(TbAddWarrantEventDto result:results)
 		{
 		    System.out.println(result);
 		}
+		//按照仓单ID，查询单个仓单
+		TbAddWarrantEventDto result = service.getAddWarrantEventByID("10");
+		System.out.println(result);
 		
 	}
 }

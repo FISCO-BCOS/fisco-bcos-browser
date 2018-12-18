@@ -27,4 +27,8 @@
         select <include refid="ALL_COLUMN"/>
         from AddWarrantEvent
     </select>
+    <select id="getAddWarrantEventByID" resultType="org.bcos.browser.dto.TbAddWarrantEventDto">
+        select <include refid="ALL_COLUMN"/>
+        from AddWarrantEvent where warrantID = #{warrantID} limit 1
+    </select>
 </mapper>

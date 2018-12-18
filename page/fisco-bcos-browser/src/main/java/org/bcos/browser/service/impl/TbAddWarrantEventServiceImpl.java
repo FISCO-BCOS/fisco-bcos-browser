@@ -3,6 +3,7 @@ package org.bcos.browser.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.bcos.browser.dto.TbAddWarrantEventDto;
 import org.bcos.browser.mapper.TbAddWarrantEventMapper;
 import org.bcos.browser.service.TbAddWarrantEventService;
@@ -25,9 +26,17 @@ public class TbAddWarrantEventServiceImpl implements TbAddWarrantEventService{
      */
     @Override
     public List<TbAddWarrantEventDto> getAllAddWarrantEvent() {
-        LOGGER.info("getAllAddWarrantEvent start. map:{}");
+        LOGGER.info("getAllAddWarrantEvent start.");
         List<TbAddWarrantEventDto> ret = tbAddWarrantEventMapper.getAllAddWarrantEvent();
         LOGGER.info("getAllAddWarrantEvent end result size:{}", ret.size());
+        return ret;
+    }
+
+    @Override
+    public TbAddWarrantEventDto getAddWarrantEventByID(@Param("warrantID")String warrantID) {
+        LOGGER.info("getAddWarrantEventByID start.");
+        TbAddWarrantEventDto ret = tbAddWarrantEventMapper.getAddWarrantEventByID(warrantID);
+        LOGGER.info("getAddWarrantEventByID end result warrantID:{}", warrantID);
         return ret;
     }
 }
