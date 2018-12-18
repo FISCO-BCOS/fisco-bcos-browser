@@ -1,0 +1,40 @@
+#创建AddWarrantEvent表
+CREATE TABLE `AddWarrantEvent` (
+  `blockNumber` int(11) DEFAULT NULL,
+  `blockHash` varchar(128) DEFAULT NULL,
+  `transactionIndex` bigint(20) DEFAULT NULL,
+  `transactionHash` varchar(128) DEFAULT NULL,
+  `WarrantTokenAddress` varchar(128) DEFAULT NULL,
+  `fromAddress` varchar(128) DEFAULT NULL,
+  `fromName` varchar(45) DEFAULT NULL,
+  `fromID` varchar(45) DEFAULT NULL,
+  `toAddress` varchar(128) DEFAULT NULL,
+  `toName` varchar(45) DEFAULT NULL,
+  `toID` varchar(45) DEFAULT NULL,
+  `warrantID` varchar(128) DEFAULT NULL,
+  `warrantDetail` varchar(256) DEFAULT NULL,
+  `blockTimestamp` timestamp(3) NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+#创建MarketAuctionSuccessEvent表
+CREATE TABLE `MarketAuctionSuccessEvent` (
+  `blockNumber` int(11) DEFAULT NULL,
+  `blockHash` varchar(128) DEFAULT NULL,
+  `contractAddress` varchar(128) DEFAULT NULL COMMENT '触发事件的合约地址',
+  `contractName` varchar(128) DEFAULT NULL,
+  `transactionIndex` bigint(20) DEFAULT NULL,
+  `transactionHash` varchar(128) DEFAULT NULL,
+  `eventIndex` int(11) DEFAULT NULL,
+  `transferFromAddress` varchar(128) DEFAULT NULL,
+  `transferFromID` varchar(128) DEFAULT NULL COMMENT 'transfer from地址对应的身份ID',
+  `transferFromName` varchar(128) DEFAULT NULL COMMENT 'transfer from 地址对应的角色名称',
+  `transferFromGroup` varchar(128) DEFAULT NULL COMMENT 'transfer from地址所在的权限分组',
+  `transferToAddress` varchar(128) DEFAULT NULL,
+  `transferToID` varchar(128) DEFAULT NULL,
+  `transferToName` varchar(128) DEFAULT NULL,
+  `transferToGroup` varchar(128) DEFAULT NULL,
+  `warrantID` varchar(128) DEFAULT NULL,
+  `price` varchar(45) DEFAULT NULL,
+  `warrantDetail` varchar(256) DEFAULT NULL,
+  `blockTimestamp` timestamp(3) NULL DEFAULT NULL COMMENT '触发事件的合约名称'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8

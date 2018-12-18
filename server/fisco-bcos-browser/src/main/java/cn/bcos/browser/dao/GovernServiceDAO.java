@@ -30,13 +30,14 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.bcos.browser.dto.AddWarrantEventDTO;
 import cn.bcos.browser.dto.BlockChainInfoDTO;
 import cn.bcos.browser.dto.BlockInfoDTO;
+import cn.bcos.browser.dto.MarketAuctionSuccessEventDTO;
 import cn.bcos.browser.dto.NodeInfoDTO;
 import cn.bcos.browser.dto.PeerRpcDTO;
 import cn.bcos.browser.dto.ReceiptInfoDTO;
 import cn.bcos.browser.dto.TransactionInfoDTO;
-import cn.bcos.browser.dto.WarrantTransferEventDTO;
 
 @Service
 @Transactional
@@ -59,7 +60,7 @@ public interface GovernServiceDAO {
 	public void insertBlockChainInfo(BlockChainInfoDTO blockChainInfo);
 	
 	public String selectPkHash(@Param("pk_hash")String pk_hash);
-	public String selectTransferEvent(@Param("blockNumber")int blockNumber,
+	public String selectAuctionSuccessEvent(@Param("blockNumber")int blockNumber,
 	                                  @Param("transactionIndex")BigInteger transactionIndex,
 	                                  @Param("eventIndex")int eventIndex
 	                                  );
@@ -74,7 +75,9 @@ public interface GovernServiceDAO {
 	
 	public void insertNodeInfo(NodeInfoDTO nodeInfoDTO);
 	
-	public void insertWarrantTransferEvent(WarrantTransferEventDTO warrantTransferEventInfo);
+	public void insertMarketAuctionSuccessEvent(MarketAuctionSuccessEventDTO MarketAuctionSuccessInfo);
+	
+	public void insertAddWarrantEvent(AddWarrantEventDTO AddWarrantInfo);
 	
 	public void updateBlockInfo(BlockChainInfoDTO blockChainInfo);
 	

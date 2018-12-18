@@ -2,9 +2,11 @@ package cn.bcos.browser.dto;
 
 import java.sql.Timestamp;
 
-public class WarrantTransferEventDTO {
+public class MarketAuctionSuccessEventDTO {
     private int blockNumber;
     private String blockHash;
+    private String contractAddress;
+    private String contractName;
     private long transactionIndex;
     private String transactionHash;
     private int eventIndex;
@@ -17,8 +19,28 @@ public class WarrantTransferEventDTO {
     private String transferToName;
     private String transferToGroup;
     private String warrantID;
+    private String price;
     private String warrantDetail;
     private Timestamp blockTimestamp;
+    
+    public String getPrice() {
+        return price;
+    }
+    public void setPrice(String price) {
+        this.price = price;
+    }
+    public String getContractAddress() {
+        return contractAddress;
+    }
+    public void setContractAddress(String contractAddress) {
+        this.contractAddress = contractAddress;
+    }
+    public String getContractName() {
+        return contractName;
+    }
+    public void setContractName(String contractName) {
+        this.contractName = contractName;
+    }
     public int getBlockNumber() {
         return blockNumber;
     }

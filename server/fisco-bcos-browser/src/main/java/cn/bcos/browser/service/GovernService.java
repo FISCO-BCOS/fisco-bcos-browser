@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import org.bcos.web3j.abi.FunctionReturnDecoder;
 import org.bcos.web3j.abi.TypeReference;
 import org.bcos.web3j.abi.datatypes.Type;
 import org.bcos.web3j.protocol.core.methods.response.AbiDefinition;
+import org.bcos.web3j.protocol.core.methods.response.Log;
 import org.bcos.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,13 +55,14 @@ import cn.bcos.browser.contract.BuildSolidityParams;
 import cn.bcos.browser.contract.Contract;
 import cn.bcos.browser.contract.EventResult;
 import cn.bcos.browser.dao.GovernServiceDAO;
+import cn.bcos.browser.dto.AddWarrantEventDTO;
 import cn.bcos.browser.dto.BlockChainInfoDTO;
 import cn.bcos.browser.dto.BlockInfoDTO;
 import cn.bcos.browser.dto.NodeInfoDTO;
 import cn.bcos.browser.dto.PeerRpcDTO;
 import cn.bcos.browser.dto.ReceiptInfoDTO;
 import cn.bcos.browser.dto.TransactionInfoDTO;
-import cn.bcos.browser.dto.WarrantTransferEventDTO;
+import cn.bcos.browser.dto.MarketAuctionSuccessEventDTO;
 
 import static org.bcos.web3j.abi.Utils.convert;
 /**
@@ -222,7 +225,9 @@ public class GovernService {
 			if ("0".equals(json.getString("timestamp").substring(2))) {
 				transactionInfoDTO.setBlockTimestamp(null);
 			} else {
-				transactionInfoDTO.setBlockTimestamp(new Timestamp(Long.parseLong(json.getString("timestamp").substring(2), 16)));
+			    Timestamp timestamp = new Timestamp(Long.parseLong(json.getString("timestamp").substring(2), 16));
+				transactionInfoDTO.setBlockTimestamp(timestamp);
+		        Contract.setTimestamp(timestamp);
 			}
 			transactionInfoDTO.setBlockGasLimit(Long.parseLong(json.getString("gasLimit").substring(2), 16));
 			transactionInfoDTO.setTransactionIndex(Long.parseLong(jsonTrans.getString("transactionIndex").substring(2), 16));
@@ -280,44 +285,113 @@ public class GovernService {
 		governServiceDAO.insertReceiptInfo(receiptInfoDTO);
 		
 		TransactionReceipt receipt = JSONObject.parseObject(JSON.toJSONString(receiptJson),TransactionReceipt.class);
-		handleWarrantTransferEvent(receipt);
+		handleMarketAuctionSuccessEvent(receipt, "Market");
+		handleAddWarrantEvent(receipt, "WarrantToken");
 	}
 	
-	public void handleWarrantTransferEvent(TransactionReceipt receipt) {
-	    AbiDefinition ABI = BuildSolidityParams.toABI(Contract.WarrantEvent_transfer[1]);
-        List<EventResult> events =  Contract.parseTransactionReceipt(receipt, ABI);
-        if(events != null){
-            WarrantTransferEventDTO warrantTransferEventDTO = new WarrantTransferEventDTO();
-            for(EventResult event:events) {
-                warrantTransferEventDTO.setBlockNumber(receipt.getBlockNumber().intValue());
-                warrantTransferEventDTO.setBlockHash(receipt.getBlockHash());
-                warrantTransferEventDTO.setTransactionIndex(receipt.getTransactionIndex().longValue());
-                warrantTransferEventDTO.setTransactionHash(receipt.getBlockHash());
-                warrantTransferEventDTO.setEventIndex(event.getIndex());
+	public void handleMarketAuctionSuccessEvent(TransactionReceipt receipt, String MarketContractName) {
+	    String blockNumber = receipt.getBlockNumberRaw();
+	    //获取的合约地址，后续将匹配该合约的事件
+	    String addr = Contract.cnsCall("ContractAbiMgr", "getAddr", new String[] {MarketContractName}, blockNumber).get(0);
+	    //获取事件的ABI，后续将匹配该事件的ABI
+	    AbiDefinition ABI = BuildSolidityParams.toABI(Contract.MarketAuctionSuccessEvent);
+        List<EventResult> eventResults = Contract.parseTransactionReceipt(receipt, ABI, addr);
+        if(eventResults != null){
+            MarketAuctionSuccessEventDTO marketAuctionSuccessEventDTO = new MarketAuctionSuccessEventDTO();
+            for(EventResult event:eventResults) {
+                marketAuctionSuccessEventDTO.setBlockNumber(receipt.getBlockNumber().intValue());
+                marketAuctionSuccessEventDTO.setBlockHash(receipt.getBlockHash());
+                marketAuctionSuccessEventDTO.setContractAddress(addr);
+                marketAuctionSuccessEventDTO.setContractName(MarketContractName);
+                marketAuctionSuccessEventDTO.setTransactionIndex(receipt.getTransactionIndex().longValue());
+                marketAuctionSuccessEventDTO.setTransactionHash(receipt.getBlockHash());
+                marketAuctionSuccessEventDTO.setEventIndex(event.getIndex());
+                marketAuctionSuccessEventDTO.setWarrantID(event.getValues().get(0).getValue().toString()); //Token id
+                String fromAddress = String.valueOf(event.getValues().get(1));//from
+                marketAuctionSuccessEventDTO.setTransferFromAddress(fromAddress); 
+                String toAddress = String.valueOf(event.getValues().get(2)); //to
+                marketAuctionSuccessEventDTO.setTransferToAddress(toAddress); 
+                marketAuctionSuccessEventDTO.setPrice(event.getValues().get(3).getValue().toString());   //price
                 
-                //使用eth_call实时获取链上数据
-                List<Type> ret = Contract.call(Contract.Ok_get,receipt.getBlockNumberRaw());
+                List<String> warrantInfo = Contract.cnsCall("WarrantToken", "getWarrant", new String[] {event.getValues().get(0).getValue().toString()}, blockNumber);
+                marketAuctionSuccessEventDTO.setWarrantDetail(JSON.toJSONString(warrantInfo));
                 
-                //TODO 补全数据
-                warrantTransferEventDTO.setTransferToAddress(ret.get(0).getValue().toString());
+                List<String> fromUserInfo = Contract.cnsCall("IdentityMgr", "getIdentityInfo", new String[] {fromAddress}, blockNumber);
+                marketAuctionSuccessEventDTO.setTransferFromName(fromUserInfo.get(0)); //name
+                marketAuctionSuccessEventDTO.setTransferFromID(fromUserInfo.get(1));   //id
                 
-                
+                List<String> toUserInfo = Contract.cnsCall("IdentityMgr", "getIdentityInfo", new String[] {toAddress}, blockNumber);
+                marketAuctionSuccessEventDTO.setTransferToName(toUserInfo.get(0)); //name
+                marketAuctionSuccessEventDTO.setTransferToID(toUserInfo.get(1));  //id
+                marketAuctionSuccessEventDTO.setBlockTimestamp(Contract.getTimestamp());
+                /* TODO
+                warrantTransferEventDTO.setTransferFromGroup("");
+                warrantTransferEventDTO.setTransferToGroup("");
+                */
                 //检查数据有无重复
-                String blockHash = governServiceDAO.selectTransferEvent(
+                String blockHash = governServiceDAO.selectAuctionSuccessEvent(
                                                         receipt.getBlockNumber().intValue(), 
                                                         receipt.getTransactionIndex(),
                                                         event.getIndex());
                 if(blockHash == null) 
                 {   //插入数据库
-                    governServiceDAO.insertWarrantTransferEvent(warrantTransferEventDTO);
+                    System.out.println("insert Warrant transfer");
+                    governServiceDAO.insertMarketAuctionSuccessEvent(marketAuctionSuccessEventDTO);
                 }else{
                     //有重复数据直接返回
-                    return;
+                    System.out.println("insert Warrant failed for repeat data");
+                    continue;
                 }
             }
         }
 	}
-
+	
+	public void handleAddWarrantEvent(TransactionReceipt receipt, String WarrantContractName) {
+	    String blockNumber = receipt.getBlockNumberRaw();
+	    //获取的合约地址，后续将匹配该合约的事件
+        String addr = Contract.cnsCall("ContractAbiMgr", "getAddr", new String[] {WarrantContractName}, blockNumber).get(0);
+        //获取事件的ABI，后续将匹配该事件的ABI
+        AbiDefinition ABI = BuildSolidityParams.toABI(Contract.WarrantTransferEvent);
+        List<EventResult> eventResults = Contract.parseTransactionReceipt(receipt, ABI, addr);
+        if(eventResults == null) {
+            System.out.println("eventResults is null");
+            return;
+        }
+        for(EventResult event:eventResults)
+        {
+            String fromAddress = String.valueOf(event.getValues().get(0));
+            System.out.println("fromAddress: "+fromAddress);
+            if(fromAddress.equals("0x0000000000000000000000000000000000000000")) {
+                String toAddress = String.valueOf(event.getValues().get(1));
+                String tokenID = String.valueOf(event.getValues().get(2));
+                List<String> warrantInfo = Contract.cnsCall("WarrantToken", "getWarrant", new String[] {tokenID}, blockNumber);
+                String adminAddress = receipt.getFrom();
+                System.out.println("admin address: "+adminAddress);
+                List<String> adminInfo = Contract.cnsCall("IdentityMgr", "getIdentityInfo", new String[] {toAddress}, blockNumber);
+                List<String> toUserInfo = Contract.cnsCall("IdentityMgr", "getIdentityInfo", new String[] {toAddress}, blockNumber);
+                AddWarrantEventDTO addWarrantEventDTO = new AddWarrantEventDTO();
+                addWarrantEventDTO.setBlockNumber(receipt.getBlockNumber().intValue());
+                addWarrantEventDTO.setBlockHash(receipt.getBlockHash());
+                addWarrantEventDTO.setTransactionIndex(receipt.getTransactionIndex().longValue());
+                addWarrantEventDTO.setTransactionHash(receipt.getBlockHash());
+                addWarrantEventDTO.setWarrantTokenAddress(addr);
+                addWarrantEventDTO.setFromAddress(receipt.getFrom());
+                addWarrantEventDTO.setFromName(adminInfo.get(0)); //name
+                addWarrantEventDTO.setFromID(adminInfo.get(1));   //id
+                addWarrantEventDTO.setToAddress(toAddress);
+                addWarrantEventDTO.setFromName(toUserInfo.get(0)); //name
+                addWarrantEventDTO.setFromID(toUserInfo.get(1));   //id
+                addWarrantEventDTO.setWarrantID(tokenID);
+                addWarrantEventDTO.setWarrantDetail(JSON.toJSONString(warrantInfo));
+                addWarrantEventDTO.setBlockTimestamp(Contract.getTimestamp());
+                //TODO 判重
+                governServiceDAO.insertAddWarrantEvent(addWarrantEventDTO);
+            }
+        }
+        
+	}
+	
+	
 	/**
 	 * handle pending transaction info
 	 */

@@ -31,8 +31,8 @@
 		select pk_hash from tb_transaction where pk_hash=#{pk_hash}
 	</select>
 	
-	<select id="selectTransferEvent" resultType="string">
-        select blockHash from WarrantTransferEvent where blockNumber=#{blockNumber} and transactionIndex=#{transactionIndex} and eventIndex=#{eventIndex}
+	<select id="selectAuctionSuccessEvent" resultType="string">
+        select blockHash from MarketAuctionSuccessEvent where blockNumber=#{blockNumber} and transactionIndex=#{transactionIndex} and eventIndex=#{eventIndex}
     </select>
 
 	<insert id="insertBlockChainInfo" parameterType="cn.bcos.browser.dto.BlockChainInfoDTO" useGeneratedKeys="false">
@@ -225,10 +225,12 @@
 		group by date
 	</insert>
 	
-	   <insert id="insertWarrantTransferEvent" parameterType="cn.bcos.browser.dto.WarrantTransferEventDTO" useGeneratedKeys="false">
-        insert into WarrantTransferEvent(
+	   <insert id="insertMarketAuctionSuccessEvent" parameterType="cn.bcos.browser.dto.MarketAuctionSuccessEventDTO" useGeneratedKeys="false">
+        insert into MarketAuctionSuccessEvent(
             `blockNumber`,
             `blockHash`,
+            `contractAddress`,
+            `contractName`,
             `transactionIndex`,
             `transactionHash`,
             `eventIndex`,
@@ -241,10 +243,14 @@
             `transferToName`,
             `transferToGroup`,
             `warrantID`,
-            `warrantDetail`
+            `price`,
+            `warrantDetail`,
+            `blockTimestamp`
         ) values (
             #{blockNumber},
             #{blockHash},
+            #{contractAddress},
+            #{contractName},
             #{transactionIndex},
             #{transactionHash},
             #{eventIndex},
@@ -257,7 +263,43 @@
             #{transferToName},
             #{transferToGroup},
             #{warrantID},
-            #{warrantDetail}
+            #{price},
+            #{warrantDetail},
+            #{blockTimestamp}
+        )
+    </insert>
+    
+     <insert id="insertAddWarrantEvent" parameterType="cn.bcos.browser.dto.AddWarrantEventDTO" useGeneratedKeys="false">
+        insert into AddWarrantEvent(
+            `blockNumber`,
+            `blockHash`,
+            `transactionIndex`,
+            `transactionHash`,
+            `WarrantTokenAddress`,
+            `fromAddress`,
+            `fromName`,
+            `fromID`,
+            `toAddress`,
+            `toName`,
+            `toID`,
+            `warrantID`,
+            `warrantDetail`,
+            `blockTimestamp`
+        ) values (
+            #{blockNumber},
+            #{blockHash},
+            #{transactionIndex},
+            #{transactionHash},
+            #{WarrantTokenAddress},
+            #{fromAddress},
+            #{fromName},
+            #{fromID},
+            #{toAddress},
+            #{toName},
+            #{toID},
+            #{warrantID},
+            #{warrantDetail},
+            #{blockTimestamp}
         )
     </insert>
 	

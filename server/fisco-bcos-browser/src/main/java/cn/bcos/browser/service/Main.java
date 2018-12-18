@@ -45,8 +45,7 @@ public class Main {
 	
 	public static void main(String[] args) throws Throwable {
 		logger.debug("initialize GovernService");
-		System.out.println("1");
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-		System.out.println("2");
+		
 	}
 }
