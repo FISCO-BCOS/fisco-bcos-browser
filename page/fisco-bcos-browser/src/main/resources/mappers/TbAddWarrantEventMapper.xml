@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.bcos.browser.mapper.TbAddWarrantEventMapper">
+    <resultMap id="TbAddWarrantEventMap" type="org.bcos.browser.dto.TbAddWarrantEventDto" >
+        <result column="blockNumber" jdbcType="INTEGER" property="blockNumber" javaType="java.lang.Integer" />
+        <result column="blockHash" jdbcType="VARCHAR" property="blockHash" javaType="java.lang.String" />
+        <result column="transactionIndex" jdbcType="BIGINT" property="transactionIndex" javaType="java.math.BigInteger" />
+        <result column="transactionHash" jdbcType="VARCHAR" property="transactionHash" javaType="java.lang.String" />
+        <result column="WarrantTokenAddress" jdbcType="VARCHAR" property="WarrantTokenAddress" javaType="java.lang.String" />
+        <result column="fromAddress" jdbcType="VARCHAR" property="fromAddress" javaType="java.lang.String" />
+        <result column="fromName" jdbcType="VARCHAR" property="fromName" javaType="java.lang.String" />
+        <result column="fromID" jdbcType="VARCHAR" property="fromID" javaType="java.lang.String" />
+        <result column="toAddress" jdbcType="VARCHAR" property="toAddress" javaType="java.lang.String" />
+        <result column="toName" jdbcType="VARCHAR" property="toName" javaType="java.lang.String" />
+        <result column="toID" jdbcType="VARCHAR" property="toID" javaType="java.lang.String" />
+        <result column="warrantID" jdbcType="VARCHAR" property="warrantID" javaType="java.lang.String" />
+        <result column="blockTimestamp" jdbcType="VARCHAR" property="blockTimestamp" javaType="java.sql.Timestamp" />
+    </resultMap>
+
+    <sql id="ALL_COLUMN">
+        blockNumber,blockHash,transactionIndex,transactionHash,WarrantTokenAddress,fromAddress,fromName,
+        fromID,toAddress,toName,toID,warrantID,blockTimestamp
+    </sql>
+
+    <select id="getAllAddWarrantEvent" resultType="org.bcos.browser.dto.TbAddWarrantEventDto">
+        select <include refid="ALL_COLUMN"/>
+        from AddWarrantEvent
+    </select>
+</mapper>
