@@ -106,34 +106,34 @@ public class TbAddWarrantEventDto implements Serializable{
     @Override
     public String toString(){
         final StringBuilder sb = new StringBuilder("{");
-        sb.append("\"blockNumber\":")
-                .append(blockNumber);
+        sb.append("\"blockNumber\":\"")
+                .append(blockNumber).append('\"');
         sb.append(",\"blockHash\":\"")
                 .append(blockHash).append('\"');
         sb.append(",\"transactionIndex\":\"")
                 .append(transactionIndex).append('\"');
         sb.append(",\"transactionHash\":\"")
                 .append(transactionHash).append('\"');
-        sb.append(",\"WarrantTokenAddress\":")
-                .append(WarrantTokenAddress);
-        sb.append(",\"fromAddress\":")
-                .append(fromAddress);
-        sb.append(",\"fromName\":")
-                .append(fromName);
-        sb.append(",\"fromID\":")
-                .append(fromID);
-        sb.append(",\"toAddress\":")
-                .append(toAddress);
+        sb.append(",\"WarrantTokenAddress\":\"")
+                .append(WarrantTokenAddress).append('\"');
+        sb.append(",\"fromAddress\":\"")
+                .append(fromAddress).append('\"');
+        sb.append(",\"fromName\":\"")
+                .append(fromName).append('\"');
+        sb.append(",\"fromID\":\"")
+                .append(fromID).append('\"');
+        sb.append(",\"toAddress\":\"")
+                .append(toAddress).append('\"');
         sb.append(",\"toName\":\"")
                 .append(toName).append('\"');
-        sb.append(",\"toID\":")
-                .append(toID);
+        sb.append(",\"toID\":\"")
+                .append(toID).append('\"');
         sb.append(",\"warrantID\":\"")
                 .append(warrantID).append('\"');
         sb.append(",\"warrantDetail\":\"")
                 .append(warrantDetail).append('\"');
-        sb.append(",\"blockTimestamp\":")
-                .append(blockTimestamp);
+        sb.append(",\"blockTimestamp\":\"")
+                .append(blockTimestamp).append('\"');
         sb.append('}');
         return sb.toString();
     }

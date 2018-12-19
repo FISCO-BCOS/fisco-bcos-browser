@@ -6,7 +6,7 @@
         <result column="blockNumber" jdbcType="INTEGER" property="blockNumber" javaType="java.lang.Integer" />
         <result column="blockHash" jdbcType="VARCHAR" property="blockHash" javaType="java.lang.String" />
         <result column="contractAddress" jdbcType="VARCHAR" property="contractAddress" javaType="java.lang.String" />
-        <result column="contractAddress" jdbcType="VARCHAR" property="contractName" javaType="java.lang.String" />
+        <result column="contractName" jdbcType="VARCHAR" property="contractName" javaType="java.lang.String" />
         <result column="transactionIndex" jdbcType="BIGINT" property="transactionIndex" javaType="java.math.BigInteger" />
         <result column="transactionHash" jdbcType="VARCHAR" property="transactionHash" javaType="java.lang.String" />
         <result column="eventIndex" jdbcType="VARCHAR" property="eventIndex" javaType="java.lang.Integer" />
@@ -23,7 +23,7 @@
     </resultMap>
 
     <sql id="ALL_COLUMN">
-        blockNumber,blockHash,contractAddress,contractAddress,transactionIndex,transactionHash,eventIndex,
+        blockNumber,blockHash,contractAddress,contractName,transactionIndex,transactionHash,eventIndex,
         transferFromAddress,transferFromID,transferFromName,transferToAddress,transferToID,transferToName,
         warrantID,price,warrantDetail,blockTimestamp
     </sql>

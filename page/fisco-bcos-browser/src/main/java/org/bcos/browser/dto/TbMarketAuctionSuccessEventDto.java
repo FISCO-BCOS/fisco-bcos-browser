@@ -130,38 +130,38 @@ public class TbMarketAuctionSuccessEventDto implements Serializable{
     @Override
     public String toString(){
         final StringBuilder sb = new StringBuilder("{");
-        sb.append("\"blockNumber\":")
-                .append(blockNumber);
+        sb.append("\"blockNumber\":\"")
+                .append(blockNumber).append('\"');
         sb.append(",\"blockHash\":\"")
                 .append(blockHash).append('\"');
         sb.append(",\"contractAddress\":\"")
                 .append(contractAddress).append('\"');
         sb.append(",\"contractName\":\"")
                 .append(contractName).append('\"');
-        sb.append(",\"transactionIndex\":")
-                .append(transactionIndex);
-        sb.append(",\"transactionHash\":")
-                .append(transactionHash);
-        sb.append(",\"eventIndex\":")
-                .append(eventIndex);
-        sb.append(",\"transferFromAddress\":")
-                .append(transferFromAddress);
-        sb.append(",\"transferFromID\":")
-                .append(transferFromID);
+        sb.append(",\"transactionIndex\":\"")
+                .append(transactionIndex).append('\"');
+        sb.append(",\"transactionHash\":\"")
+                .append(transactionHash).append('\"');
+        sb.append(",\"eventIndex\":\"")
+                .append(eventIndex).append('\"');
+        sb.append(",\"transferFromAddress\":\"")
+                .append(transferFromAddress).append('\"');
+        sb.append(",\"transferFromID\":\"")
+                .append(transferFromID).append('\"');
         sb.append(",\"transferToAddress\":\"")
                 .append(transferToAddress).append('\"');
-        sb.append(",\"transferToID\":")
-                .append(transferToID);
+        sb.append(",\"transferToID\":\"")
+                .append(transferToID).append('\"');
         sb.append(",\"transferToName\":\"")
                 .append(transferToName).append('\"');
         sb.append(",\"warrantID\":\"")
                 .append(warrantID).append('\"');
-        sb.append(",\"price\":")
-                .append(price);
-        sb.append(",\"warrantDetail\":")
-                .append(warrantDetail);
-        sb.append(",\"blockTimestamp\":")
-                .append(blockTimestamp);
+        sb.append(",\"price\":\"")
+                .append(price).append('\"');
+        sb.append(",\"warrantDetail\":\"")
+                .append(warrantDetail).append('\"');
+        sb.append(",\"blockTimestamp\":\"")
+                .append(blockTimestamp).append('\"');
         sb.append('}');
         return sb.toString();
     }
