@@ -15,12 +15,13 @@
         <result column="toName" jdbcType="VARCHAR" property="toName" javaType="java.lang.String" />
         <result column="toID" jdbcType="VARCHAR" property="toID" javaType="java.lang.String" />
         <result column="warrantID" jdbcType="VARCHAR" property="warrantID" javaType="java.lang.String" />
+        <result column="warrantDetail" jdbcType="VARCHAR" property="warrantDetail" javaType="java.lang.String" />
         <result column="blockTimestamp" jdbcType="VARCHAR" property="blockTimestamp" javaType="java.sql.Timestamp" />
     </resultMap>
 
     <sql id="ALL_COLUMN">
         blockNumber,blockHash,transactionIndex,transactionHash,WarrantTokenAddress,fromAddress,fromName,
-        fromID,toAddress,toName,toID,warrantID,blockTimestamp
+        fromID,toAddress,toName,toID,warrantID,warrantDetail,blockTimestamp
     </sql>
 
     <select id="getAllAddWarrantEvent" resultType="org.bcos.browser.dto.TbAddWarrantEventDto">
