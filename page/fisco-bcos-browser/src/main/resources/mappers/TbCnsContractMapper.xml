@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.bcos.browser.mapper.TbCnsContractMapper">
+    <resultMap id="CnsContractMap" type="org.bcos.browser.dto.TbCnsContractDto" >
+        <result column="contractName" jdbcType="VARCHAR" property="contractName" javaType="java.lang.String" />
+        <result column="contractAddress" jdbcType="VARCHAR" property="contractAddress" javaType="java.lang.String" />
+        <result column="startBlock" jdbcType="VARCHAR" property="startBlock" javaType="java.lang.String" />
+        <result column="endBlock" jdbcType="VARCHAR" property="endBlock" javaType="java.lang.String" />
+        <result column="abi" jdbcType="BLOB" property="abi" javaType="java.lang.String" />
+        <result column="code" jdbcType="VARCHAR" property="code" javaType="java.lang.String" />
+        <result column="bin" jdbcType="VARCHAR" property="bin" javaType="java.lang.String" />
+        <result column="version" jdbcType="VARCHAR" property="version" javaType="java.lang.String" />
+    </resultMap>
+
+    <sql id="ALL_COLUMN">
+        contractName,contractAddress,startBlock,endBlock,abi,code,bin,version
+    </sql>
+
+    <select id="getContractAInfoByAddress" resultType="org.bcos.browser.dto.TbCnsContractDto">
+        select <include refid="ALL_COLUMN"/>
+        from CnsContract where contractAddress = #{contractAddress}
+    </select>
+</mapper>

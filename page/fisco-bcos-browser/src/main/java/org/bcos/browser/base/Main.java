@@ -25,8 +25,10 @@ package org.bcos.browser.base;
 import java.util.List;
 
 import org.bcos.browser.dto.TbAddWarrantEventDto;
+import org.bcos.browser.dto.TbCnsContractDto;
 import org.bcos.browser.dto.TbMarketAuctionSuccessEventDto;
 import org.bcos.browser.service.TbAddWarrantEventService;
+import org.bcos.browser.service.TbCnsContractService;
 import org.bcos.browser.service.TbMarketAuctionSuccessService;
 import org.bcos.browser.service.TbNodesInfoService;
 import org.slf4j.Logger;
@@ -79,6 +81,14 @@ public class Main {
             {
                 System.out.println(result);
             }
+		}
+		
+		{//测试获取CNS数据
+		    TbCnsContractService service = context.getBean(TbCnsContractService.class);
+            //查询所有的交易记录。TODO 分页查询？
+            TbCnsContractDto result = service.getContractAInfoByAddress("0x0c8706a240099d2971553b8d4c0da8171e56e57f");
+            if(result == null) return;
+            System.out.println(result);
 		}
 		
 		
