@@ -1,5 +1,4 @@
 package cn.bcos.browser.contract;
-import static org.bcos.web3j.abi.Utils.convert;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -24,6 +23,7 @@ import cn.bcos.browser.service.GovernService;
 import javafx.util.Pair;
 public class Contract {
     private static Timestamp timestamp;
+    private static String txFrom;
     public static final String WarrantTransferEvent = "{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_from\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_to\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_tokenId\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"}";
     public static final String MarketAuctionSuccessEvent = "{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":true,\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"to\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"price\",\"type\":\"uint256\"}],\"name\":\"AuctionSuccess\",\"type\":\"event\"}";
     
@@ -36,6 +36,13 @@ public class Contract {
     
     public static Timestamp getTimestamp() {
         return Contract.timestamp;
+    }
+    public static String getTxFrom() {
+        return txFrom;
+    }
+
+    public static void setTxFrom(String txFrom) {
+        Contract.txFrom = txFrom;
     }
     
     public static List<String> cnsCall(String contractName, String functionName, String[] params, String blockNumber)

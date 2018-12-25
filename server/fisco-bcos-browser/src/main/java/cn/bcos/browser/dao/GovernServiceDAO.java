@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.bcos.browser.dto.AddWarrantEventDTO;
 import cn.bcos.browser.dto.BlockChainInfoDTO;
 import cn.bcos.browser.dto.BlockInfoDTO;
+import cn.bcos.browser.dto.CnsContractDTO;
 import cn.bcos.browser.dto.MarketAuctionSuccessEventDTO;
 import cn.bcos.browser.dto.NodeInfoDTO;
 import cn.bcos.browser.dto.PeerRpcDTO;
@@ -65,6 +66,8 @@ public interface GovernServiceDAO {
 	                                  @Param("eventIndex")int eventIndex
 	                                  );
 	
+	public String selectCNS(@Param("contractAddress")String contractAddress);
+	
 	public void insertTransactionInfo(TransactionInfoDTO transactionInfo);
 	
 	public void insertReceiptInfo(ReceiptInfoDTO receiptInfoDTO);
@@ -96,6 +99,8 @@ public interface GovernServiceDAO {
 	public void updateBlocknum(NodeInfoDTO nodeInfoDTO);
 	
 	public void updateIp(NodeInfoDTO nodeInfoDTO);
+	
+	public void insertCNS(CnsContractDTO cnsContractDTO);
 	
 	public List<PeerRpcDTO> selectPeerRpc();
 

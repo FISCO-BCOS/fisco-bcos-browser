@@ -34,6 +34,10 @@
 	<select id="selectAuctionSuccessEvent" resultType="string">
         select blockHash from MarketAuctionSuccessEvent where blockNumber=#{blockNumber} and transactionIndex=#{transactionIndex} and eventIndex=#{eventIndex}
     </select>
+    
+    <select id="selectCNS" resultType="string">
+        select contractName from CnsContract where contractAddress=#{contractAddress}
+    </select>
 
 	<insert id="insertBlockChainInfo" parameterType="cn.bcos.browser.dto.BlockChainInfoDTO" useGeneratedKeys="false">
 		insert into tb_blockChainInfo(
@@ -302,6 +306,28 @@
             #{blockTimestamp}
         )
     </insert>
+    
+    <insert id="insertCNS" parameterType="cn.bcos.browser.dto.CnsContractDTO">
+        insert into CnsContract (
+            `contractName`,
+            `contractAddress`,
+            `startBlock`,
+            `endBlock`,
+            `abi`,
+            `code`,
+            `bin`,
+            `version`
+        ) values (
+            #{contractName},
+            #{contractAddress},
+            #{startBlock},
+            #{endBlock},
+            #{abi},
+            #{code},
+            #{bin},
+            #{version}
+        )
+    </insert>
 	
 	<update id="updateBlockInfo" parameterType="cn.bcos.browser.dto.BlockChainInfoDTO">
 		update tb_blockChainInfo 
@@ -312,6 +338,7 @@
 			avgTime=#{avgTime},
 			gmt_modify=NOW()
 	</update>
+	
 	
 	<delete id="deletePendingTransInfo">
 		truncate table tb_pendingTransaction

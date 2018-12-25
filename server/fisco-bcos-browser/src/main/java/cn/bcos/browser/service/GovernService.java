@@ -58,6 +58,7 @@ import cn.bcos.browser.dao.GovernServiceDAO;
 import cn.bcos.browser.dto.AddWarrantEventDTO;
 import cn.bcos.browser.dto.BlockChainInfoDTO;
 import cn.bcos.browser.dto.BlockInfoDTO;
+import cn.bcos.browser.dto.CnsContractDTO;
 import cn.bcos.browser.dto.NodeInfoDTO;
 import cn.bcos.browser.dto.PeerRpcDTO;
 import cn.bcos.browser.dto.ReceiptInfoDTO;
@@ -198,6 +199,7 @@ public class GovernService {
 		blockInfoDTO.setDetailInfo(json.toString());
 		
 		governServiceDAO.insertBlockInfo(blockInfoDTO);
+		handleCnsContract(String.valueOf(blockHeight));
 	}
 
 	/**
@@ -232,6 +234,7 @@ public class GovernService {
 			transactionInfoDTO.setBlockGasLimit(Long.parseLong(json.getString("gasLimit").substring(2), 16));
 			transactionInfoDTO.setTransactionIndex(Long.parseLong(jsonTrans.getString("transactionIndex").substring(2), 16));
 			transactionInfoDTO.setTransactionFrom(jsonTrans.getString("from"));
+			Contract.setTxFrom(jsonTrans.getString("from"));
 			transactionInfoDTO.setTransactionTo(jsonTrans.getString("to"));
 			transactionInfoDTO.setGas(Long.parseLong(jsonTrans.getString("gas").substring(2), 16));
 			transactionInfoDTO.setGasPrice(BigDecimal.valueOf(Long.parseLong(jsonTrans.getString("gasPrice").substring(2), 16)));
@@ -365,9 +368,8 @@ public class GovernService {
                 String toAddress = String.valueOf(event.getValues().get(1));
                 String tokenID = String.valueOf(event.getValues().get(2));
                 List<String> warrantInfo = Contract.cnsCall("WarrantToken", "getWarrant", new String[] {tokenID}, blockNumber);
-                String adminAddress = receipt.getFrom();
-                System.out.println("admin address: "+adminAddress);
-                List<String> adminInfo = Contract.cnsCall("IdentityMgr", "getIdentityInfo", new String[] {toAddress}, blockNumber);
+                String adminAddress = Contract.getTxFrom();
+                List<String> adminInfo = Contract.cnsCall("IdentityMgr", "getIdentityInfo", new String[] {adminAddress}, blockNumber);
                 List<String> toUserInfo = Contract.cnsCall("IdentityMgr", "getIdentityInfo", new String[] {toAddress}, blockNumber);
                 AddWarrantEventDTO addWarrantEventDTO = new AddWarrantEventDTO();
                 addWarrantEventDTO.setBlockNumber(receipt.getBlockNumber().intValue());
@@ -375,12 +377,12 @@ public class GovernService {
                 addWarrantEventDTO.setTransactionIndex(receipt.getTransactionIndex().longValue());
                 addWarrantEventDTO.setTransactionHash(receipt.getBlockHash());
                 addWarrantEventDTO.setWarrantTokenAddress(addr);
-                addWarrantEventDTO.setFromAddress(receipt.getFrom());
+                addWarrantEventDTO.setFromAddress(adminAddress);
                 addWarrantEventDTO.setFromName(adminInfo.get(0)); //name
                 addWarrantEventDTO.setFromID(adminInfo.get(1));   //id
                 addWarrantEventDTO.setToAddress(toAddress);
-                addWarrantEventDTO.setFromName(toUserInfo.get(0)); //name
-                addWarrantEventDTO.setFromID(toUserInfo.get(1));   //id
+                addWarrantEventDTO.setToName(toUserInfo.get(0)); //name
+                addWarrantEventDTO.setToID(toUserInfo.get(1));   //id
                 addWarrantEventDTO.setWarrantID(tokenID);
                 addWarrantEventDTO.setWarrantDetail(JSON.toJSONString(warrantInfo));
                 addWarrantEventDTO.setBlockTimestamp(Contract.getTimestamp());
@@ -389,6 +391,28 @@ public class GovernService {
             }
         }
         
+	}
+	
+	public void handleCnsContract(String blockNumber) {
+	    List<String> ret = Contract.cnsCall("ContractAbiMgr", "getAbiCount", new String[] {}, "latest");
+	    int abiCount = Integer.valueOf(ret.get(0));
+	    for(int i = 0; i < abiCount; ++i) {
+	        List<String> cnsInfo = Contract.cnsCall("ContractAbiMgr", "getAllByIndex", new String[] {String.valueOf(i)}, "latest");
+	        CnsContractDTO cnsContractDTO = new CnsContractDTO();
+	        cnsContractDTO.setAbi(cnsInfo.get(0));
+	        cnsContractDTO.setContractAddress(cnsInfo.get(1));
+	        cnsContractDTO.setContractName(cnsInfo.get(2));
+	        cnsContractDTO.setVersion(cnsInfo.get(3));
+	        cnsContractDTO.setStartBlock(cnsInfo.get(4));
+	        cnsContractDTO.setEndBlock("latest");
+	        String contractName = governServiceDAO.selectCNS(cnsInfo.get(1));
+	        if(contractName == null) {
+	            System.out.println("insert CNS transfer");
+	            governServiceDAO.insertCNS(cnsContractDTO);
+	        } else {
+	            System.out.println("insert CNS transfer error");
+	        }
+	    }
 	}
 	
 	
