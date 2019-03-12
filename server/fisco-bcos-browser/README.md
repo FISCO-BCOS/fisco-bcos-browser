@@ -1,237 +1,215 @@
-# 区块链浏览器Server端说明
+# 区块链浏览器服务说明
 
-## 一、功能介绍
+# 目录
+> * [功能说明](#chapter-1)
+> * [前提条件](#chapter-2)
+> * [部署说明](#chapter-3)
+> * [问题排查](#chapter-4)
+> * [附录](#chapter-5)
 
-本工程是区块链浏览器后台服务，主要功能是获取区块链信息数据存储到数据库，以便前端调用数据显示。
+# 1. <a id="chapter-1"></a>功能说明
 
-（1）通过定时任务获取区块链信息存储到数据库。定时任务分别为：
+本工程是区块链浏览器的后端服务，功能是解析节点数据储存数据库，向前端提供数据接口，页面展示。
 
-- 处理区块链全局信息（handleBlockChainInfo）：存储区块链全局信息和节点信息
-- 处理区块信息（handleBlockInfo）：存储各个区块信息及其包含交易信息和交易回执信息
-- 处理未上链交易信息（handlePendingTransInfo）：存储未上链交易信息
-
-（2）接收report agent服务上报数据
-
-- 接收report agent上报数据的url：http://IP:端口/fisco-bcos-server/browserFacade
-
-
-## 二、使用方式
-
-### 1、环境
+# 2. <a id="chapter-2"></a>前提条件
 
 | 环境     | 版本              |
 | ------ | --------------- |
-| Java   | jdk1.8.0_121    |
-| tomcat | 1.7或以上版本        |
+| Java   | jdk1.8.0_121或以上版本    |
 | gradle | gradle-2.1或以上版本 |
 | 数据库    | mysql-5.6或以上版本  |
+备注：安装说明请参看附录。
 
+# 3. <a id="chapter-3"></a>部署说明
 
-环境部署方法请参考[浏览器说明的常见问题](../../README.md)。
+## 3.1 拉取代码
+执行命令：
+```
+git clone http://xxx/fisco-bcos-browser.git
+```
 
-### 2、手动部署
+## 3.2 编译代码
 
-在一键部署脚本中，已经包含了部署区块链浏览器server端。此处给出手动部署方式，供参考。
-
+（1）进入目录：
 ```shell
-cd server/fisco-bcos-browser
+cd fisco-bcos-browser
 ```
 
-（1）配置
-
-**数据库**
-
+（2）执行构建命令：
 ```shell
-vim src/main/resources/application.properties
-```
-
-> 将下述变量修改为数据库对应的IP地址，端口，用户名，密码，数据库名；其他配置使用默认即可。
-
-```shell
-db.ip=127.0.0.1
-db.port=3306
-db.user=fisco-dev
-db.password=fisco-dev1234
-db.database=test
-
-```
-
-**maven仓库修改**
-
-```shell
-# server/fisco-bcos-browser目录下
-vim build.gradle
-```
-
-> 将maven仓库修改成自己可用的仓库。
-
-```shell
-repositories {
-    maven { url "https://mvnrepository.com" }
-    mavenLocal()
-    mavenCentral()
-}
-
-```
-
-**log目录**
-
-```shell
-# server/fisco-bcos-browser目录下
-vim src/main/resources/log4j2.xml
-```
-
-> 修改Property标签里的内容，指向需要log打印的位置。
-
-```html
-<Property name="logPath">/home/app/fisco-bcos-browser/server/logs/</Property>
-```
-
-（2）数据库建表
-
-数据库的配置过程请参考常见问题 3、数据库部署。在数据库配置好后，进行建表操作。
-
-> 登录数据库
-
-```shell
-mysql -uroot -h 127.0.0.1 -P 3306
-```
-
-> 登陆之后，建数据库，进入数据库。
-
-```sql
-create database `test` default character set utf8 collate utf8_general_ci;/*创建数据库，设置字符集*/
-show databases;
-use test;
-```
-
-> 注意：建表前需先查看mysql触发器是否启动，命令如下：
-
-```sql
-show variables like '%scheduler%'; /*查看触发器是否启动*/
-set global event_scheduler = 1;  /*启动触发器*/
-```
-
-> 建表，直接将fisco-bcos-browser/server/fisco-bcos-browser/script/db/文件夹下的文件导入数据库(需绝对路径)
-
-```sql
-source /home/app/fisco-bcos-browser/server/fisco-bcos-browser/script/db/bcos_browser_table.sql /*绝对路径*/
-source /home/app/fisco-bcos-browser/server/fisco-bcos-browser/script/db/bcos_browser_table_v2.sql /*绝对路径*/
-show tables;
-```
-
-> 可看到表已建好。
-
-```sql
-show tables;
-+------------------------------+
-| Tables_in_test               |
-+------------------------------+
-| tb_block                     |
-| tb_blockChainInfo            |
-| tb_nodesInfo                 |
-| tb_pendingTransaction        |
-| tb_single_stat_20171214      |
-| tb_stat_block_20171214       |
-| tb_stat_transaction_20171214 |
-| tb_transaction               |
-| tb_transactionReceipt        |
-| tb_txnByDay                  |
-+------------------------------+
-10 rows in set (0.00 sec)
-```
-
-> 创建表之后，给fisco-dev用户授权
-
-```sql
-/*授权fisco-dev用户本地访问数据库test的所有表*/
-grant all on test.* to 'fisco-dev'@'localhost';
-
-/*授权fisco-dev用户从任意的远程IP访问数据库test的所有表*/
-grant all on test.* to 'fisco-dev'@'%';
-
-/*授权fisco-dev用户存储过程权限*/
-grant all on mysql.proc to 'fisco-dev'@'localhost';
-grant all on mysql.proc to 'fisco-dev'@'%';
-grant execute on procedure test.procedure_insert_table_tb_single_stat_by_day to 'fisco-dev'@'localhost';
-grant execute on procedure test.procedure_insert_table_tb_single_stat_by_day to 'fisco-dev'@'%';
-grant execute on procedure test.procedure_insert_table_tb_stat_transaction_by_day to 'fisco-dev'@'localhost';
-grant execute on procedure test.procedure_insert_table_tb_stat_transaction_by_day to 'fisco-dev'@'%';
-grant execute on procedure test.procedure_insert_table_tb_stat_block_by_day to 'fisco-dev'@'localhost';
-grant execute on procedure test.procedure_insert_table_tb_stat_block_by_day to 'fisco-dev'@'%';
-
-```
-
-（3）生成web应用
-
-```shell
-# server/fisco-bcos-browser目录下
 gradle build
 ```
+构建完成后，会在根目录fisco-bcos-browser下生成已编译的代码目录dist。
 
-> 第一次执行此步骤，会下载一些包，请耐心等待。若部此步骤不成功，请查阅常见问题。成功后会提示SUCCESSFUL。
+## 3.3 修改配置
+
+（1）进入目录：
+```shell
+cd dist/conf
+```
+
+（2）修改服务配置（没变化可以不修改）：
+```shell
+修改当前服务端口：sed -i "s/8088/${your_server_port}/g" application.yml
+修改数据库IP：sed -i "s/127.0.0.1/${your_db_ip}/g" application.yml
+修改数据库名称：sed -i "s/testDB/${your_db_name}/g" application.yml
+修改数据库用户名：sed -i "s/root/${your_db_account}/g" application.yml
+修改数据库密码：sed -i "s/123456/${your_db_password}/g" application.yml
+例子（将端口由8088改为8090）：sed -i "s/8088/8090/g" application.yml
+```
+
+## 3.4 服务启停
+进入到已编译的代码根目录：
+```shell
+cd dist
+```
+```shell
+启动：sh start.sh
+停止：sh stop.sh
+检查：sh status.sh
+```
+
+## 3.5 查看日志
+
+进入到已编译的代码根目录：
+```shell
+cd dist
+```
+
+查看
+```shell
+tail -f log/fisco-bcos-browser.log
+```
+
+# 4. <a id="chapter-4"></a>问题排查
+
+## 4.1 编译错误
+配置一下lombok，lombok的配置和使用请在网上查询。
+```
+> Task :compileJava
+E:\fisco-bcos-browser\src\main\java\org\bcos\browser\Application.java:17: 错误: 找不到符号
+        log.info("start success...");
+        ^
+  符号:   变量 log
+  位置: 类 Application
+```
+
+## 4.2 启停失败
+如果脚本执行出现问题，尝试以下操作：
+```shell
+chmod +x *.sh
+```
+
+# 5. <a id="chapter-5"></a>附录
+
+## 5.1 Java环境部署
+
+此处给出简单步骤，供快速查阅。更详细的步骤，请参考[官网](http://www.oracle.com/technetwork/java/javase/downloads/index.html)。
+
+（1）从[官网](http://www.oracle.com/technetwork/java/javase/downloads/index.html)下载对应版本的java安装包，并解压到相应目录
 
 ```shell
-BUILD SUCCESSFUL
-
-Total time: 15 mins 50.759 secs
+mkdir /software
+tar -zxvf jdkXXX.tar.gz /software/
 ```
 
-> 成功后在目录下得到文件夹bcos-server，在apps目录中存在war包。
+（2）配置环境变量
 
 ```shell
-/apps/bcos-server.war
+export JAVA_HOME=/software/jdk1.8.0_121
+export PATH=$JAVA_HOME/bin:$PATH 
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 ```
 
-（4）发布Web应用
+## 5.2 gradle环境部署
 
-将生成的war包拷贝Tomcat的webapps目录下
+此处给出简单步骤，供快速查阅。更详细的步骤，请参考[官网](http://www.gradle.org/downloads)。
+
+（1）从[官网](http://www.gradle.org/downloads)下载对应版本的gradle安装包，并解压到相应目录
 
 ```shell
-cp bcos-server/apps/bcos-server.war /nemo/tomcat/webapps/bcos-server.war #拷贝war包到tomcat目录中
-cd /nemo/tomcat/bin
-./startup.sh #启动tomcat服务
+mkdir /software/
+unzip -d /software/ gradleXXX.zip
 ```
-（5）接收上报数据接口访问
 
-```url
-127.0.0.1:8080/bcos-server/browserFacade
-```
-端口为tomcat中为server配置的端口。
-
-
-
-## 三、详细说明
-
-### 1、目录说明
-​	上报数据处理类：/fisco-bcos-browser/src/main/java/org/bcos/browser/controller
-
-​	数据库操作接口：/fisco-bcos-browser/src/main/java/org/bcos/browser/dao
-
-​	数据库实体类：/fisco-bcos-browser/src/main/java/org/bcos/browser//dto
-
-​	服务处理类：/fisco-bcos-browser/src/main/java/org/bcos/browser/service
-
-​	常用工具类：/fisco-bcos-browser/src/main/java/org/bcos/browser/util
-
-​	配置文件：/fisco-bcos-browser/src/main/resources
-
-​	数据库操作mapper：/fisco-bcos-browser/src/main/resources/mapper
-
-​	数据库表结构：/fisco-bcos-browser/script/db
-
-### 2、查看日志
-
-日志的目录在配置步骤配置，server启动后会在相应目录自动生成日志。
-
-（1）全局日志
+（2）配置环境变量
 
 ```shell
-tail -f bcos-server.log
+export GRADLE_HOME=/software/gradle-2.1
+export PATH=$GRADLE_HOME/bin:$PATH
 ```
 
-（2）方法执行耗时监控日志
+## 5.3 数据库部署
+
+此处以Centos/Fedora为例。
+
+（1）切换到root
 
 ```shell
-tail -f monitor.log
+sudo -s
 ```
+
+（2）安装mysql
+
+```shell
+yum install mysql*
+#某些版本的linux，需要安装mariadb，mariadb是mysql的一个分支
+yum install mariadb*
+```
+
+（3）启动mysql
+
+```shell
+service mysqld start
+#若安装了mariadb，则使用下面的命令启动
+systemctl start mariadb.service
+```
+
+（4）初始化数据库用户
+
+初次登录
+```shell
+mysql -u root
+```
+
+给root设置密码和授权远程访问
+```sql
+mysql > SET PASSWORD FOR 'root'@'localhost' = PASSWORD('123456');
+mysql > GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
+```
+
+授权test用户本地访问数据库
+```sql
+mysql > create user 'test'@'localhost' identified by 'test1234';
+```
+
+（5）测试连接
+
+另开一个ssh测试本地用户test是否可以登录数据库
+
+```shell
+mysql -utest -ptest1234 -h 127.0.0.1 -P 3306
+```
+
+登陆成功后，执行以下sql语句，若出现错误，则用户授权不成功
+
+```sql
+mysql > show databases;
+mysql > use test;
+```
+
+（6）创建数据库
+
+登录数据库
+
+```shell
+mysql -utest -ptest1234 -h 127.0.0.1 -P 3306
+```
+
+创建数据库
+
+```sql
+mysql > create database testDB;
+```
+
+
