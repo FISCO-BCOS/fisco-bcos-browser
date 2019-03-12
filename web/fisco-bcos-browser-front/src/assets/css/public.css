@@ -1,0 +1,58 @@
+.over-hidden{
+    overflow: hidden;
+}
+
+.margin-left-10{
+    margin-left: 10px;
+}
+
+.margin-right-10{
+    margin-right: 10px;
+}
+
+.margin-left-15{
+    margin-left: 2.58%;
+}
+.margin-right-15{
+    margin-right: 2.58%;
+}
+.margin-top-15{
+    margin-top: 15px;
+}
+.margin-bottom-15{
+    margin-bottom:15px;
+}
+
+
+.bg-8693f3{
+    background-color: #8693f3;
+}
+.bg-bc8dee{
+    background-color: #bc8dee;
+}
+.bg-ffa897{
+    background-color: #ffa897;
+}
+.bg-89c3f8{
+    background-color: #89c3f8;
+}
+ .padding-bottom-0{
+     padding-bottom: 0;
+ }
+
+.table-link{
+    color: #3498db;
+    cursor: pointer;
+}
+.table-link:hover{
+    color: #3498db;
+    text-decoration: #3498db;
+}
+.iconInfo{
+    display: inline-block;
+    width: 18px;
+    padding-left: 2px;
+
+}
+
+
