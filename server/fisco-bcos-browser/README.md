@@ -1,0 +1,215 @@
+# 区块链浏览器服务说明
+
+# 目录
+> * [功能说明](#chapter-1)
+> * [前提条件](#chapter-2)
+> * [部署说明](#chapter-3)
+> * [问题排查](#chapter-4)
+> * [附录](#chapter-5)
+
+# 1. <a id="chapter-1"></a>功能说明
+
+本工程是区块链浏览器的后端服务，功能是解析节点数据储存数据库，向前端提供数据接口，页面展示。
+
+# 2. <a id="chapter-2"></a>前提条件
+
+| 环境     | 版本              |
+| ------ | --------------- |
+| Java   | jdk1.8.0_121或以上版本    |
+| gradle | gradle-2.1或以上版本 |
+| 数据库    | mysql-5.6或以上版本  |
+备注：安装说明请参看附录。
+
+# 3. <a id="chapter-3"></a>部署说明
+
+## 3.1 拉取代码
+执行命令：
+```
+git clone http://xxx/fisco-bcos-browser.git
+```
+
+## 3.2 编译代码
+
+（1）进入目录：
+```shell
+cd fisco-bcos-browser
+```
+
+（2）执行构建命令：
+```shell
+gradle build
+```
+构建完成后，会在根目录fisco-bcos-browser下生成已编译的代码目录dist。
+
+## 3.3 修改配置
+
+（1）进入目录：
+```shell
+cd dist/conf
+```
+
+（2）修改服务配置（没变化可以不修改）：
+```shell
+修改当前服务端口：sed -i "s/8088/${your_server_port}/g" application.yml
+修改数据库IP：sed -i "s/127.0.0.1/${your_db_ip}/g" application.yml
+修改数据库名称：sed -i "s/browser/${your_db_name}/g" application.yml
+修改数据库用户名：sed -i "s/root/${your_db_account}/g" application.yml
+修改数据库密码：sed -i "s/123456/${your_db_password}/g" application.yml
+例子（将端口由8088改为8090）：sed -i "s/8088/8090/g" application.yml
+```
+
+## 3.4 服务启停
+进入到已编译的代码根目录：
+```shell
+cd dist
+```
+```shell
+启动：sh start.sh
+停止：sh stop.sh
+检查：sh status.sh
+```
+
+## 3.5 查看日志
+
+进入到已编译的代码根目录：
+```shell
+cd dist
+```
+
+查看
+```shell
+tail -f log/fisco-bcos-browser.log
+```
+
+# 4. <a id="chapter-4"></a>问题排查
+
+## 4.1 编译错误
+配置一下lombok，lombok的配置和使用请在网上查询。
+```
+> Task :compileJava
+E:\fisco-bcos-browser\src\main\java\org\bcos\browser\Application.java:17: 错误: 找不到符号
+        log.info("start success...");
+        ^
+  符号:   变量 log
+  位置: 类 Application
+```
+
+## 4.2 启停失败
+如果脚本执行出现问题，尝试以下操作：
+```shell
+chmod +x *.sh
+```
+
+# 5. <a id="chapter-5"></a>附录
+
+## 5.1 Java环境部署
+
+此处给出简单步骤，供快速查阅。更详细的步骤，请参考[官网](http://www.oracle.com/technetwork/java/javase/downloads/index.html)。
+
+（1）从[官网](http://www.oracle.com/technetwork/java/javase/downloads/index.html)下载对应版本的java安装包，并解压到相应目录
+
+```shell
+mkdir /software
+tar -zxvf jdkXXX.tar.gz /software/
+```
+
+（2）配置环境变量
+
+```shell
+export JAVA_HOME=/software/jdk1.8.0_121
+export PATH=$JAVA_HOME/bin:$PATH 
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+```
+
+## 5.2 gradle环境部署
+
+此处给出简单步骤，供快速查阅。更详细的步骤，请参考[官网](http://www.gradle.org/downloads)。
+
+（1）从[官网](http://www.gradle.org/downloads)下载对应版本的gradle安装包，并解压到相应目录
+
+```shell
+mkdir /software/
+unzip -d /software/ gradleXXX.zip
+```
+
+（2）配置环境变量
+
+```shell
+export GRADLE_HOME=/software/gradle-2.1
+export PATH=$GRADLE_HOME/bin:$PATH
+```
+
+## 5.3 数据库部署
+
+此处以Centos/Fedora为例。
+
+（1）切换到root
+
+```shell
+sudo -s
+```
+
+（2）安装mysql
+
+```shell
+yum install mysql*
+#某些版本的linux，需要安装mariadb，mariadb是mysql的一个分支
+yum install mariadb*
+```
+
+（3）启动mysql
+
+```shell
+service mysqld start
+#若安装了mariadb，则使用下面的命令启动
+systemctl start mariadb.service
+```
+
+（4）初始化数据库用户
+
+初次登录
+```shell
+mysql -u root
+```
+
+给root设置密码和授权远程访问
+```sql
+mysql > SET PASSWORD FOR 'root'@'localhost' = PASSWORD('123456');
+mysql > GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
+```
+
+授权test用户本地访问数据库
+```sql
+mysql > create user 'test'@'localhost' identified by 'test1234';
+```
+
+（5）测试连接
+
+另开一个ssh测试本地用户test是否可以登录数据库
+
+```shell
+mysql -utest -ptest1234 -h 127.0.0.1 -P 3306
+```
+
+登陆成功后，执行以下sql语句，若出现错误，则用户授权不成功
+
+```sql
+mysql > show databases;
+mysql > use test;
+```
+
+（6）创建数据库
+
+登录数据库
+
+```shell
+mysql -utest -ptest1234 -h 127.0.0.1 -P 3306
+```
+
+创建数据库
+
+```sql
+mysql > create database browser;
+```
+
+
