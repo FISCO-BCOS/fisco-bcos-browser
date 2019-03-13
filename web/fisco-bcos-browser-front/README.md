@@ -6,8 +6,11 @@
 ## 1、功能
 
 (1)、主要功能是区块链概览，查看区块，查看交易，节点配置以及群组切换。
+
 (2)、支持群组切换，需要配置群组和节点。
+
 (3)、上传并编译发送交易的合约后，可以查看交易的inputs和event解码数据。
+
 (4)、区块链概览，查看区块，查看交易和节点配置页面每10s执行一轮请求。
 
 ## 2、部署
@@ -30,7 +33,7 @@ nginx安装请参考附录
 git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 ```
 
-**代码拉取后，切换到本分支。**将其中的web/fisco-bcos-browser-front/dist放在/data/app/web下面。
+**代码拉取后，切换到本分支。** 将其中的web/fisco-bcos-browser-front/dist放在/data/app/web下面。
 
 ### 2.3 修改nginx配置
 
