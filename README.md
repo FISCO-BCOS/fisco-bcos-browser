@@ -43,15 +43,15 @@
 
 两者的主要区别在于build_chain为了使体验更好，搭建速度更快，辅助生成了群组内各个节点的私钥；但企业部署工具出于安全的考虑不辅助生成私钥，需要用户自己生成并设置。
 
-### 2.2、区块链浏览器搭建
+### *<u>2.2、区块链浏览器搭建</u>*
 
 区块链浏览器分为两个部分：后台服务fisco-bcos-browser、前端web页面fisco-bcos-browser-front。
 
-#### 2.2.1、后台服务搭建
+#### *<u>2.2.1、后台服务搭建</u>*
 
 区块链浏览器后台服务使用Spring Boot的JAVA后台服务，具体搭建流程参见[**文档**](https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/server/fisco-bcos-browser)。
 
-#### 2.2.2、前端web页面服务搭建
+#### *<u>2.2.2、前端web页面服务搭建</u>*
 
 区块链浏览器前端web页面使用框架`vue-cli`，具体搭建流程参见[**文档**](https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/web/fisco-bcos-browser-front)。
 
