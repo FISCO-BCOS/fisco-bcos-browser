@@ -4,7 +4,7 @@
 
 ### 1.1、基本描述
 
-区块链浏览器将区块链中的数据可视化，并进行实时展示。方便用户以Web页面的方式，获取当前区块链中的信息。本浏览器版本适配**[FISCO-BCOS 2.0](https://github.com/FISCO-BCOS/FISCO-BCOS/tree/release-2.0.1)**，关于2.0版本的特性可以参考此[链接](https://fisco-bcos-documentation.readthedocs.io/zh_CN/release-2.0/docs/introduction.html)。在使用本浏览器之前需要先理解2.0版本的群组特性，详情可以参考此[链接](https://fisco-bcos-documentation.readthedocs.io/zh_CN/release-2.0/docs/what_is_new.html#id2)。
+区块链浏览器将区块链中的数据可视化，并进行实时展示。方便用户以Web页面的方式，获取当前区块链中的信息。本浏览器版本适配[FISCO-BCOS 2.0](https://github.com/FISCO-BCOS/FISCO-BCOS/tree/release-2.0.1)，关于2.0版本的特性可以参考此[链接](https://fisco-bcos-documentation.readthedocs.io/zh_CN/release-2.0/docs/introduction.html)。在使用本浏览器之前需要先理解2.0版本的群组特性，详情可以参考此[链接](https://fisco-bcos-documentation.readthedocs.io/zh_CN/release-2.0/docs/what_is_new.html#id2)。
 
 ![](./img/overview.png)
 
@@ -36,7 +36,7 @@
 
 ### 2.1、群组搭建
 
-区块链浏览器展示的数据是从区块链上同步下来的。为了同步数据需要初始化配置（添加群组信息和节点信息），故在同步数据展示前需要用户先搭建好区块链群组。**[FISCO-BCOS 2.0](https://github.com/FISCO-BCOS/FISCO-BCOS/tree/release-2.0.1)**提供了多种便捷的群组搭建方式。
+区块链浏览器展示的数据是从区块链上同步下来的。为了同步数据需要初始化配置（添加群组信息和节点信息），故在同步数据展示前需要用户先搭建好区块链群组。[FISCO-BCOS 2.0](https://github.com/FISCO-BCOS/FISCO-BCOS/tree/release-2.0.1)提供了多种便捷的群组搭建方式。
 
 1. 如果是开发者进行开发调试，建议使用[build_chain](https://fisco-bcos-documentation.readthedocs.io/zh_CN/release-2.0/docs/installation.html)。
 2. 如果是开发企业级应用，建议使用企业部署工具[FISCO-BCOS generator](https://fisco-bcos-documentation.readthedocs.io/zh_CN/release-2.0/docs/tutorial/enterprise_quick_start.html)。
@@ -49,11 +49,11 @@
 
 #### *<u>2.2.1、后台服务搭建</u>*
 
-区块链浏览器后台服务使用Spring Boot的JAVA后台服务，具体搭建流程参见[**文档**](https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/server/fisco-bcos-browser)。
+区块链浏览器后台服务使用Spring Boot的JAVA后台服务，具体搭建流程参见[**安装文档**](https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/server/fisco-bcos-browser)。
 
 #### *<u>2.2.2、前端web页面服务搭建</u>*
 
-区块链浏览器前端web页面使用框架`vue-cli`，具体搭建流程参见[**文档**](https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/web/fisco-bcos-browser-front)。
+区块链浏览器前端web页面使用框架`vue-cli`，具体搭建流程参见[**安装文档**](https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/web/fisco-bcos-browser-front)。
 
 ## 三、初始化环境
 
