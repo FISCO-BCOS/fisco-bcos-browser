@@ -212,6 +212,15 @@
     .content>>>.is-active{
         color: #409EFF;
     }
+    .content>>>#tab-first{
+        padding-left: 15px;
+    }
+    .content>>>#tab-second{
+        padding-left: 30px;
+    }
+    .content>>>.el-tabs__active-bar{
+        padding-left: 20px;
+    }
 </style>
 <script>
     import nav from '@/components/content-nav'
