@@ -42,7 +42,7 @@ git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 
 1. 修改前端服务的ip地址和端口。
 2. 修改前端文件的路径,直接指向已拉取代码的dist目录。
-3. 修改后端服务的ip和端口，注意'/api'不要修改。
+3. 修改后端服务(fisco-bcos-browser)的ip和端口，注意'/api'不要修改。
 
 ```Nginx
     server {
@@ -58,7 +58,7 @@ git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
             include /etc/nginx/default.d/*.conf;
 
             location /api {
-                    proxy_pass    http://192.168.0.2:8089/;    //步骤3、后端服务地址及端口
+                    proxy_pass    http://192.168.0.2:8089/;    //步骤3、后端服务(fisco-bcos-browser)地址及端口
                	 	proxy_set_header		Host				$host;
                     proxy_set_header		X-Real-IP			$remote_addr;
                     proxy_set_header		X-Forwarded-For		$proxy_add_x_forwarded_for;
@@ -75,7 +75,7 @@ git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 /usr/local/sbin/nginx    (nginx下载在/usr/local目录下)
 ```
 启动报错重点排查：日志路径是否正确（error.log和access.log）,nginx有没有添加用户权限。
-(2)、打开页面，页面url是nginx配置的ip和端口。
+(2)、打开页面，页面url是nginx配置的前端端口和前端ip。
 例如:上面配置文件的url为   http:192.168.0.1:8088
 (3)、打开页面后，配置群组（群组ip是搭链的群组ip），配置节点（该群组下节点），然后就可以查看具体数据了。
 
