@@ -33,11 +33,11 @@ nginx安装请参考附录
 git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 ```
 
-**代码拉取后，切换到本分支。** 将其中的web/fisco-bcos-browser-front/dist放在/data/app/web下面。
+**代码拉取后，切换到本分支。** 将其中的./fisco-bcos-browser-front/web/fisco-bcos-browser-front/dist放在/data/app/web下面。
 
 ### 2.3 修改nginx配置
 
-在代码库中doc文件下有nginx配置文件，直接可以拿来替换安装的nginx的配置文件nginx.conf；
+在代码库中./fisco-bcos-browser-front/web/fisco-bcos-browser-front/doc文件下有nginx配置文件，直接可以拿来替换安装的nginx的配置文件nginx.conf；
 然后修改nginx.conf；
 
 1. 修改前端服务的ip地址和端口。
