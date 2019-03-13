@@ -67,9 +67,26 @@
                             }
                             localStorage.setItem("groupList",JSON.stringify(this.groupList))
                             this.change();
-                            router.push({
-                                name: this.$route.query.path
-                            })
+                            if(this.$route.query.pkHash){
+                                router.push({
+                                    name: this.$route.query.path,
+                                    query: {
+                                        pkHash: this.$route.query.pkHash
+                                    }
+                                })
+                            }else if(this.$route.query.blockHash){
+                                router.push({
+                                    name: this.$route.query.path,
+                                    query: {
+                                        pkHash: this.$route.query.blockHash
+                                    }
+                                })
+                            }else{
+                                router.push({
+                                    name: this.$route.query.path,
+                                })
+                            }
+                            
                         }else{
                             this.addGroupShow = true;
                         }
