@@ -24,22 +24,24 @@
 
 ## 3.1 拉取代码
 执行命令：
+```shell
+git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 ```
-git clone http://xxx/fisco-bcos-browser.git
-```
+
+**代码拉取后，切换到本分支。**
 
 ## 3.2 编译代码
 
 （1）进入目录：
 ```shell
-cd fisco-bcos-browser
+cd fisco-bcos-browser/web/fisco-bcos-browser
 ```
 
 （2）执行构建命令：
 ```shell
 gradle build
 ```
-构建完成后，会在根目录fisco-bcos-browser下生成已编译的代码目录dist。
+构建完成后，会在目录中生成已编译的代码目录dist。
 
 ## 3.3 修改配置
 

@@ -23,26 +23,30 @@ nginx安装请参考附录
 
 ### 2.2 拉取代码
 
-代码可以放在/data/app/page下面
+
 执行命令：
 
-    git clone http:xx/fisco-bcos-browser-web.git
+```shell
+git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
+```
+
+**代码拉取后，切换到本分支。**将其中的web/fisco-bcos-browser-front/dist放在/data/app/web下面。
 
 ### 2.3 修改nginx配置
 
 在代码库中doc文件下有nginx配置文件，直接可以拿来替换安装的nginx的配置文件nginx.conf；
 然后修改nginx.conf；
 
-(1)、修改前端服务的ip地址和端口。
-(2)、修改前端文件的路径,直接指向已拉取代码的dist目录。
-(3)、修改后端服务的ip和端口，注意'/api'不要修改。
+1. 修改前端服务的ip地址和端口。
+2. 修改前端文件的路径,直接指向已拉取代码的dist目录。
+3. 修改后端服务的ip和端口，注意'/api'不要修改。
 
 ```Nginx
     server {
-            listen       8088 default_server;   //前端端口
-            server_name  192.168.0.1;         //前端地址，可配置为域名
+            listen       8088 default_server;   //步骤1、前端端口
+            server_name  192.168.0.1;         //步骤1、前端地址，可配置为域名
             location / {
-                    root    /data/app/page/web/dist;   //前端文件路径
+                    root    /data/app/web/dist;   //步骤2、前端文件路径
                     index  index.html index.htm;
                     try_files $uri $uri/ /index.html =404;
                 }
@@ -51,7 +55,7 @@ nginx安装请参考附录
             include /etc/nginx/default.d/*.conf;
 
             location /api {
-                    proxy_pass    http://10.10.10.1:8089/;    //后端服务地址及端口
+                    proxy_pass    http://192.168.0.2:8089/;    //步骤3、后端服务地址及端口
                	 	proxy_set_header		Host				$host;
                     proxy_set_header		X-Real-IP			$remote_addr;
                     proxy_set_header		X-Forwarded-For		$proxy_add_x_forwarded_for;
@@ -64,7 +68,9 @@ nginx安装请参考附录
 (1)、启动nginx。
 启动命令：
 
-	/usr/local/sbin/nginx    (nginx下载在/usr/local目录下)
+```shell
+/usr/local/sbin/nginx    (nginx下载在/usr/local目录下)
+```
 启动报错重点排查：日志路径是否正确（error.log和access.log）,nginx有没有添加用户权限。
 (2)、打开页面，页面url是nginx配置的ip和端口。
 例如:上面配置文件的url为   http:192.168.0.1:8088
