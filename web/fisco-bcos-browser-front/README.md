@@ -75,8 +75,10 @@ git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 /usr/local/sbin/nginx    (nginx下载在/usr/local目录下)
 ```
 启动报错重点排查：日志路径是否正确（error.log和access.log）,nginx有没有添加用户权限。
+
 (2)、打开页面，页面url是nginx配置的前端端口和前端ip。
 例如:上面配置文件的url为   http:192.168.0.1:8088
+
 (3)、打开页面后，配置群组（群组ip是搭链的群组ip），配置节点（该群组下节点），然后就可以查看具体数据了。
 
 ## 3、附录
