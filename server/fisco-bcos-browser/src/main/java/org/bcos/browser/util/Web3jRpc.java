@@ -247,4 +247,20 @@ public class Web3jRpc {
         }
         return result;
     }
+    
+    /**
+     * getGroupList.
+     * 
+     * @param node info
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public List<Integer> getGroupList(Node node) {
+        List<Integer> result = new ArrayList<>();
+        Object object = requestNode(Constants.GET_GROUP_LIST, null, node);
+        if (object != null) {
+            result = CommonUtils.object2JavaBean(object, List.class);
+        }
+        return result;
+    }
 }
