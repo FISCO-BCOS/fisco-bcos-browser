@@ -49,7 +49,8 @@ dependencies {
     compile spring,spring_boot,mysql
     compile "com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.1"
     compile 'com.alibaba:fastjson:1.2.29'
-    compile 'org.projectlombok:lombok:1.16.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.2'
+    compileOnly 'org.projectlombok:lombok:1.18.2'
     compile "org.apache.commons:commons-lang3:3.6"
 }
 
