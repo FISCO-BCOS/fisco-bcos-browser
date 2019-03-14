@@ -28,13 +28,18 @@
 git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 ```
 
-**代码拉取后，切换到本分支。**
+**注意**：代码拉取后，切换到相应分支。
+
+```shell
+cd fisco-bcos-browser
+git checkout XXXXX
+```
 
 ## 3.2 编译代码
 
 （1）进入目录：
 ```shell
-cd fisco-bcos-browser/server/fisco-bcos-browser
+cd server/fisco-bcos-browser
 ```
 
 （2）执行构建命令：
@@ -85,18 +90,7 @@ tail -f log/fisco-bcos-browser.log
 
 # 4. <a id="chapter-4"></a>问题排查
 
-## 4.1 编译错误
-配置一下lombok，lombok的配置和使用请在网上查询。
-```
-> Task :compileJava
-E:\fisco-bcos-browser\src\main\java\org\bcos\browser\Application.java:17: 错误: 找不到符号
-        log.info("start success...");
-        ^
-  符号:   变量 log
-  位置: 类 Application
-```
-
-## 4.2 启停失败
+## 4.1 启停失败
 如果脚本执行出现问题，尝试以下操作：
 ```shell
 chmod +x *.sh
@@ -214,4 +208,19 @@ mysql -utest -ptest1234 -h 127.0.0.1 -P 3306
 mysql > create database testDB;
 ```
 
+### 5.3.1 常见错误 
+#### 5.3.1.1 腾讯云centos mysql安装完成后，登陆报错：Access denied for user 'root'@'localhost'
+
+1. 编辑 /etc/my.cnf ，在[mysqld] 部分最后添加一行
+```
+   skip-grant-tables 
+```
+2. 保存后重启mysql
+```shell
+   service mysqld restart 
+```
+3. 输入以下命令，回车后输入密码再回车登录Mysql
+```shell
+   mysql -uroot -p mysql  
+```
 
