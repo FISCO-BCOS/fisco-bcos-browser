@@ -34,7 +34,7 @@ git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 
 （1）进入目录：
 ```shell
-cd fisco-bcos-browser/web/fisco-bcos-browser
+cd fisco-bcos-browser/server/fisco-bcos-browser
 ```
 
 （2）执行构建命令：
