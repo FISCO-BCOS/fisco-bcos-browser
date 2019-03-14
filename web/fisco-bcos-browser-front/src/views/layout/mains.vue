@@ -78,7 +78,7 @@
                                 router.push({
                                     name: this.$route.query.path,
                                     query: {
-                                        pkHash: this.$route.query.blockHash
+                                        blockHash: this.$route.query.blockHash
                                     }
                                 })
                             }else{
