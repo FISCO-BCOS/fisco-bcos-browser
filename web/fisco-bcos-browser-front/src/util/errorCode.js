@@ -61,4 +61,8 @@ export default {
         cn: "节点信息错误或未存活",
         en: "node error or not alive"
     },
+    "305008": {
+        cn: "节点信息不属于当前群组",
+        en: "node do not delong to this group"
+    },
 }
