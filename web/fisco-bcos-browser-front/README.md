@@ -105,7 +105,7 @@ git checkout XXXXX
 nginx下载地址：https://nginx.org/download/（下载最新稳定版本即可）
 或者使用命令：
 
-	wget http://nginx.org/download/nginx-1.10.2.tar.gz  (版本号可换)
+	wget http://nginx.org/download/nginx-1.9.9.tar.gz  (版本号可换)
 将下载的包移动到/usr/local/下
 #### 3.1.3 安装nginx
 ##### 3.1.3.1解压

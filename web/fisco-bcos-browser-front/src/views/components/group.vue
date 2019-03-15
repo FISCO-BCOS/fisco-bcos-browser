@@ -49,7 +49,11 @@ export default {
     },
     mounted: function(){
         this.$nextTick(function () {
-            this.GetgroupList();
+            if(localStorage.getItem("groupList")){
+                this.GetgroupList();
+            }else{
+                this.add();
+            }   
         })
     },
     methods: {
