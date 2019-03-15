@@ -1,4 +1,7 @@
+
+
 # 区块链浏览器前端
+
 本项目是fisco-bcos前端项目，使用框架`vue-cli`。
 
 兼容浏览器IE9及以上，360浏览器兼容版（IE9内核），360浏览器极速版，chrome浏览器。
@@ -33,11 +36,21 @@ nginx安装请参考附录
 git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 ```
 
-**代码拉取后，切换到本分支。** 将其中的./fisco-bcos-browser-front/web/fisco-bcos-browser-front/dist放在/data/app/web下面。
+**注意**：代码拉取后，切换到相应分支。
+
+```shell
+cd fisco-bcos-browser
+git checkout XXXXX
+```
+
+ 然后将其中./web/fisco-bcos-browser-front/目录中的dist目录放到/data/app/web目录下。
 
 ### 2.3 修改nginx配置
 
-在代码库中./fisco-bcos-browser-front/web/fisco-bcos-browser-front/doc文件下有nginx配置文件，直接可以拿来替换安装的nginx的配置文件nginx.conf；
+在./web/fisco-bcos-browser-front/doc文件下有nginx配置文件，直接可以拿来替换安装的nginx的配置文件nginx.conf；
+
+**注意**：如果按照附录安装的nginx，配置文件路径在/usr/local/nginx/conf/nginx.conf 。
+
 然后修改nginx.conf；
 
 1. 修改前端服务的ip地址和端口。
@@ -72,7 +85,7 @@ git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 启动命令：
 
 ```shell
-/usr/local/sbin/nginx    (nginx下载在/usr/local目录下)
+/usr/local/nginx/sbin/nginx   
 ```
 启动报错重点排查：日志路径是否正确（error.log和access.log）,nginx有没有添加用户权限。
 
@@ -96,11 +109,11 @@ nginx下载地址：https://nginx.org/download/（下载最新稳定版本即可
 将下载的包移动到/usr/local/下
 #### 3.1.3 安装nginx
 ##### 3.1.3.1解压
-	tar -zxvf nginx-1.9.9.tar.gz
+	tar -zxvf nginx-1.10.2.tar.gz
 
 ##### 3.1.3.2进入nginx目录
 
-	cd nginx-1.9.9
+	cd nginx-1.10.2
 ##### 3.1.3.3配置
 
 	./configure --prefix=/usr/local/nginx
@@ -117,3 +130,9 @@ nginx下载地址：https://nginx.org/download/（下载最新稳定版本即可
 
 	nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok
 	nginx: configuration file /usr/local/nginx/conf/nginx.conf test is successful
+##### 3.1.3.6nginx几个常见命令
+```shell
+/usr/local/nginx/sbin/nginx -s reload            # 重新载入配置文件
+/usr/local/nginx/sbin/nginx -s reopen            # 重启 Nginx
+/usr/local/nginx/sbin/nginx -s stop              # 停止 Nginx
+```

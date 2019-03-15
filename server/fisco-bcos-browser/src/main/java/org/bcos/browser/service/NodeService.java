@@ -72,12 +72,15 @@ public class NodeService {
             node.setRpcPort(data.get(i).getRpcPort());
             node.setP2pPort(data.get(i).getP2pPort());
 
-            SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groupId, node);
-            
-            if (syncInfo == null) {
+            List<Integer> groups = web3jRpc.getGroupList(node);
+            if (groups == null || groups.size() == 0) {
                 throw new BaseException(ConstantCode.NODE_ERROR_OR_NOT_ACTIVE);
             }
+            if (!groups.contains(reqAddNode.getGroupId())) {
+                throw new BaseException(ConstantCode.NODE_NO_NOT_BELONG);
+            }
 
+            SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groupId, node);
             node.setNodeId(syncInfo.getNodeId());
             node.setType(0);
             nodeMapper.add(node);
