@@ -43,17 +43,6 @@
             change: function () {
                 this.$refs.head.getGroupData();
             },
-            addSuccess: function(){
-                this.addGroups();
-            },
-            addGroups: function(){
-                if(localStorage.getItem("groupList")){
-                    this.addGroupShow = false;
-                    this.GetgroupList();
-                }else{
-                    this.addGroupShow = true;
-                }   
-            },
             GetgroupList: function(){
                 let data = {};
                 getGroupList(data).then(res => {
@@ -88,7 +77,9 @@
                             }
                             
                         }else{
-                            this.addGroupShow = true;
+                            router.push({
+                                name: "groupConfig"
+                            })
                         }
                     }else{
                         message(res.data.message,'error')
