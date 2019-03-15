@@ -1,10 +1,11 @@
 <template>
-  <div id="app">
+  <div id="app" class="web-font">
       <router-view ></router-view>
   </div>
 </template>
 
 <script>
+import '@/assets/css/base.css'
 export default {
     name: 'app',
 }
@@ -12,7 +13,6 @@ export default {
 
 <style>
 #app {
-    font-family: Microsoft YaHei,"微软雅黑", 'Avenir', Helvetica, Arial, sans-serif;
     background-color: #2a2c3b;
     font-size: 14px;
     height: 100%;
