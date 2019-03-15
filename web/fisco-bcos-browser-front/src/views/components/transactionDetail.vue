@@ -129,7 +129,6 @@
         width: calc(100% - 50px)!important;
         font-size: 14px;
         line-height: 24px;
-        font-family: Microsoft YaHei,"微软雅黑", 'Avenir', Helvetica, Arial, sans-serif;
     }
     .hash-content-label{
         padding: 5px 30px;

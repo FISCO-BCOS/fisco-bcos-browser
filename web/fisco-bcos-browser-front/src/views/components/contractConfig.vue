@@ -5,13 +5,16 @@
             <div class="search-nav">
                 <div class="hashInput">
                     <el-button type="primary" @click="upLoad">上传合约</el-button>
-                    <el-tooltip class="item" effect="dark" content="上传合约成功后请点击按钮编译合约" placement="top-start">
+                    <el-tooltip class="item" effect="dark" content="上传合约成功后请点击按钮编译合约,合约一次最多上传10条。" placement="top-start">
                         <i class="el-icon-info"></i>
                     </el-tooltip>
                     <input type="file" ref='file' id="file" class="inputFiles" multiple="multiple"  name="chaincodes" @change="upLoad($event)"/>
                 </div>
                 <div class="hashInput">
                     <el-button type="primary" @click="complie" :disabled="buttonShow">编译合约</el-button>
+                    <el-tooltip class="item" effect="dark" content="点击编译按钮批量编译当前页面所有未编译的合约。" placement="top-start">
+                        <i class="el-icon-info"></i>
+                    </el-tooltip>
                 </div>
             </div>
             <div class="search-table">
