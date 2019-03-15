@@ -10,7 +10,7 @@
                         <span>{{groupName}}</span>
                         <div class="nav-chainType"></div>
                         <ul class="select1">
-                            <li v-for="item in groupList" style="cursor: default;" :key="groupId">
+                            <li v-for="item in groupList" style="cursor: default;" :key="item.groupId">
                                 <span class="name" @click="checkGroup(item)">{{item.groupName}}</span>
                             </li>
                         </ul>
@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="nav-menu">
-                    <div class="nav-menu-item nav-item" v-for="item in menu">{{item.title}}
+                    <div class="nav-menu-item nav-item" v-for="item in menu" :key='item.title'>{{item.title}}
                         <i class="el-icon-caret-bottom icon-up"></i>
                         <i class="el-icon-caret-top icon-down"></i>
                         <ul class="nav-menu-item-option">
@@ -183,8 +183,6 @@ export default {
     background-color: rgba(0, 0, 0, 0);
     color: #fff;
     text-align: center;
-    font-family: Microsoft YaHei, "微软雅黑", "Avenir", Helvetica, Arial,
-        sans-serif;
     border: none;
     outline: none;
     font-size: 14px;
