@@ -16,7 +16,7 @@
 | 环境     | 版本              |
 | ------ | --------------- |
 | Java   | jdk1.8.0_121或以上版本    |
-| gradle | gradle-2.1或以上版本 |
+| gradle | gradle-5.0或以上版本 |
 | 数据库    | mysql-5.6或以上版本  |
 备注：安装说明请参看附录。
 
@@ -121,17 +121,17 @@ export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 
 此处给出简单步骤，供快速查阅。更详细的步骤，请参考[官网](http://www.gradle.org/downloads)。
 
-（1）从[官网](http://www.gradle.org/downloads)下载对应版本的gradle安装包，并解压到相应目录
+（1）从[官网](http://www.gradle.org/downloads)下载对应5.0以上版本的gradle安装包，并解压到相应目录
 
 ```shell
 mkdir /software/
-unzip -d /software/ gradleXXX.zip
+unzip -d /software/ gradle-XXX.zip
 ```
 
 （2）配置环境变量
 
 ```shell
-export GRADLE_HOME=/software/gradle-2.1
+export GRADLE_HOME=/software/gradle-XXX
 export PATH=$GRADLE_HOME/bin:$PATH
 ```
 
