@@ -98,7 +98,6 @@
     }
     .el-message__content{
         display: inline-block;
-        font-family: Microsoft YaHei,"微软雅黑", 'Avenir', Helvetica, Arial, sans-serif;
     }
     .el-message__closeBtn{
         display: inline-block !important;
