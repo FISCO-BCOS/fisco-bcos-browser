@@ -3,6 +3,7 @@
 ## 一、描述
 
 ### 1.1、基本描述
+**全新适配FISCO-BCOS 2.0.0版本，如果使用FISCO-BCOS 1.2或1.3版本请用[v1.2.1版本](https://github.com/FISCO-BCOS/fisco-bcos-browser/releases/tag/v1.2.1)。**
 
 区块链浏览器将区块链中的数据可视化，并进行实时展示。方便用户以Web页面的方式，获取当前区块链中的信息。本浏览器版本适配[FISCO-BCOS 2.0](https://github.com/FISCO-BCOS/FISCO-BCOS/tree/release-2.0.1)，关于2.0版本的特性可以参考此[链接](https://fisco-bcos-documentation.readthedocs.io/zh_CN/release-2.0/docs/introduction.html)。在使用本浏览器之前需要先理解2.0版本的群组特性，详情可以参考此[链接](https://fisco-bcos-documentation.readthedocs.io/zh_CN/release-2.0/docs/what_is_new.html#id2)。
 
