@@ -135,4 +135,5 @@ nginx下载地址：https://nginx.org/download/（下载最新稳定版本即可
 /usr/local/nginx/sbin/nginx -s reload            # 重新载入配置文件
 /usr/local/nginx/sbin/nginx -s reopen            # 重启 Nginx
 /usr/local/nginx/sbin/nginx -s stop              # 停止 Nginx
+ps -ef | grep nginx                              # 查看nginx进程
 ```
