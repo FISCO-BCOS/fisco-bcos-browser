@@ -95,6 +95,13 @@ tail -f log/fisco-bcos-browser.log
 ```shell
 chmod +x *.sh
 ```
+## 4.2 gradle build失败
+
+```shell
+gradle build
+```
+执行后，出现下面错误。**请检查gradle版本，需要使用5.0以上版本。**
+`Could not find method annotationProcessor() for arguments [org.projectlombok:lombok:1.18.2] on object of type org.gradle.api.internal.artifacts.dsl.dependencies.DefaultDependencyHandler.`
 
 # 5. <a id="chapter-5"></a>附录
 
