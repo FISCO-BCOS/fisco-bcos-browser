@@ -17,6 +17,7 @@ import org.bcos.browser.entity.dto.TransactionFromChain;
 import org.bcos.browser.entity.req.ReqGetCode;
 import org.bcos.browser.entity.req.ReqTransaction;
 import org.bcos.browser.entity.rsp.RspGetTransaction;
+import org.bcos.browser.mapper.NodeMapper;
 import org.bcos.browser.mapper.TransactionMapper;
 import org.bcos.browser.util.CommonUtils;
 import org.bcos.browser.util.DateTimeUtils;
@@ -31,6 +32,8 @@ public class TransactionService {
     TransactionMapper transactionMapper;
     @Autowired
     Web3jRpc web3jRpc;
+    @Autowired
+    NodeMapper nodeMapper;
 
     /**
      * getTransInfoByPage.
@@ -58,7 +61,7 @@ public class TransactionService {
 
         int total = transactionMapper.getAllTransactionCount(map);
 
-        List<RspGetTransaction> list = new ArrayList<RspGetTransaction>();
+        List<RspGetTransaction> list = new ArrayList<>();
         if (total > 0) {
             List<Transaction> listTbTransactionDto = transactionMapper.getTbTransactionByPage(map);
             if (listTbTransactionDto != null) {
@@ -91,22 +94,29 @@ public class TransactionService {
      */
     public BaseResponse analyzeData(ReqTransaction reqTransaction) {
         log.info("analyzeData reqTransaction:{}", reqTransaction);
-        BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         List<Transaction> transHashList = reqTransaction.getData();
         int groupId = reqTransaction.getGroupId();
         List<TransactionAndReceipt> data = new ArrayList<>();
         
-        for (int i = 0; i < transHashList.size(); i++) {
-            TransactionAndReceipt result = new TransactionAndReceipt();
-            TransactionFromChain transInfo = web3jRpc.getTransByHash(groupId, 
-                    transHashList.get(i).getTransHash());
-            ReceiptFromChain receiptInfo = web3jRpc.getReceiptByHash(groupId, 
-                    transHashList.get(i).getTransHash());
-            result.setTransactionFromChain(transInfo);
-            result.setReceiptFromChain(receiptInfo);
-            data.add(result);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("groupId", groupId);
+        map.put("type", 0);
+        int total = nodeMapper.getNodeCnts(map);
+        // check for manually added nodes
+        if (total > 0) {
+            for (int i = 0; i < transHashList.size(); i++) {
+                TransactionAndReceipt result = new TransactionAndReceipt();
+                TransactionFromChain transInfo = web3jRpc.getTransByHash(groupId, 
+                        transHashList.get(i).getTransHash());
+                ReceiptFromChain receiptInfo = web3jRpc.getReceiptByHash(groupId, 
+                        transHashList.get(i).getTransHash());
+                result.setTransactionFromChain(transInfo);
+                result.setReceiptFromChain(receiptInfo);
+                data.add(result);
+            }
         }
         
+        BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         response.setData(data);
         log.debug("###analyzeData response:{}###", response);
         return response;

@@ -116,7 +116,9 @@ public class SchedulerService {
 
         Timestamp timestamp = null;
         String sealer = "0x0";
-        if (number != 0 && !"0".equals(blockInfo.getTimestamp().substring(2))) {
+        if (number == 0 || "0".equals(blockInfo.getTimestamp().substring(2))) {
+            timestamp = Timestamp.valueOf("1970-01-01 08:00:01");
+        } else {
             timestamp = new Timestamp(Long.parseLong(blockInfo.getTimestamp().substring(2), 16));
         }
         if (number != 0) {
@@ -181,7 +183,7 @@ public class SchedulerService {
             List<String> nodeIds = web3jRpc.getGroupPeers(groupId);
             for (Node loop : nodeList) {
                 if (!nodeIds.contains(loop.getNodeId())) {
-                    nodeMapper.updateToAbandon(loop.getNodeId());
+                    nodeMapper.deleteNodeById(groupId, loop.getNodeId());
                 }
             }
         }

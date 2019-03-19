@@ -46,9 +46,8 @@ public class BlockChainInfoService {
             String dateTimeEnd) {
         List<TransactionByDay> list =
                 blockChainInfoMapper.getLastTbTxnByDay(groupId, dateTimeBegin, dateTimeEnd);
-        List<RspGetTxnLatelyDays> listTxn = null;
+        List<RspGetTxnLatelyDays> listTxn = new ArrayList<>();
         if (list != null) {
-            listTxn = new ArrayList<>();
             for (TransactionByDay tbTxnByDayDto : list) {
                 Date pkDate = tbTxnByDayDto.getPkDate();
                 if (pkDate != null) {

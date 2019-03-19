@@ -21,7 +21,8 @@ public interface NodeMapper {
 
     void updateStatus(Map<String, Object> map);
     
-    void updateToAbandon(@Param(value = "nodeId") String nodeId);
+    void updateToSync(@Param(value = "groupId") int groupId,
+            @Param(value = "nodeId") String nodeId);
 
     void deleteNodeById(@Param(value = "groupId") int groupId,
             @Param(value = "nodeId") String nodeId);
