@@ -16,7 +16,7 @@ constant:
   cronBlockChainInfo: 0/10 * * * * ?
   cronBlockInfo: 0/10 * * * * ?
   cronTxnByDay: 30 0/1 * * * ?
-  cronAyncNode: 0 0 0/1 * * ?
+  cronAyncNode: 0 0/10 * * * ?
   cronIfNodeActive: 0 0/1 * * * ?
   handleBlocks: 50
   
