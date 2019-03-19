@@ -91,21 +91,19 @@
             gmt_modify = now()
         WHERE node_id = #{nodeId}
     </update>
-    
-    <update id="updateToAbandon">
-        UPDATE tb_node_#{groupId}
-        SET status = 2
-            gmt_modify = now()
-        WHERE node_id = #{nodeId}
-    </update>
 
-    <update id="deleteNodeById">
+    <update id="updateToSync">
         UPDATE tb_node_#{groupId}
         SET ip = null,
             rpc_port = null,
             p2p_port = null,
             type = 1,
             gmt_modify = now()
+        WHERE node_id = #{nodeId}
+    </update>
+    
+    <update id="deleteNodeById">
+        DELETE FROM tb_node_#{groupId}
         WHERE node_id = #{nodeId}
     </update>
 

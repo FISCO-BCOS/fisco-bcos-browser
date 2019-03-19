@@ -20,7 +20,7 @@
             p2p_port varchar(16) COMMENT '节点p2p端口',
             block_number int(11) DEFAULT 0 COMMENT '节点块高',
             pbft_view int(11) DEFAULT 0 COMMENT 'PBFT view',
-            status tinyint(4) DEFAULT '0' COMMENT '节点状态（0：正常，1：异常，2：废弃）',
+            status tinyint(4) DEFAULT '0' COMMENT '节点状态（0：正常，1：异常）',
             type tinyint(4) DEFAULT '0' COMMENT '节点类型（0：手动添加，1：链上同步）',
             gmt_create datetime COMMENT '创建时间',
             gmt_modify datetime COMMENT '修改时间',
