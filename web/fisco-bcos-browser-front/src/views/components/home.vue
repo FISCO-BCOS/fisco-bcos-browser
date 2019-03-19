@@ -48,7 +48,7 @@
                     </div>
                     <div class="home-foot-box-content" v-loading="loading4" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
                         <ul>
-                            <li class="item" v-for="item in blockList">
+                            <li class="item" v-for="item in blockList" :key='item.number'>
                                 <div class="left">
                                     <div @click="linkPage('blockDetail','blockHash',item.blockHash)" class="table-link">区块 {{item.number}}</div>
                                     <div>{{item.dateTimeStr}}</div>
@@ -76,7 +76,7 @@
                     </div>
                     <div class="home-foot-box-content" v-loading="loading5" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
                         <ul>
-                            <li class="item" v-for="itemlist in transactionList">
+                            <li class="item" v-for="itemlist in transactionList" :key='itemlist.blockTimesStr'>
                                 <div class="left">
                                     <div class="transaction" @click="linkPage( 'transactionDetail','pkHash',itemlist.transHash)">交易 <span class="table-link" :title="itemlist.transHash | toUpperCase">{{itemlist.transHash | toUpperCase}}</span></div>
                                     <div>
@@ -564,6 +564,8 @@
                     if(res.data.code === 0){
                         if(res.data.data&&res.data.data.length) {
                             this.TbNodesList = res.data.data
+                        }else{
+                            message('无可用节点，请在节点配置添加节点！','warning')
                         }
                     }else{
                         this.TbNodesList = []
