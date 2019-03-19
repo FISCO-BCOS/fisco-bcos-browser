@@ -131,6 +131,7 @@
                             this.configList = res.data.data
                         }else{
                             this.configList = []
+                            message('无可用节点，请在节点配置添加节点！','warning')
                         }
                     }else{
                         message(errorcode[res.data.code].cn,'error')
