@@ -53,7 +53,7 @@
 
 #### *<u>2.2.2、前端web页面服务搭建</u>*
 
-区块链浏览器前端web页面使用框架`vue-cli`，具体搭建流程参见[**安装文档**](./web/fisco-bcos-browser-front)。
+区块链浏览器前端web页面使用框架`vue-cli`，具体搭建流程参见[**安装文档**](./web/fisco-bcos-browser-front/README.md)。
 
 ## 三、初始化环境
 
