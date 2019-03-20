@@ -49,11 +49,11 @@
 
 #### *<u>2.2.1、后台服务搭建</u>*
 
-区块链浏览器后台服务使用Spring Boot的JAVA后台服务，具体搭建流程参见[**安装文档**](https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/server/fisco-bcos-browser)。
+区块链浏览器后台服务使用Spring Boot的JAVA后台服务，具体搭建流程参见[**安装文档**](./server/fisco-bcos-browser/README.md)。
 
 #### *<u>2.2.2、前端web页面服务搭建</u>*
 
-区块链浏览器前端web页面使用框架`vue-cli`，具体搭建流程参见[**安装文档**](https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/web/fisco-bcos-browser-front)。
+区块链浏览器前端web页面使用框架`vue-cli`，具体搭建流程参见[**安装文档**](./web/fisco-bcos-browser-front/README.md)。
 
 ## 三、初始化环境
 
