@@ -43,17 +43,6 @@
             change: function () {
                 this.$refs.head.getGroupData();
             },
-            addSuccess: function(){
-                this.addGroups();
-            },
-            addGroups: function(){
-                if(localStorage.getItem("groupList")){
-                    this.addGroupShow = false;
-                    this.GetgroupList();
-                }else{
-                    this.addGroupShow = true;
-                }   
-            },
             GetgroupList: function(){
                 let data = {};
                 getGroupList(data).then(res => {
@@ -67,11 +56,30 @@
                             }
                             localStorage.setItem("groupList",JSON.stringify(this.groupList))
                             this.change();
-                            router.push({
-                                name: this.$route.query.path
-                            })
+                            if(this.$route.query.pkHash){
+                                router.push({
+                                    name: this.$route.query.path,
+                                    query: {
+                                        pkHash: this.$route.query.pkHash
+                                    }
+                                })
+                            }else if(this.$route.query.blockHash){
+                                router.push({
+                                    name: this.$route.query.path,
+                                    query: {
+                                        blockHash: this.$route.query.blockHash
+                                    }
+                                })
+                            }else{
+                                router.push({
+                                    name: this.$route.query.path,
+                                })
+                            }
+                            
                         }else{
-                            this.addGroupShow = true;
+                            router.push({
+                                name: "groupConfig"
+                            })
                         }
                     }else{
                         message(res.data.message,'error')
@@ -90,7 +98,6 @@
     }
     .el-message__content{
         display: inline-block;
-        font-family: Microsoft YaHei,"微软雅黑", 'Avenir', Helvetica, Arial, sans-serif;
     }
     .el-message__closeBtn{
         display: inline-block !important;

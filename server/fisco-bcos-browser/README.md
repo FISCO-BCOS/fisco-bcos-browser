@@ -16,7 +16,7 @@
 | 环境     | 版本              |
 | ------ | --------------- |
 | Java   | jdk1.8.0_121或以上版本    |
-| gradle | gradle-2.1或以上版本 |
+| gradle | gradle-5.0或以上版本 |
 | 数据库    | mysql-5.6或以上版本  |
 备注：安装说明请参看附录。
 
@@ -28,13 +28,18 @@
 git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 ```
 
-**代码拉取后，切换到本分支。**
+**注意**：代码拉取后，切换到相应分支。
+
+```shell
+cd fisco-bcos-browser
+git checkout XXXXX
+```
 
 ## 3.2 编译代码
 
 （1）进入目录：
 ```shell
-cd fisco-bcos-browser/web/fisco-bcos-browser
+cd server/fisco-bcos-browser
 ```
 
 （2）执行构建命令：
@@ -85,22 +90,18 @@ tail -f log/fisco-bcos-browser.log
 
 # 4. <a id="chapter-4"></a>问题排查
 
-## 4.1 编译错误
-配置一下lombok，lombok的配置和使用请在网上查询。
-```
-> Task :compileJava
-E:\fisco-bcos-browser\src\main\java\org\bcos\browser\Application.java:17: 错误: 找不到符号
-        log.info("start success...");
-        ^
-  符号:   变量 log
-  位置: 类 Application
-```
-
-## 4.2 启停失败
+## 4.1 启停失败
 如果脚本执行出现问题，尝试以下操作：
 ```shell
 chmod +x *.sh
 ```
+## 4.2 gradle build失败
+
+```shell
+gradle build
+```
+执行后，出现下面错误。**请检查gradle版本，需要使用5.0以上版本。**
+`Could not find method annotationProcessor() for arguments [org.projectlombok:lombok:1.18.2] on object of type org.gradle.api.internal.artifacts.dsl.dependencies.DefaultDependencyHandler.`
 
 # 5. <a id="chapter-5"></a>附录
 
@@ -127,17 +128,17 @@ export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 
 此处给出简单步骤，供快速查阅。更详细的步骤，请参考[官网](http://www.gradle.org/downloads)。
 
-（1）从[官网](http://www.gradle.org/downloads)下载对应版本的gradle安装包，并解压到相应目录
+（1）从[官网](http://www.gradle.org/downloads)下载对应5.0以上版本的gradle安装包，并解压到相应目录
 
 ```shell
 mkdir /software/
-unzip -d /software/ gradleXXX.zip
+unzip -d /software/ gradle-XXX.zip
 ```
 
 （2）配置环境变量
 
 ```shell
-export GRADLE_HOME=/software/gradle-2.1
+export GRADLE_HOME=/software/gradle-XXX
 export PATH=$GRADLE_HOME/bin:$PATH
 ```
 
@@ -214,4 +215,19 @@ mysql -utest -ptest1234 -h 127.0.0.1 -P 3306
 mysql > create database testDB;
 ```
 
+### 5.3.1 常见错误 
+#### 5.3.1.1 腾讯云centos mysql安装完成后，登陆报错：Access denied for user 'root'@'localhost'
+
+1. 编辑 /etc/my.cnf ，在[mysqld] 部分最后添加一行
+```
+   skip-grant-tables 
+```
+2. 保存后重启mysql
+```shell
+   service mysqld restart 
+```
+3. 输入以下命令，回车后输入密码再回车登录Mysql
+```shell
+   mysql -uroot -p mysql  
+```
 

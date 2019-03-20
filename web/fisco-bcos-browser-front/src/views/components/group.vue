@@ -10,7 +10,7 @@
              <div class="search-table">
                  <el-table :data="grouplist" v-loading="loading"  element-loading-text="数据加载中..."
                           element-loading-background="rgba(0, 0, 0, 0.8)">
-                    <el-table-column type="index" label="序号" align="center"></el-table-column>
+                    <el-table-column type="index" label="序号" align="center" min-width='60px'></el-table-column>
                     <el-table-column prop="groupId" label="群组id" align="center"></el-table-column>
                     <el-table-column prop="groupName" label="群组名称" align="center"></el-table-column>
                     <el-table-column prop="groupDesc" label="群组描述" align="center"></el-table-column>
@@ -49,7 +49,11 @@ export default {
     },
     mounted: function(){
         this.$nextTick(function () {
-            this.GetgroupList();
+            if(localStorage.getItem("groupList")){
+                this.GetgroupList();
+            }else{
+                this.add();
+            }   
         })
     },
     methods: {

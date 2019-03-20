@@ -11,7 +11,7 @@
                     <el-tabs v-model="activeName" @tab-click="handleClick">
                         <el-tab-pane label="交易信息" name="first">
                             <div class="tranbox">
-                                <div v-for="item in transactionData" class="hash-content-label">
+                                <div v-for="item in transactionData" class="hash-content-label" :key='item.label'>
                                     <span class="label-title">{{item.label}}:</span>
                                     <span>{{item.value}}</span>
                                 </div>
@@ -47,7 +47,7 @@
                         </el-tab-pane>
                         <el-tab-pane label="交易回执信息" name="second">
                             <div class="tranbox">
-                                <div v-for="item in receiptData" class="hash-content-label">
+                                <div v-for="item in receiptData" class="hash-content-label" :key='item.label'>
                                     <span class="label-title">{{item.label}}:</span>
                                     <span class="receit-content">{{item.value}}</span>
                                 </div>
@@ -55,7 +55,7 @@
                                     <span class="label-title">logs:</span>
                                     <div class="label-content">
                                         <span class="input-data" v-if="!eventLog.length">{{transactionReceiptByPkHash.logs}}</span>
-                                        <div class="input-data" v-for="item in eventLog" v-if="eventLog.length">
+                                        <div class="input-data" v-for="item in eventLog" v-if="eventLog.length" :key='item.address'>
                                             <div class="item">
                                                 <span class="label">Address :</span>
                                                 <span>{{item.address}}</span>
@@ -67,7 +67,7 @@
                                             <div class="item">
                                                 <span class="label">Topics :</span>
                                                 <div style="display: inline-block;width:800px;">
-                                                    <div v-for="(val,index) in item.topics ">[{{index}}] {{val}}</div>
+                                                    <div v-for="(val,index) in item.topics " :key='val'>[{{index}}] {{val}}</div>
                                                 </div>
                                             </div>
                                             <div class="item">
@@ -129,7 +129,6 @@
         width: calc(100% - 50px)!important;
         font-size: 14px;
         line-height: 24px;
-        font-family: Microsoft YaHei,"微软雅黑", 'Avenir', Helvetica, Arial, sans-serif;
     }
     .hash-content-label{
         padding: 5px 30px;
@@ -211,6 +210,15 @@
     }
     .content>>>.is-active{
         color: #409EFF;
+    }
+    .content>>>#tab-first{
+        padding-left: 15px;
+    }
+    .content>>>#tab-second{
+        padding-left: 30px;
+    }
+    .content>>>.el-tabs__active-bar{
+        padding-left: 20px;
     }
 </style>
 <script>
