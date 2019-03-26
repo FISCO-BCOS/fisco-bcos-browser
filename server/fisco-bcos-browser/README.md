@@ -56,6 +56,8 @@ cd dist/conf
 ```
 
 （2）修改服务配置（没变化可以不修改）：
+
+数据库服务器，和数据库需要提前准备，创建方法可以参照附录。
 ```shell
 修改当前服务端口：sed -i "s/8088/${your_server_port}/g" application.yml
 修改数据库IP：sed -i "s/127.0.0.1/${your_db_ip}/g" application.yml
