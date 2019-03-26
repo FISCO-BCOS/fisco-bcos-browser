@@ -30,7 +30,7 @@ nginx安装请参考附录
 ### 2.2 拉取代码
 
 
-执行命令：
+执行命令：(前后端同机部署时，只需要拉取一次)
 
 ```shell
 git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
@@ -43,7 +43,7 @@ cd fisco-bcos-browser
 git checkout XXXXX
 ```
 
- 然后将其中./web/fisco-bcos-browser-front/目录中的dist目录放到/data/app/web目录下。
+ 然后将其中./web/fisco-bcos-browser-front/目录中的dist目录放到/data/app/web目录下。目录可以自己指定，只需要nginx配置文件步骤2保持一致即可。
 
 ### 2.3 修改nginx配置
 
@@ -59,10 +59,10 @@ git checkout XXXXX
 
 ```Nginx
     server {
-            listen       8088 default_server;   //步骤1、前端端口
-            server_name  192.168.0.1;         //步骤1、前端地址，可配置为域名
+            listen       8089 default_server;   #步骤1、前端端口
+            server_name  192.168.0.1;         #步骤1、前端地址，可配置为域名
             location / {
-                    root    /data/app/web/dist;   //步骤2、前端文件路径
+                    root    /data/app/web/dist;   #步骤2、前端文件路径
                     index  index.html index.htm;
                     try_files $uri $uri/ /index.html =404;
                 }
@@ -71,7 +71,7 @@ git checkout XXXXX
             include /etc/nginx/default.d/*.conf;
 
             location /api {
-                    proxy_pass    http://192.168.0.2:8089/;    //步骤3、后端服务(fisco-bcos-browser)地址及端口
+                    proxy_pass    http://192.168.0.2:8090/;    #步骤3、后端服务(fisco-bcos-browser)地址及端口
                	 	proxy_set_header		Host				$host;
                     proxy_set_header		X-Real-IP			$remote_addr;
                     proxy_set_header		X-Forwarded-For		$proxy_add_x_forwarded_for;
@@ -90,7 +90,7 @@ git checkout XXXXX
 启动报错重点排查：日志路径是否正确（error.log和access.log）,nginx有没有添加用户权限。
 
 (2)、打开页面，页面url是nginx配置的前端端口和前端ip。
-例如:上面配置文件的url为   http:192.168.0.1:8088
+例如:上面配置文件的url为   http:192.168.0.1:8089
 
 (3)、打开页面后，配置群组（群组ip是搭链的群组ip），配置节点（该群组下节点），然后就可以查看具体数据了。
 
