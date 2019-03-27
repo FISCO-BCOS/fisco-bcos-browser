@@ -114,4 +114,4 @@ ALTER TABLE tb_block ADD INDEX index_number (number);
 
 ALTER TABLE tb_transaction ADD INDEX index_number(blockNumber,transactionIndex);
 
-ALTER TABLE tb_transaction ADD INDEX blockTimestamp_index(blockTimestamp);
+alter table tb_transaction add index blockTimestamp_index(blockTimestamp);
