@@ -113,5 +113,3 @@ CREATE TABLE tb_nodeConnection (
 ALTER TABLE tb_block ADD INDEX index_number (number);
 
 ALTER TABLE tb_transaction ADD INDEX index_number(blockNumber,transactionIndex);
-
-alter table tb_transaction add index blockTimestamp_index(blockTimestamp);
