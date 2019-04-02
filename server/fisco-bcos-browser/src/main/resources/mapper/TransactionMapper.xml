@@ -6,7 +6,9 @@
         group_id as groupId,
         block_hash as blockHash,
         block_number as blockNumber,
+        trans_index as transIndex,
         block_time as blockTime,
+        block_hash as blockHash,
         trans_from as transFrom,
         trans_to as transTo,
         trans_index as transIndex,
@@ -16,8 +18,8 @@
     <insert id="add" useGeneratedKeys="true"
         parameterType="org.bcos.browser.entity.dto.Transaction">
         INSERT INTO
-        tb_transaction_#{groupId}(trans_hash,group_id,block_hash,block_number,block_time,trans_from,trans_to,trans_index,gmt_create,gmt_modify)
-        VALUES(#{transHash},#{groupId},#{blockHash},#{blockNumber},#{blockTime},#{transFrom},#{transTo},#{transIndex},now(),now())
+        tb_transaction_#{groupId}(trans_hash,group_id,block_hash,block_number,block_time,block_date,trans_from,trans_to,trans_index,gmt_create,gmt_modify)
+        VALUES(#{transHash},#{groupId},#{blockHash},#{blockNumber},#{blockTime},#{blockDate},#{transFrom},#{transTo},#{transIndex},now(),now())
     </insert>
     
     <update id="updateMethod" parameterType="org.bcos.browser.entity.dto.Transaction">
@@ -29,8 +31,8 @@
 
     <select id="getAllTransactionCount" parameterType="java.util.Map"
         resultType="INTEGER">
-        SELECT count(1) tranasctionCount FROM tb_transaction_#{groupId} 
-        WHERE 1 = 1
+        SELECT count(1) FROM tb_transaction_#{groupId}
+        WHERE group_id = #{groupId}
         <if test="transHash != null and transHash !=''">
             AND trans_hash = #{transHash}
         </if>

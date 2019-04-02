@@ -112,8 +112,7 @@ public class NodeService {
      */
     public BasePageResponse getNodeList(int groupId, int pageNumber, int pageSize, 
             int type, String ip, String rpcPort, String p2pPort) {
-        int start =
-                Optional.ofNullable(pageNumber).map(page -> (page - 1) * pageSize).orElse(null);
+        int start = Optional.ofNullable(pageNumber).map(page -> (page - 1) * pageSize).orElse(null);
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("groupId", groupId);
