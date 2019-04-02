@@ -32,7 +32,6 @@ git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 
 ```shell
 cd fisco-bcos-browser
-git checkout XXXXX
 ```
 
 ## 3.2 编译代码
