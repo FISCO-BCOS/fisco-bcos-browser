@@ -134,6 +134,7 @@ public class SchedulerService {
             transaction.setBlockHash(blockInfo.getHash());
             transaction.setBlockNumber(CommonUtils.parseHexStr2Int(blockInfo.getNumber()));
             transaction.setBlockTime(timestamp);
+            transaction.setBlockDate(timestamp);
             transaction.setTransFrom(loop.getFrom());
             transaction.setTransTo(loop.getTo());
             transaction.setTransIndex(CommonUtils.parseHexStr2Int(loop.getTransactionIndex()));
@@ -188,6 +189,17 @@ public class SchedulerService {
             }
         }
     }
+
+    /**
+     * syncGroupInfo
+     */
+    public void syncGroupInfo(){
+
+    }
+
+
+
+
 
     /**
      * checkNodeActive.

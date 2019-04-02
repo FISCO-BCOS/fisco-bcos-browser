@@ -10,7 +10,8 @@
     </insert>
 
     <select id="getAllBlockCount" resultType="int">
-        SELECT count(1) FROM tb_block_#{groupId} WHERE 1 = 1
+        SELECT count(1) FROM tb_block_#{groupId}
+        WHERE group_id = #{groupId}
         <if test="blockHash != null and blockHash !=''">
             AND block_hash = #{blockHash}
         </if>

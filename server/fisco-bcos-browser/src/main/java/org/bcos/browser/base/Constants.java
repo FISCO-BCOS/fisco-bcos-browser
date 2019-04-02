@@ -40,5 +40,5 @@ public class Constants {
     public static final String PREFIX_TB_TXNBYDAY = "tb_txnByDay_";
     public static final String PREFIX_TB_BLOCK = "tb_block_";
     public static final String PREFIX_TB_TRANSACTION = "tb_transaction_";
-    public static final String PREFIX_TB_CONTRACT = "tb_contract_";
+    public static final String PREFIX_TB_CONTRACT = "tb_contract";
 }

@@ -1,9 +1,14 @@
 package org.bcos.browser.util;
 
 import com.alibaba.fastjson.JSON;
+
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -121,4 +126,25 @@ public class CommonUtils {
         String dateDescStr = sdf.format(date);
         return dateDescStr;
     }
+
+    /**
+     * readZipFile.
+     *
+     * @return
+     */
+    public static String readZipFile(ZipEntry zipEntry, ZipFile zipFile) throws IOException {
+        long size = zipEntry.getSize();
+        StringBuilder strBuilder = new StringBuilder();
+        if (size > 0) {
+            InputStream inputStream = zipFile.getInputStream(zipEntry);
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = br.readLine()) != null) {
+                strBuilder.append(line).append("\n");
+                }
+            br.close();
+        }
+        return strBuilder.toString();
+    }
+
 }

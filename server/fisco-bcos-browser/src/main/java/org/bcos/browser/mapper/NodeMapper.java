@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 import org.bcos.browser.entity.dto.Node;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface NodeMapper {
 
     void add(Node node);
