@@ -43,5 +43,5 @@ export default {
 
     GET_TRANSACTION_ANALYZEDATA: `${api}/transaction/analyzeData`, //Get the data needed for transaction parsing based on the transaction hash call
 
-
+    UPLOAD: `${api}/contract/addBatch`
 }

@@ -1,14 +1,14 @@
 <template>
-    <div class="search-main">
-        <div class="container">
+    <div class="search-main" style="padding-bottom: 0;height: 100%;">
+        <div class="container" style="padding-bottom: 0;height: 100%;">
             <v-nav :hrTitle="btitle" :hrcontent="btitle"></v-nav>
             <div class="search-nav">
                 <div class="hashInput">
-                    <el-button type="primary" @click="upLoad">上传合约</el-button>
+                    <el-button type="primary" @click="upLoadFiles">上传合约</el-button>
                     <el-tooltip class="item" effect="dark" content="上传合约成功后请点击按钮编译合约,合约一次最多上传10条。" placement="top-start">
                         <i class="el-icon-info"></i>
                     </el-tooltip>
-                    <input type="file" ref='file' id="file" class="inputFiles" multiple="multiple"  name="chaincodes" @change="upLoad($event)"/>
+                    <input type="file" ref='file' id="file" class="inputFiles" multiple="multiple"  name="chaincodes" @change="upLoadFiles($event)"/>
                 </div>
                 <div class="hashInput">
                     <el-button type="primary" @click="complie" :disabled="buttonShow">编译合约</el-button>
@@ -17,63 +17,49 @@
                     </el-tooltip>
                 </div>
             </div>
-            <div class="search-table">
-                <el-table :data="contractList" v-loading="loading"  element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
-                    <el-table-column prop="contractName" label="合约名称" align="center" :class-name="'table-link'">
-                        <template slot-scope="scope">
-                            <span @click='openEditor(scope.row)'>{{scope.row.contractName}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="contractStatus" label="合约状态" align="center">
-                        <template slot-scope="scope">
-                            <span v-if="scope.row.contractStatus == 0">未编译</span>
-                            <span v-if="scope.row.contractStatus == 1" style="color: #0F0">已编译</span>
-                            <span v-if="scope.row.contractStatus == 2" @click='openAlert(scope.row)' style="color: #F00;cursor:pointer">编译失败
-                            </span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column  fixed="right" label="操作" width="100" align="center">
-                        <template slot-scope="scope">
-                                <i class="el-icon-delete"  style=" cursor:pointer" @click="deleteRow(scope.row)"></i>
-                        </template>
-                    </el-table-column>
-                </el-table>
-                <div class="search-pagation">
-                    <div style="line-height: 40px;">
-                        <span>查询结果 : </span>
-                        <span>共计{{pagination.total}}条数据</span>
+            <div class="search-table" style="font-size: 0;height: calc(100% - 133px); box-sizing: border-box;">
+                <div class="contract-menu">
+                    <v-codeMenu :data='contractArry'></v-codeMenu>
+                </div>
+                <div class="contract-content" style="height: 100%;">
+                    <div ref='codeContent' :style="{height: codeHight}">
+                        <div  class="ace-editor" ref="ace" v-show='editorShow' id='aceEditor'></div>
                     </div>
-                    <el-pagination style="display: inline-block"
-                        layout="sizes,prev, pager, next"
-                        :total="pagination.total"
-                        @size-change="handleSizeChange"
-                        @current-change="handleCurrentChange"
-                        :current-page.sync="pagination.currentPage"
-                        :page-sizes="[10, 20, 30, 50]"
-                        :page-size="pagination.pageSize">
-                    </el-pagination>
+                    <div v-if='errInfo' style="height: 30%;border-top: 1px solid #fff;background-color: rgb(39, 40, 34)">
+                        <span>输出信息</span><br>
+                        <span style="width: 100%;word-break:break-all;">{{errInfo}}</span>
+                    </div>
                 </div>
             </div>
         </div>
-        <v-editor v-if='editorShow' :show='editorShow' :data='editorData' @close='closeEditor'></v-editor>
     </div>
 </template>
 <script>
 let Base64 = require("js-base64").Base64;
 import navs from '@/components/content-nav'
-import { addContract,getContractList,deleteContract,updateContract } from "@/api/api"
+import { addContract,getContractList,deleteContract,updateContract,uploadData } from "@/api/api"
 import {message} from '@/util/util'
 import constant from '@/util/constant'
 import errorcode from "@/util/errorCode"
 import editor from "@/components/editor"
 import '@/assets/css/layout.css'
 import '@/assets/css/public.css'
+import codeMenu from "@/components/codeMenu"
+let resData = require('@/contract.json');
+import ace from 'ace-builds'
+// import 'ace-builds/webpack-resolver' 
+import 'ace-builds/src-noconflict/theme-monokai'
+import 'ace-builds/src-noconflict/mode-javascript'
+import 'ace-builds/src-noconflict/ext-language_tools';  
+require('ace-mode-solidity/build/remix-ide/mode-solidity')
+import Bus from "@/bus"
 
 export default {
     name: "contractConfig",
     components: {
         'v-nav': navs,
-        'v-editor': editor
+        'v-editor': editor,
+        "v-codeMenu": codeMenu,
     },
     data: function(){
         return {
@@ -87,7 +73,6 @@ export default {
             groupId: null,
             fileList: [],
             files: [],
-            editorShow: false,
             editorData: "",
             pagination: {
                 currentPage: 1,
@@ -95,21 +80,72 @@ export default {
                 total: 0,
             },
             buttonShow: false,
+            contractArry: [],
+
+            editorShow: true,
+            aceEditor: null,
+            themePath: 'ace/theme/monokai', 
+            modePath: 'ace/mode/solidity',
+            indexData: null,
+            resultList: [],
+            codeHight: '100%',
+            errInfo: "",
         }
     },
     mounted: function(){
         this.groupId = localStorage.getItem("groupId")
+        this.initEditor();
         this.getContracts();
         this.getAllGroups();
+        Bus.$on("check",data => {
+            this.setContent(data.data);
+            this.changeContractList(data.data,data.list)
+        })
+        Bus.$on("deleteFile",data => {
+            let reqData = data.contractId.toString()
+            this.deleteCode(reqData)
+        })
+        Bus.$on("deleteFolder",data => {
+            let arry = [];
+            arry = this.setContractList(data.contractName,this.resultList);
+            let reqlist = [];
+            
+            for(let i = 0; i < arry.length; i++){
+                reqlist.push(arry[i].contractId)
+            }
+            let reqData = reqlist.join(",")
+            this.deleteCode(reqData)
+        })
     },
     methods: {
-        openEditor: function(val){
-            this.editorShow = true;
-            this.editorData = val.contractSource
+        initEditor: function(){
+            this.aceEditor = ace.edit('aceEditor', {
+                maxLines: Math.ceil((this.$refs.codeContent.offsetHeight)/17) + 1,
+                minLines: Math.ceil((this.$refs.codeContent.offsetHeight)/17) + 1,
+                fontSize: 14, 
+                fontFamily: 'Consolas,Monaco,monospace',
+
+                theme: this.themePath, 
+                mode: this.modePath, 
+                tabSize: 4,
+                useSoftTabs: true
+            })
+            this.aceEditor.setOptions({
+                enableSnippets: true,
+                enableLiveAutocompletion: true,
+                enableBasicAutocompletion: true
+            })
+            let editor = this.aceEditor.alignCursors();
+            this.aceEditor.getSession().setUseWrapMode(true);
+            this.aceEditor.resize();  
         },
-        closeEditor: function(){
-            this.editorShow = false;
-            this.editorData = '';
+        setContent: function(val){
+            if(val.errorInfo){
+                this.errInfo = val.errorInfo;
+                this.codeHight = '70%'
+            }
+            let data = Base64.decode(val.contractSource)
+            this.aceEditor.setValue(data)
         },
         openAlert: function(row){
             this.$confirm(`<div style="width: 380px; max-height: 250px;padding: 10px 5px;overfolw-y:auto; white-space: pre-wrap;word-wrap: break-word;">${row.errorInfo}</div>
@@ -118,6 +154,64 @@ export default {
                 cancelButtonText: '取消',
                 dangerouslyUseHTMLString: true
             });
+        },
+        upLoadFiles: function(e){
+            let num = 0;
+            if(e.target.files.length == 1){
+                if(e.target.files[0].name.split(".")[1] == 'zip'){
+                    this.uploadZip(e)
+                }else if(e.target.files[0].name.split(".")[1] == 'sol'){
+                    let num =0 ;
+                    this.contractList.forEach(value => {
+                        if(value.contractName == e.target.files[0].name.split(".")[0] && value.contractPath == "/"){
+                            num ++
+                            this.$message({
+                            message: `合约${value.contractName}与已上传的合约名称相同，请修改后在上传！`,
+                            type: "error"
+                        });
+                        }
+                    })
+                    if(num == 0){
+                        this.upLoad(e)
+                    }
+                }
+            }else if(e.target.files.length > 1){
+                for(let i = 0; i < e.target.files.length; i++){
+                    if(e.target.files[i].name.split(".")[1] == 'zip'){
+                        num++;
+                        this.$message({
+                            message: '不能同时上传sol文件和zip包,且不能上传多个zip包。',
+                            type: "error"
+                        });
+                    }
+                    this.contractList.forEach(value => {
+                        if(value.contractName == e.target.files[i].name.split(".")[0] && value.contractPath == "/"){
+                            num++
+                            this.$message({
+                            message: `合约${value.contractName}与已上传的合约名称相同，请修改后在上传！`,
+                            type: "error"
+                        });
+                        }
+                    })
+                }
+                if(num == 0){
+                    this.upLoad(e)
+                }
+            }
+        },
+        uploadZip: function(e){
+            let file = document.getElementById("file").files[0]
+            let files = e.target.files[0],
+                fileName = e.target.files[0].name
+            let fileFormData = new FormData();
+            fileFormData.append('zipFile',file,file.name);
+            uploadData(fileFormData).then(res => {
+                if(res.data.code == 0){
+                    this.getContracts()
+                }
+            }).catch(err => {
+                alert(1111)
+            })
         },
         // upload a contract and save this
         upLoad: function(e) {
@@ -171,13 +265,13 @@ export default {
         },
         saveContract: function(){
             let data = {
-                groupId: this.groupId
             }
             if(this.fileList.length){
                 data.data = [];
                 this.fileList.forEach((value,index) => {
                     data.data[index] = {};
                     data.data[index].contractName = value.filename;
+                    data.data[index].contractPath = "/";
                     data.data[index].contractSource = value.fileString;
                 })
             }else{
@@ -204,21 +298,130 @@ export default {
         },
         getContracts: function(type){
             let data = {
-                    groupId: this.groupId,
-                    pageNumber: this.pagination.currentPage,
-                    pageSize: this.pagination.pageSize
+                    pageNumber:1,
+                    pageSize: 500
                 };
             getContractList(data,{}).then(res => {
                 if(res.data.code === 0){
                     this.contractList = res.data.data;
+                    if(res.data.data && res.data.data.length){
+                        this.changeContractData(res.data.data)
+                    }
                     this.pagination.total = res.data.totalCount;
                 }else{
                     message(errorcode[res.data.code].cn,'error')
                 }
             }).catch(err => {
-                 message(constant.ERROR,'error');
+                message(constant.ERROR,'error');
             })
         },
+        changeContractList: function(item,list){
+            this.resultList.forEach(value => {
+                value.contractActive = false;
+                list.forEach(val => {
+                    if(val.contractId == value.contractId){
+                        if(val.fileActive){ 
+                            value.fileActive = true;
+                            value.fileIcon = 'el-icon-caret-bottom';
+                        }else if(val.fileActive == false){
+                            val.fileActive = false;
+                            val.fileIcon = 'el-icon-caret-right';
+                        }
+                    }
+                })
+                if(value.contractId == item.contractId){
+                    value.contractActive = true
+                }
+            });
+            this.contractArry = this.setContractList("",this.resultList)
+        },
+        changeContractData: function(list){
+            let arry = [];
+            let folderArry = [];
+            list.forEach((value,index) => {
+                if(value.contractActive){
+                    value.contractActive = true
+                }else{
+                    value.contractActive = false;
+                }
+               
+                value.realPath = value.contractPath + value.contractName + '.sol';
+                value.pathArry = value.realPath.split("/");
+                // debugger
+                if(value.pathArry && value.pathArry.length > 1){
+                    value.contractFolder = value.pathArry[0];
+                    value.realFolder = value.pathArry[value.pathArry.length-2]
+                }else{
+                    value.contractFolder = ""
+                }
+            })
+            arry = list[0]
+            list.forEach(value => {
+                if(value.pathArry.length > arry.pathArry.length){
+                    arry = value
+                }
+            })
+            // console.log(arry)
+            folderArry = this.createFolder(arry);
+            this.resultList = list.concat(folderArry);
+            this.contractArry = this.setContractList("",this.resultList);
+        },
+        checkOne: function(val){
+            val.forEach(value => {
+                if(!value.contractType){
+                    this.setContent(value);
+                    return
+                }
+            })
+        },
+        //create folder
+        createFolder: function(data){
+            let arry = [];
+            let result = [];
+            arry = data.pathArry;
+            arry.pop();
+            for(let i = 0; i < arry.length; i++){
+                let obj = {};
+                obj.contractName = arry[i];
+                obj.contractType = 'folder';
+                obj.fileActive = false;
+                obj.fileIcon = 'el-icon-caret-right';
+                obj.contractId = (new Date()).getTime();
+                if(i){
+                    obj.realFolder = arry[i-1]
+                }else{
+                    obj.realFolder = ""
+                    obj.contractFolder = ""
+                }
+                if(obj.contractName){
+                    result.push(obj)
+                }
+            }
+            return result
+        },
+        getParentArry: function(name, arry){
+            var newArry = new Array();
+            for (var i in arry) {
+                if (arry[i].realFolder && arry[i].realFolder == name){
+                    newArry.push(arry[i]);
+                }else if(!arry[i].realFolder && arry[i].realFolder == name){
+                    newArry.push(arry[i]);
+                }
+            }
+            return newArry;
+        },
+        setContractList: function(name,arry){
+            let childArry = this.getParentArry(name,arry);
+            if(childArry.length){
+               childArry.forEach(value => {
+                   if(value.contractType == 'folder'){
+                       value.child = [];
+                       value.child = this.setContractList(value.contractName,arry)
+                   }
+               }) 
+            }
+            return childArry;
+        },   
         deleteRow: function(val){
             this.$confirm('此操作不可恢复，请确认！','删除合约',{center:true}).then(_ => {
                     this.deleteCode(val)
@@ -227,7 +430,6 @@ export default {
         },
         getAllGroups: function(){
             let data = {
-                    groupId: this.groupId,
                     pageNumber: 1,
                     pageSize: 500
                 };
@@ -244,10 +446,9 @@ export default {
         // delete a contract
         deleteCode: function(val){
             let data = {
-                groupId: localStorage.getItem("groupId"),
-                contractId: val.contractId
+                contractId: val
             }
-            deleteContract(data,{}).then(res => {
+            deleteContract(data).then(res => {
                 if(res.data.code === 0){
                     this.getContracts();
                     message('删除成功！','success')
@@ -433,6 +634,26 @@ export default {
     height: 40px;
    
 }
+.contract-menu{
+    display: inline-block;
+    width: 300px;
+    height: 100%;
+    font-size: 14px;
+    color: #fff;
+    vertical-align: top;
+    background-color: #3b3e54;
+    overflow: auto;
+    box-sizing: border-box;
+}
+.contract-content{
+    display: inline-block;
+    width: calc(100% - 300px);
+    height: 100%;
+    min-height: 400px;
+    font-size: 14px;
+    color: #fff;
+}
+
 </style>
 
 
