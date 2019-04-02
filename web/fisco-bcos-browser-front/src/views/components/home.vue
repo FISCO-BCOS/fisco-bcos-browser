@@ -8,10 +8,11 @@
                     <ul>
                         <li v-for="item in totalStatisticsList" :class="item.class" @click="linkPage(item.route,chainType)" :key="item.label" class="lg-width">
                             <span class="home-head-data-label">{{item.label}}</span>
-                            <span class="home-head-data-content">{{item.value}}</span>
+                            <span class="home-head-data-content"> {{item.value}}</span>
                         </li>
                     </ul>
                 </div>
+               
                 <!--Chart statistics-->
                 <div class="home-head-chart home-head-data margin-left-10" ref="chart" v-loading="loading2"  element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
                     <v-chart ref="linechart" :type="'line'" :id="'homeId'" :data="chartStatistics.date"
@@ -115,7 +116,7 @@
         vertical-align: middle;
     }
         .lg-width{
-            width: 245px;
+            width: 47%;
         }
     .home-head-data ul{
         list-style: none;
@@ -125,7 +126,7 @@
     .home-head-data ul li{
         display: inline-block;
         height: 110px;
-        padding: 20px;
+        padding: 25px 15px;
         font-size: 14px;
         cursor: pointer;
         color: #fff;
@@ -160,9 +161,11 @@
     .home-head-data-content{
         display: block;
         color: white;
-        font-size: 46px;
+        font-size: 38px;
         text-align: right;
     }
+    
+    
     .home-center{
         margin-top: 20px;
     }
@@ -322,6 +325,111 @@
     }
     .node-false{
         color: #f00 !important;
+    }
+    @media screen and (max-width: 1200px){
+        .home-head-data{
+            display: inline-block;
+            width: calc(41% - 10px);
+            box-sizing: border-box;
+            padding: 20px 20px;
+            background-color: #3b3e54;
+            vertical-align: middle;
+        }
+        .home-head-data-content{
+            display: block;
+            color: white;
+            padding-top: 10px;
+            font-size: 28px;
+            text-align: right;
+        }
+        .home-head-chart{
+            width: calc(59% - 10px) !important;
+            height: 290px;
+            vertical-align: middle;
+        }
+        .home-foot-box-content .item{
+            border-bottom: 1px solid #999;
+            overflow: hidden;
+            line-height: 28px;
+            padding: 12px 20px;
+        }
+        .home-foot-box-content .item .transaction{
+            width: 280px;
+            overflow: hidden;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;  
+            vertical-align: middle;
+        }
+        .home-foot-box-content .number{
+            display: inline-block;
+            width: 130px;
+            overflow: hidden;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;  
+            vertical-align: middle;
+        }
+    }
+    @media screen and (max-width: 1000px){
+        .home-head-data{
+            display: inline-block;
+            width: calc(41% - 10px);
+            box-sizing: border-box;
+            padding: 10px 10px;
+            background-color: #3b3e54;
+            vertical-align: middle;
+        }
+        .home-head-chart{
+            width: calc(59% - 10px) !important;
+            height: 270px;
+            vertical-align: middle;
+        }
+        .home-head-data-content{
+            display: block;
+            color: white;
+            padding-top: 10px;
+            font-size: 24px;
+            text-align: right;
+        }
+        .home-head-data ul li{
+            display: inline-block;
+            height: 110px;
+            padding: 25px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        .home-foot-box-content .item{
+            border-bottom: 1px solid #999;
+            overflow: hidden;
+            line-height: 28px;
+            padding: 12px 20px;
+        }
+        .home-foot-box-content .item .transaction{
+            width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;  
+            vertical-align: middle;
+        }
+        .home-foot-box-content .number{
+            display: inline-block;
+            width: 85px;
+            overflow: hidden;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;  
+            vertical-align: middle;
+        }
+        .home-foot-box-content .item .txn {
+            float: right;
+            width: 70px;
+            height: 28px;
+            line-height: 28px;
+            background-color: #2196f3;
+            color: #fff;
+            text-align: center;
+            cursor: pointer;
+        }
     }
 </style>
 <script type="text/babel">
@@ -666,7 +774,6 @@
             },
             getContracts: function(){
                 let data = {
-                    groupId: this.groupId,
                     pageNumber: 1,
                     pageSize: 300
                 };
@@ -712,7 +819,7 @@
                 let data = input.substring(0, 10);
                 let funcData = "";
                 if(type){
-                    if (this.contractList.length) {
+                    if (this.contractList && this.contractList.length) {
                         this.contractList.forEach(value => {
                             if (value.contractAddress == adr){
                                 abi = value.contractAbi;
@@ -725,7 +832,7 @@
                         adr = adr.substring(2);
                         adr = adr.substring(0,adr.length-68)
                     }
-                    if (this.contractList.length) {
+                    if (this.contractList && this.contractList.length) {
                         this.contractList.forEach(value => {
                             if(!value.show && value.contractBin){
                                 value.contractBin = value.contractBin.substring(0,value.contractBin.length-68);
@@ -778,7 +885,7 @@
                     bin = bin.substring(2);
                     bin = bin.substring(0,bin.length-68)
                 }
-                if (this.contractList.length) {
+                if (this.contractList && this.contractList.length) {
                     this.contractList.forEach(value => {
                         if(!value.show && value.contractBin){
                             value.contractBin = value.contractBin.substring(0,value.contractBin.length-68);
