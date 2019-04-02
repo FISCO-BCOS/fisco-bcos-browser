@@ -50,11 +50,11 @@
 
 #### *<u>2.2.1、后台服务搭建</u>*
 
-区块链浏览器后台服务使用Spring Boot的JAVA后台服务，具体搭建流程参见[**安装文档**](https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/server/fisco-bcos-browser)。
+区块链浏览器后台服务使用Spring Boot的JAVA后台服务，具体搭建流程参见[**安装文档**](./server/fisco-bcos-browser/README.md)。
 
 #### *<u>2.2.2、前端web页面服务搭建</u>*
 
-区块链浏览器前端web页面使用框架`vue-cli`，具体搭建流程参见[**安装文档**](https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/web/fisco-bcos-browser-front)。
+区块链浏览器前端web页面使用框架`vue-cli`，具体搭建流程参见[**安装文档**](./web/fisco-bcos-browser-front/README.md)。
 
 ## 三、初始化环境
 
@@ -78,8 +78,6 @@
 
 ### 3.3、添加合约
 
-![contract](./img/contract.png)
-
 本浏览器版本提供合约解析的功能。此功能需要用户把本群组使用的所有合约进行导入。
 
 导入步骤：
@@ -87,6 +85,8 @@
 #### 3.3.1 上传合约
 
 #### 3.3.2 编译合约
+
+![contract](./img/contract.png)
 
 ## 四、功能介绍
 
@@ -133,7 +133,3 @@
 合约成功上传并编译后，区块链浏览器能够解析出此合约相关交易回执中的事件方法名和参数。
 
 ![receipt](./img/receipt.png)
-
-
-
-如果你喜欢这个项目， 请给这个 [GitHub](https://github.com/FISCO-BCOS/fisco-bcos-browser)点星星 ⭐️.
