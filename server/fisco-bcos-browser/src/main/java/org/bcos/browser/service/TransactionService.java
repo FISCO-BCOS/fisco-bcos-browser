@@ -1,5 +1,7 @@
 package org.bcos.browser.service;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +49,7 @@ public class TransactionService {
      */
     public BasePageResponse getTransInfoByPage(int groupId, int pageNumber,
             int pageSize, String transHash, String blockNumber) {
-        log.info("analyzeData groupId:{} pageNumber:{} pageSize:{} transHash:{} blockNumber:{}",
+        log.info("getTransInfoByPage groupId:{} pageNumber:{} pageSize:{} transHash:{} blockNumber:{}",
                 groupId, pageNumber, pageSize, transHash, blockNumber);
         int start =
                 Optional.ofNullable(pageNumber).map(page -> (page - 1) * pageSize).orElse(null);
@@ -59,11 +61,17 @@ public class TransactionService {
         map.put("start", start);
         map.put("pageSize", pageSize);
 
+        Instant startTime = Instant.now();
         int total = transactionMapper.getAllTransactionCount(map);
+        log.info("getTransInfoByPage getCount useTime:{}",
+                Duration.between(startTime, Instant.now()).toMillis());
 
         List<RspGetTransaction> list = new ArrayList<>();
         if (total > 0) {
+            Instant startTime1 = Instant.now();
             List<Transaction> listTbTransactionDto = transactionMapper.getTbTransactionByPage(map);
+            log.info("getTransInfoByPage getTbTransaction useTime:{}",
+                    Duration.between(startTime1, Instant.now()).toMillis());
             if (listTbTransactionDto != null) {
                 for (Transaction tbTransactionDto : listTbTransactionDto) {
                     RspGetTransaction rspEntity = new RspGetTransaction();

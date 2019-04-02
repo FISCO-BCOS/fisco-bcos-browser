@@ -22,6 +22,7 @@
     <Loggers>
         <Root level="info">
             <AppenderRef ref="asyncBrowser" />
+            <AppenderRef ref="console" />
         </Root>
     </Loggers>
 </Configuration>
