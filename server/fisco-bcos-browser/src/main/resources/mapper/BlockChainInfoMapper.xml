@@ -18,7 +18,7 @@
 
     <insert id="addTxnByDay">
         REPLACE INTO tb_txnByDay_#{groupId}(pk_date,group_id,txn)
-        SELECT DATE_FORMAT(block_time,'%Y%m%d') as date,group_id,count(1) as txn
+        SELECT block_date as date,group_id,count(1) as txn
         FROM tb_transaction_#{groupId}
         GROUP BY date,group_id
     </insert>

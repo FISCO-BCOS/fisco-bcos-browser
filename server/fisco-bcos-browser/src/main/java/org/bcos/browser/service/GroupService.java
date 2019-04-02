@@ -6,13 +6,14 @@ import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.Constants;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BaseResponse;
-import org.bcos.browser.entity.dto.Group;
+import org.bcos.browser.entity.dto.*;
 import org.bcos.browser.mapper.BlockChainInfoMapper;
 import org.bcos.browser.mapper.BlockMapper;
 import org.bcos.browser.mapper.ContractMapper;
 import org.bcos.browser.mapper.GroupMapper;
 import org.bcos.browser.mapper.NodeMapper;
 import org.bcos.browser.mapper.TransactionMapper;
+import org.bcos.browser.util.Web3jRpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +44,7 @@ public class GroupService {
     public BaseResponse addGroup(Group group) throws BaseException {
         log.info("addGroup group:{}", group);
         int groupId = group.getGroupId();
-
+        Web3jRpc web3jRpc = new Web3jRpc();
         // check if existed
         List<Group> list = groupMapper.getGroupList();
         for (Group loop : list) {
@@ -54,7 +55,6 @@ public class GroupService {
                 throw new BaseException(ConstantCode.GROUP_NAME_IS_EXISTED);
             }
         }
-
         // create table by group
         String tableName = Constants.PREFIX_TB_NODE + groupId;
         groupMapper.createTbNode(tableName);
@@ -66,11 +66,35 @@ public class GroupService {
         groupMapper.createTbBlock(tableName);
         tableName = Constants.PREFIX_TB_TRANSACTION + groupId;
         groupMapper.createTbTransaction(tableName);
-        tableName = Constants.PREFIX_TB_CONTRACT + groupId;
-        groupMapper.createTbContract(tableName);
 
+        label:
+        for(Group loop : list){
+//            String nodeTableName = Constants.PREFIX_TB_NODE + loop.getGroupId();
+            List<Node> nodes = nodeMapper.getAllNode(loop.getGroupId());
+            for (Node node : nodes){
+                if(node.getType() == 0){
+                    SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groupId,node);
+                    if(syncInfo !=null){
+                        node.setGroupId(groupId);
+                        node.setNodeId(syncInfo.getNodeId());
+                        node.setType(0);
+                        nodeMapper.add(node);
+                        // sync node info
+                        for (Peer peer: syncInfo.getPeers()) {
+                            Node syncNode = new Node();
+                            syncNode.setNodeId(peer.getNodeId());
+                            syncNode.setGroupId(groupId);
+                            syncNode.setType(1);
+                            nodeMapper.sync(syncNode);
+                        }
+                        break label;
+                    }
+                }
+            }
+        }
         // add group info
         groupMapper.addGroup(group);
+
         
         return new BaseResponse(ConstantCode.SUCCESS);
     }

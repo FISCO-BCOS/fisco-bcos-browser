@@ -247,10 +247,10 @@ public class Web3jRpc {
         }
         return result;
     }
-    
+
     /**
      * getGroupList.
-     * 
+     *
      * @param node info
      * @return
      */

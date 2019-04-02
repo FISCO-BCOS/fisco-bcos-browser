@@ -3,7 +3,6 @@
 <mapper namespace="org.bcos.browser.mapper.ContractMapper">
     <sql id="ALL_COLUMN">
         contract_id as contractId,
-        group_id as groupId,
         contract_name as contractName,
         contract_source as contractSource,
         contract_status as contractStatus,
@@ -11,45 +10,51 @@
         contract_bin as contractBin,
         contract_address as contractAddress,
         contract_desc as contractDesc,
-        error_info as errorInfo
+        error_info as errorInfo,
+        contract_path as contractPath
     </sql>
 
     <insert id="add" parameterType="org.bcos.browser.entity.dto.Contract">
-        INSERT INTO tb_contract_#{groupId}(
-            group_id,
+        INSERT INTO tb_contract(
             contract_name,
             contract_source,
             contract_desc,
+            contract_path,
             gmt_create,
             gmt_modify
         ) VALUES (
-            #{groupId},
             #{contractName},
             #{contractSource},
             #{contractDesc},
+            #{contractPath},
             now(),
             now()
         )
     </insert>
     
     <select id="getContractByName" resultType="java.lang.Integer">
-        SELECT count(1) FROM tb_contract_#{groupId} 
+        SELECT count(1) FROM tb_contract
         WHERE contract_name = #{contractName}
     </select>
-    
+
+    <select id="getContractByNameAndPath" resultType="java.lang.Integer">
+    SELECT count(1) FROM tb_contract
+    WHERE contract_name = #{contractName} AND contract_path = #{contractPath}
+    </select>
+
     <select id="getContractCnts" resultType="java.lang.Integer">
-        SELECT count(1) FROM tb_contract_#{groupId}
+        SELECT count(1) FROM tb_contract
     </select>
 
     <select id="getContractList" resultType="org.bcos.browser.entity.dto.Contract">
         SELECT <include refid="ALL_COLUMN" />
-        FROM tb_contract_#{groupId}
+        FROM tb_contract
         ORDER BY contract_id DESC
         LIMIT #{start},#{pageSize}
     </select>
 
     <update id="updateContract" parameterType="org.bcos.browser.entity.dto.Contract">
-        UPDATE tb_contract_#{groupId}
+        UPDATE tb_contract
         SET contract_bin = #{contractBin},
             contract_abi = #{contractAbi},
             contract_address = #{contractAddress},
@@ -60,7 +65,7 @@
     </update>
 
     <delete id="deleteContract">
-        DELETE FROM tb_contract_#{groupId}
+        DELETE FROM tb_contract
         WHERE contract_id=#{contractId}
     </delete>
 

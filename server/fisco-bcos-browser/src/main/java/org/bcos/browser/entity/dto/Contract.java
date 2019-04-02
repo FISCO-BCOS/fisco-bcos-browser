@@ -5,7 +5,6 @@ import lombok.Data;
 @Data
 public class Contract {
     private int contractId;
-    private int groupId;
     private String contractName;
     private String contractSource;
     private int contractStatus;
@@ -14,4 +13,5 @@ public class Contract {
     private String contractAddress;
     private String contractDesc;
     private String errorInfo;
+    private String contractPath;
 }

@@ -4,7 +4,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.bcos.browser.entity.dto.BlockChainInfo;
 import org.bcos.browser.entity.dto.TransactionByDay;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface BlockChainInfoMapper {
 
     void add(BlockChainInfo blockChainInfo);
