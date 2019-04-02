@@ -179,7 +179,7 @@ mysql -u root
 mysql > SET PASSWORD FOR 'root'@'localhost' = PASSWORD('123456');
 mysql > GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
 ```
-**注意：**
+**安全温馨提示：**
 
 1. 例子中给出的数据库密码（123456）仅为样例，强烈建议设置成复杂密码
 2. 例子中的远程授权设置会使数据库在所有网络上都可以访问，请按具体的网络拓扑和权限控制情况，设置网络和权限帐号
