@@ -40,7 +40,6 @@ git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 
 ```shell
 cd fisco-bcos-browser
-git checkout XXXXX
 ```
 
  然后将其中./web/fisco-bcos-browser-front/目录中的dist目录放到/data/app/web目录下。
