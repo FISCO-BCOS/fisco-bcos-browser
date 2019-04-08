@@ -70,7 +70,7 @@ cd fisco-bcos-browser
             include /etc/nginx/default.d/*.conf;
 
             location /api {
-                    proxy_pass    http://192.168.0.2:8089/;    //步骤3、后端服务(fisco-bcos-browser)地址及端口
+                    proxy_pass    http://192.168.0.2:8090/;    //步骤3、后端服务(fisco-bcos-browser)地址及端口
                	 	proxy_set_header		Host				$host;
                     proxy_set_header		X-Real-IP			$remote_addr;
                     proxy_set_header		X-Forwarded-For		$proxy_add_x_forwarded_for;
