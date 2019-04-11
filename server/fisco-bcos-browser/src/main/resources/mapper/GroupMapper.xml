@@ -108,7 +108,9 @@
             UNIQUE KEY (contract_name, contract_path)
         ) ENGINE=InnoDB AUTO_INCREMENT=300001 DEFAULT CHARSET=utf8 COMMENT='合约信息表'
     </update>
-    
+
+
+
     <update id="dropTableByName">
         DROP TABLE IF EXISTS ${tableName}
     </update>
@@ -134,6 +136,13 @@
             group_name as groupName,
             group_desc as groupDesc
         FROM tb_group
+    </select>
+    <select id="getGroupById" resultType="org.bcos.browser.entity.dto.Group">
+        SELECT group_id as groupId,
+            group_name as groupName,
+            group_desc as groupDesc
+        FROM tb_group WHERE group_id=#{groupId}
+
     </select>
     
     <delete id="deleteGroup">
