@@ -152,6 +152,9 @@
                 }
                 this.chart.clear();
                 this.chart.setOption(option,true);
+                window.onresize = () => {
+                    this.chart.resize();
+                };
             }
         }
     }

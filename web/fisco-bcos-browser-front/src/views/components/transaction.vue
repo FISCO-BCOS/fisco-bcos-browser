@@ -4,18 +4,9 @@
             <v-nav :hrTitle="title" :hrcontent="title" :route="'transaction'"></v-nav>
             <div class="search-nav">
                 <div class="hashInput">
-                    <span>哈希值 : </span>
-                    <el-input v-model="transactionData"  class="input margin-left-10"  maxlength="128"></el-input>
-                    <el-tooltip content="不支持模糊查询" placement="top">
-                        <i class="el-icon-info iconInfo"></i>
-                    </el-tooltip>
-                </div>
-                <div class="hashInput">
-                    <span>块高：</span>
-                    <el-input v-model="blockHeight" class="input"  maxlength="128"></el-input>
-                </div>
-                <div class="hashInput">
-                    <el-button type="primary"  @click="searchTbTransactionInfo" :disabled="submitDisabled"><i class="el-icon-search"></i>查询</el-button>
+                    <el-input placeholder="请输入交易哈希或块高" v-model="searchKeyValue" class="input-with-select">
+                        <el-button slot="append" icon="el-icon-search" @click="search" :disabled="submitDisabled"></el-button>
+                    </el-input>   
                 </div>
             </div>
             <div class="search-table">
@@ -88,6 +79,7 @@
         },
         data: function () {
             return{
+                searchKeyValue: "",
                 title: '交易',
                 transactionData: this.$route.query.transactionData || "",
                 blockHeight: this.$route.query.blockHeight || "",
@@ -150,6 +142,20 @@
             },
             linkPage: function (name,label,data) {
                 return goPage(name,label,data);
+            },
+            search: function(){
+                let reg=/^[0-9]+.?[0-9]*$/;
+                if(this.searchKeyValue.length > 60){
+                    this.blockHeight = "";
+                    this.transactionData = this.searchKeyValue
+                }else if(reg.test(this.searchKeyValue) && this.searchKeyValue.substring(0,2) != "0x"){
+                    this.blockHeight = this.searchKeyValue;
+                    this.transactionData = ""
+                }else if(this.searchKeyValue){
+                    message("请输入块高或完整的哈希",'error')
+                }
+                this.searchTbTransactionInfo()
+                this.searchKeyValue = ""
             },
             searchTbTransactionInfo: function () {
                 this.submitDisabled = true;

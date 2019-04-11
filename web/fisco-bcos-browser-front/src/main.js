@@ -7,6 +7,7 @@ import promise from 'es6-promise'
 import ElementUI from 'element-ui';
 import axios from 'axios'
 import JsonViewer from "vue-json-viewer"
+import VueClipboard from 'vue-clipboard2'
 import 'element-ui/lib/theme-chalk/index.css'
 /*iconfont*/
 import '@/assets/icon/iconfont.css'
@@ -23,7 +24,7 @@ axios.defaults.timeout = 60*1000;
 Vue.prototype.$axios = axios;
 Vue.use(router);
 Vue.use(JsonViewer)
-  
+Vue.use(VueClipboard)  
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 // require('./mock')
