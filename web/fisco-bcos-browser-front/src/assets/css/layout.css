@@ -11,7 +11,7 @@
 
 /*查看区块 查看交易搜索面板样式*/
 .search-main{
-    height: 100%;
+    height: calc(100% - 120px);
     background-color: #2a2c3b;
     padding-bottom: 20px
 }
@@ -46,7 +46,7 @@
 }
 
 .search-nav .hashInput .input{
-    width: 210px;
+    /* width: 210px; */
 }
 
 .search-nav .hashInput .dateInput{

@@ -1,6 +1,6 @@
 <template>
-    <div class="search-main" style="color: #fff">
-        <div class="container">
+    <div class="search-main" style="color: #fff;height: auto;">
+        <div class="container" style="overflow: auto;background-color: #2a2c3b;">
             <h1 style="width:100%;text-align:center">FISCO-BCOS 2.0区块链浏览器帮助文档</h1>
             <h2>一、描述</h2>
             <h3>1.1、基本描述</h3>
