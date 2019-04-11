@@ -2,24 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77576335-233e-4fc0-91b8-a3f0e8a31177" name="Default Changelist" comment="Merge branch 'dev2.0.0' of https://github.com/FISCO-BCOS/fisco-bcos-browser into dev2.0.0&#10;&#10;# Conflicts:&#10;#&#9;server/fisco-bcos-browser/src/main/java/org/bcos/browser/base/ConstantCode.java&#10;#&#9;server/fisco-bcos-browser/src/main/java/org/bcos/browser/util/Web3jRpc.java">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/Application.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/base/ConstantCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/base/ConstantCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/base/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/base/Constants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/controller/ContractController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/controller/ContractController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/entity/req/ReqContracts.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/entity/req/ReqContracts.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/mapper/GroupMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/mapper/GroupMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/mapper/TransactionMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/mapper/TransactionMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/schedule/SchedulerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/schedule/SchedulerConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/schedule/SchedulerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/schedule/SchedulerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/service/ContractService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/service/ContractService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/service/GroupService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/service/GroupService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/service/NodeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/service/NodeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/bcos/browser/util/CommonUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/bcos/browser/util/CommonUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/GroupMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mapper/GroupMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/NodeMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mapper/NodeMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mapper/TransactionMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mapper/TransactionMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist.zip" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
@@ -277,101 +260,6 @@
             </path>
             <path>
               <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="fisco-bcos-browser" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="fisco-bcos-browser" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="fisco-bcos-browser" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="fisco-bcos-browser" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="browser" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="fisco-bcos-browser" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="browser" type="462c0819:PsiDirectoryNode" />
-              <item name="base" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="fisco-bcos-browser" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="browser" type="462c0819:PsiDirectoryNode" />
-              <item name="controller" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="fisco-bcos-browser" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="browser" type="462c0819:PsiDirectoryNode" />
-              <item name="entity" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="fisco-bcos-browser" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="browser" type="462c0819:PsiDirectoryNode" />
-              <item name="mapper" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="fisco-bcos-browser" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="browser" type="462c0819:PsiDirectoryNode" />
-              <item name="schedule" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="fisco-bcos-browser" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="browser" type="462c0819:PsiDirectoryNode" />
-              <item name="service" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="fisco-bcos-browser" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
-              <item name="fisco-bcos-browser" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="mapper" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="fisco-bcos-browser" type="b2602c69:ProjectViewProjectNode" />
               <item name="Scratches and Consoles" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
             </path>
             <path>
@@ -395,7 +283,7 @@
     <property name="RequestMappingsPanelWidth2" value="75" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554973985973" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554975386967" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -512,7 +400,7 @@
       <workItem from="1554774382600" duration="9336000" />
       <workItem from="1554860486803" duration="12396000" />
       <workItem from="1554899246503" duration="53000" />
-      <workItem from="1554949153889" duration="4613000" />
+      <workItem from="1554949153889" duration="4862000" />
     </task>
     <task id="LOCAL-00001" summary="增加上传合约压缩包">
       <created>1553827577717</created>
@@ -532,7 +420,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="178577000" />
+    <option name="totallyTimeSpent" value="178826000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -545,7 +433,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4989796" visible="true" weight="0.22832723" />
       <window_info id="Structure" order="1" sideWeight="0.50102043" side_tool="true" weight="0.25274727" />
