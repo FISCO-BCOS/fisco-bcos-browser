@@ -10,11 +10,13 @@ import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BasePageResponse;
 import org.bcos.browser.entity.base.BaseResponse;
+import org.bcos.browser.entity.dto.Group;
 import org.bcos.browser.entity.dto.Node;
 import org.bcos.browser.entity.dto.Peer;
 import org.bcos.browser.entity.dto.SyncInfoFromChain;
 import org.bcos.browser.entity.req.ReqAddNode;
 import org.bcos.browser.entity.req.ReqAddNodeInfo;
+import org.bcos.browser.mapper.GroupMapper;
 import org.bcos.browser.mapper.NodeMapper;
 import org.bcos.browser.schedule.SchedulerService;
 import org.bcos.browser.util.CommonUtils;
@@ -32,6 +34,8 @@ public class NodeService {
     NodeMapper nodeMapper;
     @Autowired
     SchedulerService schedulerService;
+    @Autowired
+    GroupMapper groupMapper;
 
     /**
      * addNode.
@@ -80,20 +84,26 @@ public class NodeService {
             if (!groups.contains(reqAddNode.getGroupId())) {
                 throw new BaseException(ConstantCode.NODE_NO_NOT_BELONG);
             }
+            List<Group> groupList = groupMapper.getGroupList();
+            for(int k = 0; k < groups.size(); k++){
+                Group group = groupMapper.getGroupById(groups.get(k));
+                if(groupList.contains(group)){
+                    SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groups.get(k), node);
+                    node.setNodeId(syncInfo.getNodeId());
+                    node.setType(0);
+                    nodeMapper.add(node);
 
-            SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groupId, node);
-            node.setNodeId(syncInfo.getNodeId());
-            node.setType(0);
-            nodeMapper.add(node);
-            
-            // sync node info
-            for (Peer peer: syncInfo.getPeers()) {
-                Node syncNode = new Node();
-                syncNode.setNodeId(peer.getNodeId());
-                syncNode.setGroupId(groupId);
-                syncNode.setType(1);
-                nodeMapper.sync(syncNode);
+                    // sync node info
+                    for (Peer peer: syncInfo.getPeers()) {
+                        Node syncNode = new Node();
+                        syncNode.setNodeId(peer.getNodeId());
+                        syncNode.setGroupId(groupId);
+                        syncNode.setType(1);
+                        nodeMapper.sync(syncNode);
+                    }
+                }
             }
+
         }
         return response;
     }

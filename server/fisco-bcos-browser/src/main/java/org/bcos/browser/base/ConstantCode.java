@@ -21,10 +21,16 @@ public interface ConstantCode {
     RetCode P2PPORT_IS_EXISTED = new RetCode(305005, "ip and p2pPort is existed in this group");
     RetCode IP_FORMAT_ERROR = new RetCode(305006, "ip format error");
     RetCode NODE_ERROR_OR_NOT_ACTIVE = new RetCode(305007, "node error or not alive");
-    RetCode FILE_TYPE_ERROR = new RetCode(305008,"file type error");
-    RetCode EMPETY_FILE_ERROR = new RetCode(305009,"The file is empety!");
     RetCode NODE_NO_NOT_BELONG = new RetCode(305008, "node do not belong to this group");
+    RetCode EMPETY_FILE_ERROR = new RetCode(305009,"The file is empety!");
     RetCode NOT_A_ZIP_FILE = new RetCode(305010,"not a zip file");
+    RetCode FILE_FORMAT_ERROR = new RetCode(305011,"File format error");
+    RetCode DO_NOT_ALL_ZIP_FILE = new RetCode(305012,"zip file can't contain zipfile");
+    RetCode FOLDERS_ARE_NOT_ALLOWED = new RetCode(305013,"Folders are not allowed");
+
+
+
+
     /* system error */
     RetCode SYSTEM_ERROR = RetCode.mark(105001, "system error");
     RetCode PARAM_VAILD_FAIL = RetCode.mark(105002, "param valid fail");

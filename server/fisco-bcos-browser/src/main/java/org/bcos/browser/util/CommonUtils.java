@@ -5,12 +5,15 @@ import com.alibaba.fastjson.JSON;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.bcos.browser.base.ConstantCode;
+import org.bcos.browser.base.exception.BaseException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
@@ -126,6 +129,31 @@ public class CommonUtils {
         String dateDescStr = sdf.format(date);
         return dateDescStr;
     }
+
+    /**
+     *
+     * @param zipFile
+     * @throws BaseException
+     */
+    public static void preTreatmentFile(ZipFile zipFile) throws BaseException {
+        for (Enumeration entries = zipFile.entries(); entries.hasMoreElements(); ) {
+            ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+            String zipEntryName = zipEntry.getName();
+            if (zipEntryName.startsWith("__MACOSX")){
+                continue;
+            }
+            if (zipEntryName.endsWith(".zip")) {
+                throw new BaseException(ConstantCode.DO_NOT_ALL_ZIP_FILE);
+            }
+            if (zipEntryName.contains(File.separator)) {
+                String[] strings = zipEntryName.split(File.separator);
+                if (strings.length > 2 ) {
+                    throw new BaseException(ConstantCode.FOLDERS_ARE_NOT_ALLOWED);
+                }
+            }
+        }
+    }
+
 
     /**
      * readZipFile.

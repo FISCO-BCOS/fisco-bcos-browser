@@ -16,6 +16,8 @@ public class Constants {
     private String cronAyncNode = "0 0 0/1 * * ?";
     private String cronIfNodeActive = "0/10 * * * * ?";
     private int handleBlocks = 50;
+    private String cronTransaction = "0 0 * * * ?";
+
 
     public static final String RPC_BASE_URI = "http://%s:%s";
     public static final String GET_BLOCK_NUMBER = "getBlockNumber";

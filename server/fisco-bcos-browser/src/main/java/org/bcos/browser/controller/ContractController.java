@@ -15,9 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 @RestController
 @RequestMapping(value = "contract")
@@ -34,7 +32,7 @@ public class ContractController extends BaseController {
      * @return
      */
     @PostMapping("/add")
-    public BaseResponse addContract(@Valid @RequestBody ReqContracts contracts,
+    public BaseResponse addContract(@RequestBody ReqContracts contracts,
             BindingResult result) throws BaseException {
         checkParamResult(result);
 
@@ -77,7 +75,7 @@ public class ContractController extends BaseController {
      * @return
      */
     @PutMapping("/update")
-    public BaseResponse updateContract(@Valid @RequestBody ReqContracts contracts,
+    public BaseResponse updateContract( @RequestBody ReqContracts contracts,
             BindingResult result) throws BaseException {
         checkParamResult(result);
         BaseResponse response = contractService.updateContract(contracts);
