@@ -13,10 +13,10 @@ import main from '@/views/layout/mains'
 
 Vue.use(Router)
 
-export default new Router({
+// export default new Router({
     // mode: 'history',
     // base: '/COMS',
-    routes: [
+const routes = [
         // {
         //     path: '/project',
         //     name: 'project',
@@ -113,4 +113,17 @@ export default new Router({
         ]
         }
     ]
-})
+    const router = new Router({
+        routes
+    });
+    router.onError((error) => {
+        const pattern = /Loading chunk (\d)+ failed/g;
+        const isChunkLoadFailed = error.message.match(pattern);
+        const targetPath = router.history.pending.fullPath;
+        if (isChunkLoadFailed) {
+            router.go(0);
+            router.replace(targetPath);
+        }
+    });
+
+    export default router

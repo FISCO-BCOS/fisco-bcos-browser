@@ -33,7 +33,12 @@
                                                 <el-table :data="inputData" v-if="inputData.length" border style="display:inline-block;width:400px">
                                                     <el-table-column prop="name" label="name" align="center" v-if="inputData[0].name"></el-table-column>
                                                     <el-table-column prop="type" label="type" align="center"></el-table-column>
-                                                    <el-table-column prop="data" label="data" align="center" :show-overflow-tooltip="true"></el-table-column>
+                                                    <el-table-column prop="data" label="data" align="center" :show-overflow-tooltip="true">
+                                                        <template slot-scope="scope">
+                                                            <i class="wbs-icon-baocun font-12 copy-public-key" @click="copyPubilcKey(scope.row.data)" title="复制"></i>
+                                                            <span>{{scope.row.data}}</span>
+                                                        </template>
+                                                    </el-table-column>
                                                 </el-table>
                                             </div>
                                         </div>
@@ -293,15 +298,23 @@
             decodeInput: function(){
                 let input = this.transactionByPkHash.input;
                 this.transactionTo = this.transactionByPkHash.to;
+                let num1 = 0;
+                let num2 = 0;
                 constant.SYSTEM_CONTRACT_ADDRESS.forEach(value => {
                     if(this.transactionTo == value.contractAddress){
                         this.decodefun(input, this.transactionTo,'system');
                     }else if(this.transactionTo != "0x0000000000000000000000000000000000000000"){
-                        this.decodefun(input, this.transactionTo);
+                        num1++
                     }else{
-                        this.decodeDeloy(input);
+                        num2++
                     }
                 })
+                if(num1 == constant.SYSTEM_CONTRACT_ADDRESS.length){
+                    this.decodefun(input, this.transactionTo);
+                } 
+                if(num2 == constant.SYSTEM_CONTRACT_ADDRESS.length){
+                    this.decodeDeloy(input);
+                }
             },
             //Transaction Information Query
             searchTbTransactionByPkHash: function () {
@@ -376,9 +389,8 @@
             },
             getContracts: function(){
             let data = {
-                    groupId: this.groupId,
                     pageNumber: 1,
-                    pageSize: 300
+                    pageSize: 500
                 };
             getContractList(data
             ).then(res => {
@@ -395,6 +407,25 @@
         },
         handleClick: function(){
             this.decodeEventClick();
+        },
+        copyPubilcKey: function(val) {
+            if (!val) {
+                this.$message({
+                    type: "fail",
+                    showClose: true,
+                    message: "key为空，不复制。",
+                    duration: 2000
+                });
+            } else {
+                this.$copyText(val).then(e => {
+                    this.$message({
+                        type: "success",
+                        showClose: true,
+                        message: "复制成功",
+                        duration: 2000
+                    });
+                });
+            }
         },
 
         getCode: function(val){
@@ -449,6 +480,7 @@
                 }
                 if (this.contractList.length) {
                     this.contractList.forEach(value => {
+                        
                         if(!value.show && value.contractBin){
                             value.contractBin = value.contractBin.substring(0,value.contractBin.length-68);
                             value.show = true;

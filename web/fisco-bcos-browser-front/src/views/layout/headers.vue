@@ -38,6 +38,7 @@ import url from "@/api/url";
 import router from "@/router";
 import constant from "@/util/constant";
 import { message } from "@/util/util";
+import Bus from "@/bus"
 
 export default {
     name: "headers",
@@ -50,11 +51,14 @@ export default {
             groupId: ""
         };
     },
-    //   mounted: function () {
-    //       this.$nextTick(function () {
-    //             this.getGroupData();
-    //       })
-    //   },
+      mounted: function () {
+          this.$nextTick(function () {
+                this.getGroupData();
+          })
+          Bus.$on("change",data => {
+              this.getGroupData();
+          })
+      },
     methods: {
         // get groups
         getGroupData: function() {

@@ -32,6 +32,7 @@ import addGroup from "@/components/addGroup"
 import {message} from '@/util/util'
 import constant from '@/util/constant'
 import errorcode from "@/util/errorCode"
+import Bus from "@/bus"
 
 export default {
     name: "group",
@@ -68,6 +69,7 @@ export default {
                             localStorage.setItem("groupId",this.groupId);
                         }
                         localStorage.setItem("groupList",JSON.stringify(res.data.data))
+                        Bus.$emit('change',res.data.data)
                         if(val){
                             this.$emit('addGroup');
                         }    

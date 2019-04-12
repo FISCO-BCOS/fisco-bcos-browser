@@ -4,18 +4,9 @@
            <v-nav :hrTitle="btitle" :hrcontent="btitle" :route="'block'"></v-nav>
             <div class="search-nav">
                 <div class="hashInput">
-                    <span>哈希值 : </span>
-                    <el-input v-model="hashData" class="input" maxlength="128"></el-input>
-                    <el-tooltip content="不支持模糊查询" placement="top">
-                        <i class="el-icon-info iconInfo"></i>
-                    </el-tooltip>
-                </div>
-                <div class="hashInput">
-                    <span>块高：</span>
-                    <el-input v-model="blockNumber" class="input"  maxlength="128"></el-input>
-                </div>
-                <div class="hashInput">
-                    <el-button type="primary" @click="searchTbBlockInfo"  :disabled="submitDisabled"><i class="el-icon-search"></i> 查询</el-button>
+                    <el-input placeholder="请输入区块哈希或块高" v-model="searchKeyValue" class="input-with-select">
+                        <el-button slot="append" icon="el-icon-search" @click="search" :disabled="submitDisabled"></el-button>
+                    </el-input>
                 </div>
             </div>
             <div class="search-table">
@@ -82,6 +73,7 @@
         },
         data: function () {
             return{
+                searchKeyValue: "",
                 groupId: null,
                 btitle: '区块',
                 hashData: this.$route.query.blockData || "",
@@ -122,6 +114,20 @@
             },
             linkPage: function (name,label,data) {
                 return goPage(name,label,data);
+            },
+            search: function(){
+                let reg=/^[0-9]+.?[0-9]*$/;
+                if(this.searchKeyValue.length > 60){
+                    this.hashData = this.searchKeyValue;
+                    this.blockNumber = ""
+                }else if(reg.test(this.searchKeyValue) && this.searchKeyValue.substring(0,2) != "0x"){
+                    this.hashData = "";
+                    this.blockNumber = this.searchKeyValue
+                }else if(this.searchKeyValue){
+                    message("请输入块高或完整的哈希",'error')
+                }
+                this.searchTbBlockInfo();
+                this.searchKeyValue = ""
             },
             searchTbBlockInfo: function () {
                 this.submitDisabled = true;

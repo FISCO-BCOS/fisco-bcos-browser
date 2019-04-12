@@ -775,7 +775,7 @@
             getContracts: function(){
                 let data = {
                     pageNumber: 1,
-                    pageSize: 300
+                    pageSize: 500
                 };
                 getContractList(data).then(res => {
                     if(res.data.code === 0){
@@ -792,7 +792,7 @@
                 let list = [];
                 let arry = [];
                 this.tranList.forEach(value => {
-                    if(value && value.transactionFromChain.to){
+                    if(value && value.transactionFromChain && value.transactionFromChain.to){
                         constant.SYSTEM_CONTRACT_ADDRESS.forEach(item => {
                             if(value.transactionFromChain.to == item.contractAddress){
                                 this.decodeInputs(value.transactionFromChain.hash,value.transactionFromChain.input,value.transactionFromChain.to,'system');
@@ -920,6 +920,7 @@
                 }
             },
             getCodeList: function(list,itemList){
+
                 let data = {
                     groupId: this.groupId,
                     data: list

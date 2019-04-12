@@ -54,5 +54,31 @@
     padding-left: 2px;
 
 }
+.input-with-select .el-input__inner {
+    width: 540px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    /* border: 1px solid #eaedf3; */
+    box-shadow: 0 3px 11px 0 rgba(159, 166, 189, 0.11);
+}
+.input-with-select .el-input--suffix > .el-input__inner {
+    box-shadow: none;
+}
+.input-with-select .el-input-group__prepend {
+    border-left-color: #2956a3;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.input-with-select .el-input-group__append {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    box-shadow: 0 3px 11px 0 rgba(159, 166, 189, 0.11);
+}
+.input-with-select .el-button {
+    border: 1px solid #2956a3;
+    border-radius: inherit;
+    background: #2956a3;
+    color: #fff;
+}
 
 
