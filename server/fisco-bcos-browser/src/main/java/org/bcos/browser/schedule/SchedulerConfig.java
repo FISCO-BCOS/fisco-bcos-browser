@@ -42,5 +42,9 @@ public class SchedulerConfig implements SchedulingConfigurer {
         taskRegistrar.addTriggerTask(() -> schedulerService.checkNodeActive(),
             (context) -> new CronTrigger(constants.getCronIfNodeActive())
                         .nextExecutionTime(context));
+
+        taskRegistrar.addTriggerTask(() ->schedulerService.deleteTxnSchedule(),
+                (context) -> new CronTrigger(constants.getCronTransaction())
+                        .nextExecutionTime(context));
     }
 }

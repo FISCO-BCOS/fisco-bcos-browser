@@ -25,6 +25,7 @@ public interface GroupMapper {
     void dropTableByName(@Param(value = "tableName")String tableName);
     
     void addGroup(Group group);
+    Group getGroupById(int groupId);
 
     List<Group> getGroupList();
 

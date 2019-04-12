@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bcos.browser.base.ConstantCode;
@@ -16,6 +17,8 @@ import org.bcos.browser.mapper.ContractMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import static org.bcos.browser.util.CommonUtils.preTreatmentFile;
 import static org.bcos.browser.util.CommonUtils.readZipFile;
 
 @Slf4j
@@ -64,10 +67,13 @@ public class ContractService {
         }
         zipFile.transferTo(file);
         ZipFile zf = new ZipFile(file);
+        preTreatmentFile(zf);  //check file format right or not,if not ,throw excepetion
         for (Enumeration entries = zf.entries(); entries.hasMoreElements(); ){
             ZipEntry zipEntry = (ZipEntry) entries.nextElement();
             String zipEntryName = zipEntry.getName();
-            int size = (int) zipEntry.getSize();
+            if (zipEntryName.startsWith("__MACOSX")){  //only in macos
+                continue;
+            }
             if(zipEntry.isDirectory()){
                 continue;
             }
@@ -78,7 +84,7 @@ public class ContractService {
             String contractName = null;
             if (zipEntryName.contains(File.separator)){
                 String[] strings = zipEntryName.split(File.separator);
-                if(strings.length>4){
+                if(strings.length>2){
                     continue;
                 }
                 if (strings[strings.length-1].startsWith(".")){

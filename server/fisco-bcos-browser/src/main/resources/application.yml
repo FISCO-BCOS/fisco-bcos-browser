@@ -18,6 +18,7 @@ constant:
   cronTxnByDay: 30 0/1 * * * ?
   cronAyncNode: 0 0/10 * * * ?
   cronIfNodeActive: 0 0/1 * * * ?
+  cronTransaction: 0 0 * * * ?
   handleBlocks: 50
   
 logging: 
