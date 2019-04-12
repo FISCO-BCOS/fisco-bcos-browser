@@ -94,8 +94,6 @@ public class GroupService {
         }
         // add group info
         groupMapper.addGroup(group);
-
-        
         return new BaseResponse(ConstantCode.SUCCESS);
     }
 
@@ -130,9 +128,7 @@ public class GroupService {
         groupMapper.dropTableByName(tableName);
         tableName = Constants.PREFIX_TB_TRANSACTION + groupId;
         groupMapper.dropTableByName(tableName);
-        tableName = Constants.PREFIX_TB_CONTRACT + groupId;
-        groupMapper.dropTableByName(tableName);
-        
+
         // delete group info
         groupMapper.deleteGroup(groupId);
         
