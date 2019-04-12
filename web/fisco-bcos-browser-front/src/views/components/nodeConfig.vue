@@ -4,10 +4,13 @@
             <v-nav :hrTitle="btitle" :hrcontent="btitle"></v-nav>
             <div class="search-nav">
                 <div class="hashInput">
-                    <span>IP : </span>
-                    <el-input v-model="ipConfig" class="input"  maxlength="128"></el-input>
+                    <el-input placeholder="请输入节点ip" v-model="searchKeyValue" class="input-with-select">
+                        <el-button slot="append" icon="el-icon-search" @click="search" :disabled="submitDisabled"></el-button>
+                    </el-input>
+                    <!-- <span>IP : </span>
+                    <el-input v-model="ipConfig" class="input"  maxlength="128"></el-input> -->
                 </div>
-                <div class="hashInput">
+                <!-- <div class="hashInput">
                     <span>rpc接口 : </span>
                     <el-input v-model="rpcConfig" class="input" maxlength="128"></el-input>
                 </div>
@@ -17,7 +20,7 @@
                 </div>
                 <div class="hashInput">
                     <el-button type="primary" @click="searchTbNodeConnection" :disabled="submitDisabled"><i class="el-icon-search"></i>查询</el-button>
-                </div>
+                </div> -->
                 <div class="hashInput">
                     <el-button type="primary" @click="add"><i class="el-icon-plus"></i> 新增节点</el-button>
                 </div>
@@ -62,6 +65,7 @@
         },
         data: function () {
             return{
+                searchKeyValue: "",
                 addDialog: false,
                 addShow: false,
                 modeldata: {
@@ -106,6 +110,11 @@
             submitModel: function (value) {
                 this.searchTbNodeConnection();
             },
+            search: function(){
+                this.ipConfig = this.searchKeyValue;
+                this.searchTbNodeConnection();
+                this.searchKeyValue = "";
+            },
             searchTbNodeConnection: function () {
                 this.submitDisabled = true;
                 this.loading = true;
@@ -131,7 +140,7 @@
                             this.configList = res.data.data
                         }else{
                             this.configList = []
-                            message('无可用节点，请在节点配置添加节点！','warning')
+                            // message('无可用节点，请在节点配置添加节点！','warning')
                         }
                     }else{
                         message(errorcode[res.data.code].cn,'error')

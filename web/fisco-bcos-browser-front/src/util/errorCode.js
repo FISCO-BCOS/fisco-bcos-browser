@@ -65,4 +65,24 @@ export default {
         cn: "节点信息不属于当前群组",
         en: "node do not delong to this group"
     },
+    "305009": {
+        cn: "文件为空",
+        en: "The file is empty."
+    },
+    "305010": {
+        cn: "不是一个zip压缩文件",
+        en: "Not a zip compressed file"
+    },
+    "305011": {
+        cn: "文件类型或格式错误",
+        en: "Error in file type or format",
+    },
+    "305012": {
+        cn: "zip文件里面不能包含zip文件",
+        en: "Zip file cannot contain zip file"
+    },
+    "305013": {
+        cn: "zip文件里面不能包含两级文件夹，有且只能有一级",
+        en: "The zip file can not contain two folders, and can only have one folder."
+    }
 }

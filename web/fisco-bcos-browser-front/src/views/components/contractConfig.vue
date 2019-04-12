@@ -1,11 +1,11 @@
 <template>
-    <div class="search-main" style="padding-bottom: 0;height: 100%;">
+    <div class="search-main">
         <div class="container" style="padding-bottom: 0;height: 100%;">
             <v-nav :hrTitle="btitle" :hrcontent="btitle"></v-nav>
             <div class="search-nav">
                 <div class="hashInput">
                     <el-button type="primary" @click="upLoadFiles">上传合约</el-button>
-                    <el-tooltip class="item" effect="dark" content="上传合约成功后请点击按钮编译合约,合约一次最多上传10条。" placement="top-start">
+                    <el-tooltip class="item" effect="dark" content="1、上传合约可以上传sol文件和zip包; 2、sol文件可以批量上传，zip包不能批量上传; 3、zip包里面只能含有一层目录，且不能含有非sol文件" placement="top-start">
                         <i class="el-icon-info"></i>
                     </el-tooltip>
                     <input type="file" ref='file' id="file" class="inputFiles" multiple="multiple"  name="chaincodes" @change="upLoadFiles($event)"/>
@@ -17,17 +17,17 @@
                     </el-tooltip>
                 </div>
             </div>
-            <div class="search-table" style="font-size: 0;height: calc(100% - 133px); box-sizing: border-box;">
+            <div class="search-table" style="font-size: 0;height: calc(100% - 115px); box-sizing: border-box;">
                 <div class="contract-menu">
                     <v-codeMenu :data='contractArry'></v-codeMenu>
                 </div>
-                <div class="contract-content" style="height: 100%;">
-                    <div ref='codeContent' :style="{height: codeHight}">
+                <div class="contract-content">
+                    <div ref='codeContent' :style="{height: codeHight}" v-loading="loading" element-loading-background="rgba(0, 0, 0, 0.8)">
                         <div  class="ace-editor" ref="ace" v-show='editorShow' id='aceEditor'></div>
                     </div>
-                    <div v-if='errInfo' style="height: 30%;border-top: 1px solid #fff;background-color: rgb(39, 40, 34)">
-                        <span>输出信息</span><br>
-                        <span style="width: 100%;word-break:break-all;">{{errInfo}}</span>
+                    <div v-if='errorInfo && !contractAbi' class="contract-errorInfo">
+                        <span class='title'>错误信息</span><br>
+                        <span style="width: 100%;word-break:break-all;">{{errorInfo}}</span>
                     </div>
                 </div>
             </div>
@@ -89,7 +89,9 @@ export default {
             indexData: null,
             resultList: [],
             codeHight: '100%',
-            errInfo: "",
+            errorInfo: "",
+            compliteData: null,
+            contractAbi: "",
         }
     },
     mounted: function(){
@@ -98,8 +100,7 @@ export default {
         this.getContracts();
         this.getAllGroups();
         Bus.$on("check",data => {
-            this.setContent(data.data);
-            this.changeContractList(data.data,data.list)
+            this.selectData(data)
         })
         Bus.$on("deleteFile",data => {
             let reqData = data.contractId.toString()
@@ -107,7 +108,11 @@ export default {
         })
         Bus.$on("deleteFolder",data => {
             let arry = [];
-            arry = this.setContractList(data.contractName,this.resultList);
+            this.resultList.forEach(value => { 
+                if(value.realFolder == data.contractName){
+                    arry.push(value)
+                }
+            })
             let reqlist = [];
             
             for(let i = 0; i < arry.length; i++){
@@ -116,8 +121,42 @@ export default {
             let reqData = reqlist.join(",")
             this.deleteCode(reqData)
         })
+        Bus.$on('open',data => {
+            this.resultList.forEach(value => {
+                if(value.contractId == data.contractId){
+                    if(data.fileIcon == 'wbs-icon-jiantouarrow487'){
+                        this.$set(value,'fileIcon','wbs-icon-jiantouarrow483')
+                        value.fileIcon = 'wbs-icon-jiantouarrow483';
+                    }else{
+                        this.$set(value,'fileIcon','wbs-icon-jiantouarrow487')
+                        value.fileIcon = 'wbs-icon-jiantouarrow487'
+                    }
+                }
+            })
+            this.contractArry = this.setContractList(this.resultList)
+        })
+        Bus.$on("complite",data => {
+            this.loading = true;
+            data.forEach(value => {
+                this.complieContract(value)
+            })
+            setTimeout(() => {
+                this.editContract(data)
+            },1000)
+        })
     },
     methods: {
+        selectData: function(data){
+            this.setContent(data);
+            this.resultList.forEach(value => {
+                if(value.contractId == data.contractId && !data.contarctType){
+                    value.contractActive = true
+                }else{
+                    value.contractActive = false
+                }
+            })
+            this.contractArry = this.setContractList(this.resultList)
+        },
         initEditor: function(){
             this.aceEditor = ace.edit('aceEditor', {
                 maxLines: Math.ceil((this.$refs.codeContent.offsetHeight)/17) + 1,
@@ -140,12 +179,21 @@ export default {
             this.aceEditor.resize();  
         },
         setContent: function(val){
-            if(val.errorInfo){
-                this.errInfo = val.errorInfo;
+            this.codeHight = '100%';
+            this.errorInfo = "";
+            this.contractAbi = val.contractAbi
+            if(val.errorInfo && !val.contractAbi){
+                this.errorInfo = val.errorInfo;
                 this.codeHight = '70%'
             }
-            let data = Base64.decode(val.contractSource)
-            this.aceEditor.setValue(data)
+            setTimeout(() => {
+                this.aceEditor.setOptions({
+                    maxLines: Math.ceil((this.$refs.codeContent.offsetHeight)/17) + 1,
+                    minLines: Math.ceil((this.$refs.codeContent.offsetHeight)/17) + 1,
+                })
+                let data = Base64.decode(val.contractSource)
+                this.aceEditor.setValue(data)
+            },300)
         },
         openAlert: function(row){
             this.$confirm(`<div style="width: 380px; max-height: 250px;padding: 10px 5px;overfolw-y:auto; white-space: pre-wrap;word-wrap: break-word;">${row.errorInfo}</div>
@@ -198,6 +246,7 @@ export default {
                     this.upLoad(e)
                 }
             }
+            this.$refs.file.value ="";
         },
         uploadZip: function(e){
             let file = document.getElementById("file").files[0]
@@ -208,9 +257,14 @@ export default {
             uploadData(fileFormData).then(res => {
                 if(res.data.code == 0){
                     this.getContracts()
+                }else{
+                    message(errorcode[res.data.code].cn,'error')
                 }
             }).catch(err => {
-                alert(1111)
+                 this.$message({
+                        message: '系统错误！',
+                        type: "error"
+                    });
             })
         },
         // upload a contract and save this
@@ -304,9 +358,15 @@ export default {
             getContractList(data,{}).then(res => {
                 if(res.data.code === 0){
                     this.contractList = res.data.data;
+                    this.allContractList = res.data.data;
+                    this.changeAllcontarctList(this.allContractList)
                     if(res.data.data && res.data.data.length){
                         this.changeContractData(res.data.data)
+                        this.selectData(res.data.data[0])
+                    }else{
+                        this.contractArry = []
                     }
+                    
                     this.pagination.total = res.data.totalCount;
                 }else{
                     message(errorcode[res.data.code].cn,'error')
@@ -314,26 +374,6 @@ export default {
             }).catch(err => {
                 message(constant.ERROR,'error');
             })
-        },
-        changeContractList: function(item,list){
-            this.resultList.forEach(value => {
-                value.contractActive = false;
-                list.forEach(val => {
-                    if(val.contractId == value.contractId){
-                        if(val.fileActive){ 
-                            value.fileActive = true;
-                            value.fileIcon = 'el-icon-caret-bottom';
-                        }else if(val.fileActive == false){
-                            val.fileActive = false;
-                            val.fileIcon = 'el-icon-caret-right';
-                        }
-                    }
-                })
-                if(value.contractId == item.contractId){
-                    value.contractActive = true
-                }
-            });
-            this.contractArry = this.setContractList("",this.resultList)
         },
         changeContractData: function(list){
             let arry = [];
@@ -346,8 +386,7 @@ export default {
                 }
                
                 value.realPath = value.contractPath + value.contractName + '.sol';
-                value.pathArry = value.realPath.split("/");
-                // debugger
+                value.pathArry = value.contractPath.split("/");
                 if(value.pathArry && value.pathArry.length > 1){
                     value.contractFolder = value.pathArry[0];
                     value.realFolder = value.pathArry[value.pathArry.length-2]
@@ -355,16 +394,21 @@ export default {
                     value.contractFolder = ""
                 }
             })
-            arry = list[0]
+            arry = []
             list.forEach(value => {
-                if(value.pathArry.length > arry.pathArry.length){
-                    arry = value
-                }
+                value.pathArry.forEach(item => {
+                    arry.push(item)
+                })
             })
-            // console.log(arry)
-            folderArry = this.createFolder(arry);
+            let newArry = []
+            for(let i = 0; i < arry.length; i++){
+                if(newArry.indexOf(arry[i]) == -1 && arry[i]){
+                    newArry.push(arry[i])
+                }
+            }
+            folderArry = this.createFolder(newArry);
             this.resultList = list.concat(folderArry);
-            this.contractArry = this.setContractList("",this.resultList);
+            this.contractArry = this.setContractList(this.resultList);
         },
         checkOne: function(val){
             val.forEach(value => {
@@ -378,49 +422,47 @@ export default {
         createFolder: function(data){
             let arry = [];
             let result = [];
-            arry = data.pathArry;
-            arry.pop();
+            arry = data;
             for(let i = 0; i < arry.length; i++){
                 let obj = {};
                 obj.contractName = arry[i];
                 obj.contractType = 'folder';
                 obj.fileActive = false;
-                obj.fileIcon = 'el-icon-caret-right';
-                obj.contractId = (new Date()).getTime();
+                obj.fileIcon = 'wbs-icon-jiantouarrow487';
                 if(i){
-                    obj.realFolder = arry[i-1]
+                    obj.contractId = result[i-1].contractId + 1;
                 }else{
-                    obj.realFolder = ""
-                    obj.contractFolder = ""
+                    obj.contractId = (new Date()).getTime();
                 }
+                obj.realFolder = ""
+                obj.contractFolder = ""
                 if(obj.contractName){
                     result.push(obj)
                 }
             }
             return result
         },
-        getParentArry: function(name, arry){
-            var newArry = new Array();
-            for (var i in arry) {
-                if (arry[i].realFolder && arry[i].realFolder == name){
-                    newArry.push(arry[i]);
-                }else if(!arry[i].realFolder && arry[i].realFolder == name){
-                    newArry.push(arry[i]);
+        setContractList: function(arry){
+            let childArry = [];
+            let folderArry = [];
+            let finalArry = [];
+            arry.forEach(value => {
+                if(value.realFolder == "" && !value.contractType){
+                    childArry.push(value)
+                }else if(value.realFolder == "" && value.contractType){
+                    folderArry.push(value)
                 }
-            }
-            return newArry;
-        },
-        setContractList: function(name,arry){
-            let childArry = this.getParentArry(name,arry);
-            if(childArry.length){
-               childArry.forEach(value => {
-                   if(value.contractType == 'folder'){
-                       value.child = [];
-                       value.child = this.setContractList(value.contractName,arry)
-                   }
-               }) 
-            }
-            return childArry;
+            })
+            folderArry.forEach(value => {
+                value.child = [];
+                arry.forEach(item => {
+                    if(item.realFolder == value.contractName){
+                        value.child.push(item)
+                    }
+                })
+            })
+            finalArry = childArry.concat(folderArry)
+            return finalArry;
         },   
         deleteRow: function(val){
             this.$confirm('此操作不可恢复，请确认！','删除合约',{center:true}).then(_ => {
@@ -436,11 +478,17 @@ export default {
             getContractList(data,{}).then(res => {
                 if(res.data.code === 0){
                     this.allContractList = res.data.data;
+                    this.changeAllcontarctList(this.allContractList)
                 }else{
                     message(errorcode[res.data.code].cn,'error')
                 }
             }).catch(err => {
                  message(constant.ERROR,'error');
+            })
+        },
+        changeAllcontarctList: function(list){
+            list.forEach(value => {
+                value.realPath == value.contractPath + value.contractName;
             })
         },
         // delete a contract
@@ -451,6 +499,9 @@ export default {
             deleteContract(data).then(res => {
                 if(res.data.code === 0){
                     this.getContracts();
+                    this.codeHight = '100%';
+                    this.errorInfo = "";
+                    this.aceEditor.setValue("")
                     message('删除成功！','success')
                 }else{
                     message(errorcode[res.data.code].cn,'error')
@@ -465,6 +516,7 @@ export default {
             this.loading = true;
             this.contractList.forEach(value => {
                 if(value.contractStatus != 1){
+                    this.compliteData = value;
                     this.complieContract(value);
                 }    
             });
@@ -520,18 +572,35 @@ export default {
         // Compile contract callback function
         findImports: function(path){
             let arry = path.split("/");
-            let newpath = arry[arry.length-1]
-            let num = 0;
-            for(let i = 0; i < this.allContractList.length; i++){
-                 if (newpath == (this.allContractList[i].contractName + '.sol')){
-                    return {contents: Base64.decode(this.allContractList[i].contractSource)}
-                }else{
-                    num++;
-                } 
+            let newpath = "";
+            if(arry.length > 1){
+                newpath = "/" + path;
+                let num = 0;
+                for(let i = 0; i < this.allContractList.length; i++){
+                    if (newpath == this.allContractList[i].realPath){
+                        return {contents: Base64.decode(this.allContractList[i].contractSource)}
+                    }else{
+                        num++;
+                    } 
+                }
+                if(num == this.allContractList.length){
+                    return { error: "File not found" };
+                }
+            }else{
+                newpath = path;
+                let num = 0;
+                for(let i = 0; i < this.allContractList.length; i++){
+                    if (newpath == (this.allContractList[i].contractName + '.sol')){
+                        return {contents: Base64.decode(this.allContractList[i].contractSource)}
+                    }else{
+                        num++;
+                    } 
+                }
+                if(num == this.allContractList.length){
+                    return { error: "File not found" };
+                }
             }
-            if(num == this.allContractList.length){
-                return { error: "File not found" };
-            }
+            
         },
         //Processing compiled data
         changeOutput: function(obj){
@@ -554,7 +623,7 @@ export default {
             return val
         },
         // update a  contact
-        editContract: function(){
+        editContract: function(val){
             let arry = [];
             this.contractList.forEach(value => {
                 if(value.contractAbi && value.contractStatus != 1){
@@ -573,8 +642,24 @@ export default {
                     arry.push(value)
                 }
             })
+            if(val){
+                val.forEach(value => {
+                    if(typeof(value.contractAbi) == "string"){
+                        value.contractAbi = value.contractAbi
+                    }else if(value.contractAbi){
+                        value.contractAbi = JSON.stringify(value.contractAbi)
+                    }else{
+                        value.contractAbi = ""
+                    }
+                    constant.SYSTEM_CONTRACT_ADDRESS.forEach(val => {
+                        if(val.contractName == value.contractName){
+                            value.contractAddress = val.contractAddress
+                        }
+                    })
+                })
+                arry = val
+            }
             let data = {
-                groupId: this.groupId,
                 data: arry
             }
             if(arry.length){
@@ -653,6 +738,19 @@ export default {
     font-size: 14px;
     color: #fff;
 }
+.contract-errorInfo{
+    height: 30%;
+    border-top: 1px solid #fff;
+    background-color: rgb(39, 40, 34);
+    z-index: 999999;
+    color: #fff;
+    padding: 10px 20px;
+}
+.contract-errorInfo .title{
+    display: inline-block;
+    padding-bottom: 20px;   
+}
+
 
 </style>
 
