@@ -53,6 +53,13 @@
         ORDER BY contract_id DESC
         LIMIT #{start},#{pageSize}
     </select>
+    
+    <select id="getAbiByInput" resultType="org.bcos.browser.entity.dto.Contract">
+        SELECT contract_abi as contractAbi,
+               contract_name as contractName
+        FROM tb_contract
+        where locate(contract_bin,#{input})
+    </select>
 
     <update id="updateContract" parameterType="org.bcos.browser.entity.dto.Contract">
         UPDATE tb_contract

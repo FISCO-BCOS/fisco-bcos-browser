@@ -1,13 +1,13 @@
 package org.bcos.browser.controller;
 
 import java.io.IOException;
-
 import org.bcos.browser.base.BaseController;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BasePageResponse;
 import org.bcos.browser.entity.base.BaseResponse;
 import org.bcos.browser.entity.dto.Contract;
 import org.bcos.browser.entity.req.ReqContracts;
+import org.bcos.browser.entity.req.ReqFunction;
 import org.bcos.browser.service.ContractService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -84,7 +84,44 @@ public class ContractController extends BaseController {
         BaseResponse response = contractService.updateContract(contracts);
         return response;
     }
+    
+    /**
+     * addFunction.
+     * 
+     * @param functions info
+     * @return
+     * @throws BaseException
+     */
+    @PostMapping("/addFunction")
+    public BaseResponse addFunction(@RequestBody ReqFunction functions) {
+        BaseResponse response = contractService.addFunction(functions);
+        return response;
+    }
 
+    /**
+     * getFunction.
+     * 
+     * @param methodId methodId
+     * @return
+     */
+    @GetMapping("/function/{methodId}")
+    public BaseResponse getFunction(@PathVariable("methodId") String methodId) {
+        BaseResponse response = contractService.getFunction(methodId);
+        return response;
+    }
+    
+    /**
+     * getContractAbi.
+     * 
+     * @param input info
+     * @return
+     */
+    @GetMapping("/abi/{input}")
+    public BaseResponse getContractAbi(@PathVariable("input") String input) {
+        BaseResponse response = contractService.getContractAbi(input);
+        return response;
+    }
+    
     /**
      * deleteContract.
      *

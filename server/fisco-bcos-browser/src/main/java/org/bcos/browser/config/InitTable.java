@@ -16,6 +16,7 @@ public class InitTable implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         groupMapper.createTbGroup(Constants.TB_GROUP);
-        groupMapper.createTbContract(Constants.PREFIX_TB_CONTRACT);
+        groupMapper.createTbContract(Constants.TB_CONTRACT);
+        groupMapper.createTbFunction(Constants.TB_FUNCTION);
     }
 }

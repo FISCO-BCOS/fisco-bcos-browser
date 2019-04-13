@@ -21,11 +21,11 @@
         tb_transaction_#{groupId}(trans_hash,group_id,block_hash,block_number,block_time,block_date,trans_from,trans_to,trans_index,gmt_create,gmt_modify)
         VALUES(#{transHash},#{groupId},#{blockHash},#{blockNumber},#{blockTime},#{blockDate},#{transFrom},#{transTo},#{transIndex},now(),now())
     </insert>
-
-    <delete id="deletePartTransaction" parameterType="org.bcos.browser.entity.dto.Transaction">
-        DELETE tb FROM tb_transaction_#{groupId} AS tb ,
-        (SELECT block_time FROM tb_transaction_#{groupId} ORDER BY block_time desc LIMIT 500000,1) AS tmp
-        WHERE <![CDATA[ tb.block_time <= tmp.block_time) ]]>
+    
+    <delete id="deletePartTxn">
+        DELETE FROM tb_transaction_#{groupId}
+        ORDER BY block_number
+        limit #{subTransNum}
     </delete>
 
     <update id="updateMethod" parameterType="org.bcos.browser.entity.dto.Transaction">
@@ -35,10 +35,9 @@
         WHERE trans_hash = #{transHash}
     </update>
 
-    <select id="getAllTransactionCount" parameterType="java.util.Map"
-        resultType="INTEGER">
+    <select id="getAllTransactionCount" parameterType="java.util.Map" resultType="INTEGER">
         SELECT count(1) FROM tb_transaction_#{groupId}
-        WHERE group_id = #{groupId}
+        WHERE 1 = 1
         <if test="transHash != null and transHash !=''">
             AND trans_hash = #{transHash}
         </if>

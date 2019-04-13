@@ -109,6 +109,17 @@
             UNIQUE KEY (contract_name, contract_path)
         ) ENGINE=InnoDB AUTO_INCREMENT=300001 DEFAULT CHARSET=utf8 COMMENT='合约信息表'
     </update>
+    
+    <update id="createTbFunction">
+        CREATE TABLE IF NOT EXISTS ${tableName} (
+            method_id varchar(128) COMMENT '方法id',
+            abi_info text COMMENT 'abi信息',
+            type varchar(32) COMMENT '方法类型',
+            gmt_create datetime COMMENT '创建时间',
+            gmt_modify datetime COMMENT '修改时间',
+            PRIMARY KEY (method_id)
+        ) COMMENT='方法解析信息表' ENGINE=InnoDB DEFAULT CHARSET=utf8
+    </update>
 
     <update id="dropTableByName">
         DROP TABLE IF EXISTS ${tableName}

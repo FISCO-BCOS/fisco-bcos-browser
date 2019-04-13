@@ -167,7 +167,13 @@ public class SchedulerService {
     public void deleteTxnSchedule() {
         List<Group> list = groupMapper.getGroupList();
         for (Group loop : list) {
-            transactionMapper.deletePartTransaction(loop.getGroupId());
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("groupId", loop.getGroupId());
+            int count = transactionMapper.getAllTransactionCount(map);
+            if (count > constants.getKeepTxnCnt()) {
+                int subTransNum = count - constants.getKeepTxnCnt();
+                transactionMapper.deletePartTxn(loop.getGroupId(), subTransNum);
+            }
         }
     }
 
@@ -193,7 +199,7 @@ public class SchedulerService {
             List<Node> nodeList = nodeMapper.getAllNode(groupId);
             List<String> nodeIds = web3jRpc.getGroupPeers(groupId);
             for (Node loop : nodeList) {
-                if (!nodeIds.contains(loop.getNodeId())) {
+                if (nodeIds.size() > 0 && !nodeIds.contains(loop.getNodeId())) {
                     nodeMapper.deleteNodeById(groupId, loop.getNodeId());
                 }
             }
