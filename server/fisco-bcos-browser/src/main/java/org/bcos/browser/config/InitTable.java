@@ -18,7 +18,4 @@ public class InitTable implements InitializingBean {
         groupMapper.createTbGroup(Constants.TB_GROUP);
         groupMapper.createTbContract(Constants.PREFIX_TB_CONTRACT);
     }
-
-
-
 }

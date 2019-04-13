@@ -51,8 +51,6 @@ public class ContractService {
         return response;
     }
 
-
-
     /**
      * addZipContracts.
      *
@@ -101,7 +99,12 @@ public class ContractService {
             contract.setContractName(contractName);
             contract.setContractPath(contractPath);
             contract.setContractSource(crypontractSource);
-            contractMapper.add(contract);
+            int count = contractMapper.getContractByNameAndPath(contractName,contractPath);
+            if (count > 0) {
+                throw new BaseException(ConstantCode.CONTRACT_ALREADY_EXIST);
+            }else {
+                contractMapper.add(contract);
+            }
         }
         zf.close();
         if(file.exists()){
@@ -109,7 +112,6 @@ public class ContractService {
         }
         return response;
     }
-
 
     /**
      * getContractList.
@@ -161,5 +163,4 @@ public class ContractService {
         }
         return response;
     }
-
 }

@@ -69,7 +69,6 @@ public class GroupService {
 
         label:
         for(Group loop : list){
-//            String nodeTableName = Constants.PREFIX_TB_NODE + loop.getGroupId();
             List<Node> nodes = nodeMapper.getAllNode(loop.getGroupId());
             for (Node node : nodes){
                 if(node.getType() == 0){

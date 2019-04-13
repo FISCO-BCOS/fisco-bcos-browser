@@ -23,14 +23,11 @@
     </insert>
 
     <delete id="deletePartTransaction" parameterType="org.bcos.browser.entity.dto.Transaction">
-        DELETE tb FROM tb_transaction_#{groupId} AS tb ,(SELECT block_time FROM tb_transaction_#{groupId} ORDER BY block_time desc LIMIT 500000,1) AS tmp
+        DELETE tb FROM tb_transaction_#{groupId} AS tb ,
+        (SELECT block_time FROM tb_transaction_#{groupId} ORDER BY block_time desc LIMIT 500000,1) AS tmp
         WHERE <![CDATA[ tb.block_time <= tmp.block_time) ]]>
-
-
-
     </delete>
 
-    
     <update id="updateMethod" parameterType="org.bcos.browser.entity.dto.Transaction">
         UPDATE tb_transaction_#{groupId}
         SET method = #{method},
