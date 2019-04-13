@@ -1,31 +1,41 @@
 package org.bcos.browser.service;
 
-import java.io.*;
-import java.util.*;
+import static org.bcos.browser.util.CommonUtils.preTreatmentFile;
+import static org.bcos.browser.util.CommonUtils.readZipFile;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BasePageResponse;
 import org.bcos.browser.entity.base.BaseResponse;
 import org.bcos.browser.entity.dto.Contract;
+import org.bcos.browser.entity.dto.Function;
 import org.bcos.browser.entity.req.ReqContracts;
+import org.bcos.browser.entity.req.ReqFunction;
 import org.bcos.browser.mapper.ContractMapper;
+import org.bcos.browser.mapper.FunctionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import static org.bcos.browser.util.CommonUtils.preTreatmentFile;
-import static org.bcos.browser.util.CommonUtils.readZipFile;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class ContractService {
     @Autowired
     ContractMapper contractMapper;
+    @Autowired
+    FunctionMapper functionMapper;
 
     /**
      * addContract.
@@ -130,7 +140,7 @@ public class ContractService {
     }
 
     /**
-     * updateContractList.
+     * updateContract.
      * 
      * @param contracts info
      * @return
@@ -146,6 +156,53 @@ public class ContractService {
             }
             contractMapper.updateContract(loop);
         }
+        return response;
+    }
+    
+    /**
+     * addFunction.
+     * 
+     * @param functions info
+     * @return
+     */
+    @Transactional
+    public BaseResponse addFunction(ReqFunction functions) {
+        log.info("addFunction functions:{}", functions);
+        BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
+        for (Function loop : functions.getData()) {
+            try {
+                functionMapper.add(loop);
+            } catch (DuplicateKeyException e) {
+                log.warn("addFunction methodId:{} is existed", loop.getMethodId());
+                continue;
+            }
+        }
+        return response;
+    }
+    
+    /**
+     * getFunction.
+     * 
+     * @param methodId methodId
+     * @return
+     */
+    public BaseResponse getFunction(String methodId) {
+        BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
+        Function function = functionMapper.getFunctionById(methodId);
+        response.setData(function);
+        return response;
+    }
+    
+    /**
+     * getContractAbi.
+     * 
+     * @param input info
+     * @return
+     */
+    public BaseResponse getContractAbi(String input) {
+        BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
+        Contract contractAbi = contractMapper.getAbiByInput(input);
+        response.setData(contractAbi);
         return response;
     }
 

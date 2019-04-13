@@ -22,12 +22,15 @@ public interface GroupMapper {
     
     void createTbContract(@Param(value = "tableName")String tableName);
     
+    void createTbFunction(@Param(value = "tableName")String tableName);
+    
     void dropTableByName(@Param(value = "tableName")String tableName);
     
     void addGroup(Group group);
-    Group getGroupById(int groupId);
-
+    
     List<Group> getGroupList();
+
+    Group getGroupById(int groupId);
 
     void deleteGroup(int groupId);
 

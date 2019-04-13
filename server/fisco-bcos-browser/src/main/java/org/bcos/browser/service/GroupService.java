@@ -71,15 +71,15 @@ public class GroupService {
         for(Group loop : list){
             List<Node> nodes = nodeMapper.getAllNode(loop.getGroupId());
             for (Node node : nodes){
-                if(node.getType() == 0){
-                    SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groupId,node);
-                    if(syncInfo !=null){
+                if (node.getType() == 0) {
+                    SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groupId, node);
+                    if (syncInfo != null) {
                         node.setGroupId(groupId);
                         node.setNodeId(syncInfo.getNodeId());
                         node.setType(0);
                         nodeMapper.add(node);
                         // sync node info
-                        for (Peer peer: syncInfo.getPeers()) {
+                        for (Peer peer : syncInfo.getPeers()) {
                             Node syncNode = new Node();
                             syncNode.setNodeId(peer.getNodeId());
                             syncNode.setGroupId(groupId);
