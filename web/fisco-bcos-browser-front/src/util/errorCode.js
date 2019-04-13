@@ -84,5 +84,9 @@ export default {
     "305013": {
         cn: "zip文件里面不能包含两级文件夹，有且只能有一级",
         en: "The zip file can not contain two folders, and can only have one folder."
+    },
+    "305014": {
+        cn: "文件夹已存在",
+        en: "Folder already exists."
     }
 }

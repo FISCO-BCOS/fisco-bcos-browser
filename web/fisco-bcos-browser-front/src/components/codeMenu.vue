@@ -4,7 +4,7 @@
             <li v-for='(item,index) in contractArry' :key='item.contractId' class="contract-menu-item" :class="{'colorActive': item.contractActive}">
                 <div style="cursor: pointer" v-if='!item.contractType' class="contract-menu-file">
                     <el-tooltip class="item" effect="dark" content="未编译" placement="top-start">
-                        <img src="../assets/images/file.png" v-show='item.contractStatus == 0'  @click='checkCode(item,index)'>
+                        <img src="../assets/images/file.png" v-show='item.contractStatus == 0 || item.contractStatus == -1'  @click='checkCode(item,index)'>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="已编译" placement="top-start">
                         <img src="../assets/images/file-success.png" v-show='item.contractStatus == 1'  @click='checkCode(item,index)'>
@@ -13,8 +13,8 @@
                         <img src="../assets/images/file-error.png" v-show='item.contractStatus == 2'  @click='checkCode(item,index)'>
                     </el-tooltip>
                     <span @click='checkCode(item,index)'>{{item.contractName + '.sol'}}</span>
-                    <el-tooltip class="item" effect="dark" content="编译" placement="top-start" v-show='item.contractStatus == 0 || item.contractStatus ==2'>
-                        <i class="wbs-icon-zhihang" style="font-size: 14px;padding-left: 10px;" @click='complite(item)'></i>
+                    <el-tooltip class="item" effect="dark" content="编译" placement="top-start" v-if='item.contractStatus == 0 || item.contractStatus ==2'>
+                        <i class="wbs-icon-zhihang" style="font-size: 14px;padding-left: 10px;" @click='buttonShow && complite(item,index)'></i>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="删除" placement="top-start">
                         <i class="wbs-icon-delete" style="font-size: 14px;padding-left: 10px;" @click='deleteFile(item)'></i>
@@ -62,11 +62,13 @@ export default {
             contractData: [],
             activeIndex: this.indexs,
             indexData: null,
+            activeIndex: -1,
+            buttonShow: true,
         }
     },
     watch:{
         data: function(val){
-            this.contractArry = val
+            this.contractArry = val;
             this.contractArry.forEach(value => {
                 if(value.contractType && value.child.length){
                     let num = 0;
@@ -106,36 +108,50 @@ export default {
             Bus.$emit("open",val)
         },
         deleteFile: function(val){
-            this.$confirm('确认删除？',{center:true}).then(_ => {
-                Bus.$emit("deleteFile",val)
-            }).catch(_ =>{
+            if( this.buttonShow){
+                 this.$confirm('确认删除？',{center:true}).then(_ => {
+                    Bus.$emit("deleteFile",val)
+                }).catch(_ =>{
 
-            })
+                })
+            }
+           
         },
         deleteFolder: function(val){
-            this.$confirm('确认删除？',{center:true}).then(_ => {
-                Bus.$emit("deleteFolder",val)
-            }).catch( _ =>{
+            if( this.buttonShow){
+                this.$confirm('确认删除？',{center:true}).then(_ => {
+                    Bus.$emit("deleteFolder",val)
+                }).catch( _ =>{
 
-            })
+                })
+            }
             
         },
-        complite: function(val){
-            this.contractArry.forEach(value => {
+        complite: function(val,indexs){
+            this.contractArry.forEach((value,index) => {
                 if(value.contarctId == val.contarctId && value.contractType){
                     this.$set(value,'compileShow',true)
+                    this.$set(val,'compileShow',true)
                 }else if(value.contractId == val.contractId && !value.contractType){
-                    this.$set(value,'contractStatus',0)
+                    this.$set(value,'compileShow',true)
+                    this.$set(value,'contractStatus',-1)
+                    this.$set(val,'compileShow',true)
+                    this.$set(val,'contractStatus',-1)
                 }
             })
-            
             let data = []
             if(val.contractType){
                 data = val.child
             }else{
                 data = [val]
             }
-            Bus.$emit("complite",data)
+            if(this.buttonShow){
+                Bus.$emit("complite",data)
+            }
+            this.buttonShow = false
+            setTimeout(() => {
+                this.buttonShow = true
+            },2000)
         }
     }
 }
