@@ -41,6 +41,9 @@
         <if test="type == 0">
             AND type = 0
         </if>
+        <if test="status == 0">
+            AND status = 0
+        </if>
         <if test="ip != null and ip != ''">
             AND ip LIKE CONCAT('%',#{ip},'%')
         </if>
@@ -78,7 +81,8 @@
 
     <select id="getManualNode" resultType="org.bcos.browser.entity.dto.Node">
         SELECT <include refid="ALL_COLUMN" />
-        FROM tb_node_#{groupId} WHERE type=0
+        FROM tb_node_#{groupId} 
+        WHERE type=0
     </select>
 
     <select id="getAllNode" resultType="org.bcos.browser.entity.dto.Node">

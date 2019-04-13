@@ -15,5 +15,6 @@ public interface TransactionMapper {
     int getAllTransactionCount(Map<String, Object> map);
 
     List<Transaction> getTbTransactionByPage(Map<String, Object> map);
+    
     void deletePartTransaction(int groupId);
 }

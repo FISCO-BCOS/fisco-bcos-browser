@@ -109,6 +109,7 @@ public class TransactionService {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("groupId", groupId);
         map.put("type", 0);
+        map.put("status", 0);
         int total = nodeMapper.getNodeCnts(map);
         // check for manually added nodes
         if (total > 0) {

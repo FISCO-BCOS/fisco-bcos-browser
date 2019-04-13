@@ -11,6 +11,7 @@
             PRIMARY KEY (group_id)
         ) COMMENT='群组信息表' ENGINE=InnoDB CHARSET=utf8
     </update>
+    
     <update id="createTbNode">
         CREATE TABLE IF NOT EXISTS ${tableName} (
             node_id varchar(192) NOT NULL COMMENT '节点ID',
@@ -109,8 +110,6 @@
         ) ENGINE=InnoDB AUTO_INCREMENT=300001 DEFAULT CHARSET=utf8 COMMENT='合约信息表'
     </update>
 
-
-
     <update id="dropTableByName">
         DROP TABLE IF EXISTS ${tableName}
     </update>
@@ -137,12 +136,13 @@
             group_desc as groupDesc
         FROM tb_group
     </select>
+    
     <select id="getGroupById" resultType="org.bcos.browser.entity.dto.Group">
         SELECT group_id as groupId,
             group_name as groupName,
             group_desc as groupDesc
-        FROM tb_group WHERE group_id=#{groupId}
-
+        FROM tb_group 
+        WHERE group_id=#{groupId}
     </select>
     
     <delete id="deleteGroup">

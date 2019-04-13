@@ -161,16 +161,15 @@ public class SchedulerService {
         }
     }
 
-
+    /**
+     * deleteTxnSchedule.
+     */
     public void deleteTxnSchedule() {
         List<Group> list = groupMapper.getGroupList();
         for (Group loop : list) {
             transactionMapper.deletePartTransaction(loop.getGroupId());
         }
     }
-
-
-
 
     /**
      * syncNodeInfo.
@@ -200,7 +199,6 @@ public class SchedulerService {
             }
         }
     }
-
 
     /**
      * checkNodeActive.
