@@ -1,5 +1,5 @@
 <template>
-    <div class="search-main">
+    <div class="search-main" style="height: auto;">
         <div class="container">
            <v-nav :hrTitle="btitle" :hrcontent="btitle" :route="'block'"></v-nav>
             <div class="search-nav">

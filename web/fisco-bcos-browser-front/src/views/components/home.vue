@@ -23,7 +23,12 @@
             <div class="home-center">
                 <el-table :data="TbNodesList"  :header-cell-style="bgTable" :row-class-name="tableRowClassName" :cell-style="tableCellStyle"
                           v-loading="loading3" element-loading-text="数据加载中..."  element-loading-background="rgba(0, 0, 0, 0.8)">
-                    <el-table-column  label="节点Id"  :show-overflow-tooltip="true" prop="nodeId" align="center"></el-table-column>
+                    <el-table-column  label="节点Id"  :show-overflow-tooltip="true" prop="nodeId" align="center">
+                        <template slot-scope="scope">
+                            <i class="wbs-icon-baocun copy-public-key" style="font-size: 15px;cursor:pointer" @click="copyPubilcKey(scope.row.nodeId)" title="复制"></i>
+                            <span>{{scope.row.nodeId}}</span>
+                        </template>
+                    </el-table-column>
                     <el-table-column  label="当前块高"  :show-overflow-tooltip="true" prop="blockNumber" align="center"></el-table-column>
                     <el-table-column  label="pbftView"  :show-overflow-tooltip="true" prop="pbftView" align="center"></el-table-column>
                     <el-table-column label="节点状态"  :show-overflow-tooltip="true" prop="active" align="center">
@@ -529,6 +534,25 @@
             }
         },
         methods: {
+            copyPubilcKey: function(val){
+                if (!val) {
+                    this.$message({
+                        type: "fail",
+                        showClose: true,
+                        message: "key为空，不复制。",
+                        duration: 2000
+                    });
+                } else {
+                    this.$copyText(val).then(e => {
+                        this.$message({
+                            type: "success",
+                            showClose: true,
+                            message: "复制成功",
+                            duration: 2000
+                        });
+                    });
+                }
+            },
             changChart: function (val) {
                 this.chartStatistics.time = MonthState(val);
                 this.searchTxnByLastFourteenDay()

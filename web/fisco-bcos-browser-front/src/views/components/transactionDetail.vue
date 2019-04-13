@@ -59,8 +59,8 @@
                                 <div class="hash-content-label">
                                     <span class="label-title">logs:</span>
                                     <div class="label-content">
-                                        <span class="input-data" v-if="!eventLog.length">{{transactionReceiptByPkHash.logs}}</span>
-                                        <div class="input-data" v-for="item in eventLog" v-if="eventLog.length" :key='item.address'>
+                                        <span class="input-data" v-if="!eventSHow">{{transactionReceiptByPkHash.logs}}</span>
+                                        <div class="input-data" v-for="item in eventLog" v-if="eventSHow">
                                             <div class="item">
                                                 <span class="label">Address :</span>
                                                 <span>{{item.address}}</span>
@@ -169,7 +169,7 @@
         display: inline-block;
         width: 100%;
         /* padding: 10px; */
-        max-height: 200px;
+        /* max-height: 200px; */
         overflow: auto;
         word-break: break-all;
         word-wrap: break-word;
@@ -228,7 +228,7 @@
 </style>
 <script>
     import nav from '@/components/content-nav'
-    import {getTbTransactionByPkHash,getTbTransactionReceiptByPkHash,getContractList,getBytecode} from '@/api/api'
+    import {getTbTransactionByPkHash,getTbTransactionReceiptByPkHash,getContractList,getBytecode,getAbiFunction,getAbi} from '@/api/api'
     // import {getTbTransactionReceiptByPkHash} from '@/api/api'
     import url from '@/api/url'
     import {message} from '@/util/util'
@@ -266,6 +266,7 @@
                 eventLog: [],
                 eventTitle: "解码",
                 eventContent: true,
+                eventSHow: false,
             }
         },
         mounted: function () {
@@ -300,21 +301,26 @@
                 this.transactionTo = this.transactionByPkHash.to;
                 let num1 = 0;
                 let num2 = 0;
-                constant.SYSTEM_CONTRACT_ADDRESS.forEach(value => {
-                    if(this.transactionTo == value.contractAddress){
-                        this.decodefun(input, this.transactionTo,'system');
-                    }else if(this.transactionTo != "0x0000000000000000000000000000000000000000"){
-                        num1++
-                    }else{
-                        num2++
-                    }
-                })
-                if(num1 == constant.SYSTEM_CONTRACT_ADDRESS.length){
-                    this.decodefun(input, this.transactionTo);
-                } 
-                if(num2 == constant.SYSTEM_CONTRACT_ADDRESS.length){
-                    this.decodeDeloy(input);
+                if(this.transactionByPkHash.to == "0x0000000000000000000000000000000000000000"){
+                    this.getDeloyAbi(input);
+                }else{
+                    this.getMethod(input)
+                    // this.decodefun(input, this.transactionTo);
                 }
+            },
+           
+            getMethod: function(id){
+                let data = id.substring(0, 10);
+               
+                getAbiFunction(data).then(res => {
+                    if(res.data.code == 0){
+                        this.decodefun(id,res.data.data)
+                    }else{
+                    message(errorcode[res.data.code].cn,'error')
+                }
+                }).catch(err => {
+                    message(constant.ERROR,'error');
+                })
             },
             //Transaction Information Query
             searchTbTransactionByPkHash: function () {
@@ -454,153 +460,75 @@
         params @address string
         params @type string  0ptional   decode system contract
         */
-        decodefun: function(input, adr,type){
+        decodefun: function(input,abiData){
             let web3 = new Web3(Web3.givenProvider);
-            let data = input.substring(0, 10);
-            this.methodId = data;
+            this.methodId = input.substring(0, 10);
+            // this.methodId = data;
             let inputDatas = "0x" + input.substring(10);
-            let abi = null;
-            let abiData = {};
-            if(type == 'system'){
-                if (this.contractList.length) {
-                    this.contractList.forEach(value => {
-                        if (value.contractAddress == adr){
-                            abi = value.contractAbi;
-                            this.buttonSHow = true;
-                            this.showDecode = true;
-                            this.buttonTitle = "还原";
-                        }
-                    });
-                }
-            }else{
-                let code = this.byteCode.substring(0,2)
-                if(code == '0x'){
-                    this.byteCode = this.byteCode.substring(2);
-                    this.byteCode = this.byteCode.substring(0,this.byteCode.length-68)
-                }
-                if (this.contractList.length) {
-                    this.contractList.forEach(value => {
-                        
-                        if(!value.show && value.contractBin){
-                            value.contractBin = value.contractBin.substring(0,value.contractBin.length-68);
-                            value.show = true;
-                        }
-                        if (value.contractBin == this.byteCode){
-                            abi = value.contractAbi;
-                            this.buttonSHow = true;
-                            this.showDecode = true;
-                            this.buttonTitle = "还原";
-                        }
-                    });
-                }
-            }
-            if(abi){
-                abiData = JSON.parse(abi);
-                abiData.forEach(value => {
-                    value.encode = web3.eth.abi.encodeFunctionSignature({
-                        name: value.name,
-                        type: value.type,
-                        inputs: value.inputs
-                    });
-                });
-                abiData.forEach(value => {
-                    if (value.encode === data) {
-                        value.inputs.forEach((val, index) => {
-                            if (val && val.type && val.name) {
-                                this.abiType[index] = val.type + " " + val.name;
-                            } else if (val && val.name) {
-                                this.abiType[index] = val.name;
-                            } else if (val && val.type) {
-                                this.abiType[index] = val.type;
-                            } else if (val) {
-                                this.abiType[index] = val;
-                            }
-                        });
-                        this.funcData = value.name;
-                        if (value.inputs.length) {
-                            this.decodeData = web3.eth.abi.decodeParameters(
-                                value.inputs,
-                                inputDatas
-                            );
-                            if (JSON.stringify(this.decodeData) != "{}") {
-                                for (const key in this.decodeData) {
-                                    value.inputs.forEach((val, index) => {
-                                        if (val && val.name && val.type) {
-                                            if (key === val.name) {
-                                                this.inputData[index] = {};
-                                                this.inputData[index].name =
-                                                    val.name;
-                                                this.inputData[index].type =
-                                                    val.type;
-                                                this.inputData[
-                                                    index
-                                                ].data = this.decodeData[key];
-                                            }
-                                        } else if (val) {
-                                            if (index == key) {
-                                                this.inputData[index] = {};
-                                                this.inputData[
-                                                    index
-                                                ].type = val;
-                                                this.inputData[
-                                                    index
-                                                ].data = this.decodeData[key];
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        }
+            abiData.abiInfo = JSON.parse(abiData.abiInfo)
+            if(abiData){
+                abiData.abiInfo.inputs.forEach((val, index) => {
+                    if (val && val.type && val.name) {
+                        this.abiType[index] = val.type + " " + val.name;
+                    } else if (val && val.name) {
+                        this.abiType[index] = val.name;
+                    } else if (val && val.type) {
+                        this.abiType[index] = val.type;
+                    } else if (val) {
+                        this.abiType[index] = val;
                     }
                 });
-            }
-        },
-        decodeDeloy: function(items) {
-            this.methodId = items.substring(0, 10);
-            let abi = "";
-            let contractName = "";
-            let input = {};
-            let code = this.byteCode.substring(0,2)
-            if(code == '0x'){
-                this.byteCode = this.byteCode.substring(2);
-                this.byteCode = this.byteCode.substring(0,this.byteCode.length-68)
-            }
-            if (this.contractList.length) {
-                this.contractList.forEach(value => {
-                    if(!value.show && value.contractBin){
-                        value.contractBin = value.contractBin.substring(0,value.contractBin.length-68);
-                        value.show = true;
-                    }
-                    if (value.contractBin === this.byteCode) {
-                        abi = value.contractAbi;
-                        contractName = value.contractName;
-                        this.buttonSHow = true;
-                        this.showDecode = true;
-                        this.buttonTitle = "还原";
-                    }
-                });
-            }
-            if (abi) {
-                input = JSON.parse(abi);
-                if (input.length > 0) {
-                    input.forEach(value => {
-                        if (value.type === "constructor") {
-                            this.funcData = contractName;
-                            value.inputs.forEach((item, index) => {
-                                if (item && item.type && item.name) {
-                                    this.abiType[index] =
-                                        item.type + " " + item.name;
-                                } else if (item && item.name) {
-                                    this.abiType[index] = item.name;
-                                } else if (item && item.type) {
-                                    this.abiType[index] = item.type;
-                                } else if (item) {
-                                    this.abiType[index] = item;
+                this.funcData = abiData.abiInfo.name;
+                if (abiData.abiInfo.inputs.length) {
+                    this.decodeData = web3.eth.abi.decodeParameters( abiData.abiInfo.inputs,inputDatas);
+                    if (JSON.stringify(this.decodeData) != "{}") {
+                        for (const key in this.decodeData) {
+                            abiData.abiInfo.inputs.forEach((val, index) => {
+                                if (val && val.name && val.type) {
+                                    if (key === val.name) {
+                                        this.inputData[index] = {};
+                                        this.inputData[index].name = val.name;
+                                        this.inputData[index].type = val.type;
+                                        this.inputData[index].data = this.decodeData[key];
+                                    }
+                                } else if (val) {
+                                    if (index == key) {
+                                        this.inputData[index] = {};
+                                        this.inputData[index].type = val;
+                                        this.inputData[index].data = this.decodeData[key];
+                                    }
                                 }
                             });
                         }
-                    });
+                    }
                 }
+                this.showDecode = true;
+                this.buttonTitle = "还原";
+            }
+        },
+         getDeloyAbi: function(input){
+                let data = input.substring(2)
+                getAbi(data).then(res => {
+                    if(res.data.code == 0){
+                        this.decodeDeloy(res.data.data)
+                    }
+                })
+            },
+        decodeDeloy: function(items) {
+            if (items) {
+                let input = JSON.parse(items.contractAbi);
+                this.funcData = items.contractName;
+                input.inputs.forEach((item, index) => {
+                    if (item && item.type && item.name) {
+                        this.abiType[index] = item.type + " " + item.name;
+                    } else if (item && item.name) {
+                        this.abiType[index] = item.name;
+                    } else if (item && item.type) {
+                        this.abiType[index] = item.type;
+                    } else if (item) {
+                        this.abiType[index] = item;
+                    }
+                });
             }else{
                 this.buttonSHow = false;
                 this.showDecode = false;
@@ -608,117 +536,64 @@
         },
         //decodeEvent
         decodeEventClick: function() {
+            this.eventSHow = false;
             if (this.eventLog.length) {
-                this.eventSHow = true;
-                for (let i = 0; i < this.eventLog.length; i++) {
-                    let data = {
-                        groupId: localStorage.getItem("groupId"),
-                        data: [this.eventLog[i].address]
-                    }
-                    getBytecode(data,{}).then(res => {
-                        if(res.data.code === 0){
-                            let byteCode = res.data.data[0];
-                            this.decodeEvent(byteCode,this.eventLog[i],i)
-                        }else{
-                            message(errorcode[res.data.code].cn,'error');
-                        }
-                    }).catch(err => {
-                        if(err.response && err.response.code !== 200){
-                            message(constant.ERROR,'error');
-                        }
-                    })
-                }
-            } else {
-                this.eventSHow = false;
+                this.getEventData()
             }
         },
-        decodeEvent: function(byteCode, data, index) {
+        getEventData: function(){
+            for (let i = 0; i < this.eventLog.length; i++) {
+                getAbiFunction(this.eventLog[i].topics[0]).then(res => {
+                    if(res.data.code == 0 && res.data.data){
+                        this.eventLog[i] = this.decodeEvent(res.data.data,this.eventLog[i])
+                        setTimeout(() => {
+                            this.eventSHow = true;
+                        },200)
+                    }else if(res.data.code !== 0){
+                    message(errorcode[res.data.code].cn,'error')
+                }
+                }).catch(err => {
+                    message(constant.ERROR,'error');
+                })
+            }
+        },
+        decodeEvent: function(eventData, data) {
             let web3 = new Web3(Web3.givenProvider);
             let abi = "";
+            eventData.abiInfo = JSON.parse(eventData.abiInfo)
             let list = data;
-            let code = byteCode.substring(0,2)
-            if(code == '0x'){
-                byteCode = byteCode.substring(2);
-                byteCode = byteCode.substring(0,byteCode.length-68)
-            }
-            for (let i = 0; i < this.eventLog.length; i++) {
-                let num = 0;
-                this.contractList.forEach(val => {
-                    if(!val.show && val.contractBin){
-                        val.contractBin = val.contractBin.substring(0,val.contractBin.length-68);
-                        val.show = true;
-                    }
-                    if (val.contractBin === byteCode) {
-                        if (val.contractAbi) {
-                            list.abi = JSON.parse(val.contractAbi);
-                        } else {
-                            list.abi = [];
-                        }
-                    } else {
-                        num++;
-                    }
-                });
                 list.eventTitle = '还原'
                 list.eventDataShow = true;
                 list.eventButtonShow = true;
-                if (num == this.contractList.length) {
-                    list.eventDataShow = false;
-                    list.eventButtonShow = false;
+                list.eventName = eventData.abiInfo.name + "(";
+                for (let i = 0; i < eventData.abiInfo.inputs.length; i++) {
+                    if (i == eventData.abiInfo.inputs.length - 1) {
+                        list.eventName =  list.eventName + eventData.abiInfo.inputs[i].type +" " + eventData.abiInfo.inputs[i].name;
+                    }else{
+                        list.eventName = list.eventName + eventData.abiInfo.inputs[i].type + " " + eventData.abiInfo.inputs[i].name + ",";
+                    }   
                 }
-            }
-            if (list.abi && list.abi.length) {
-                list.abi.forEach(value => {
-                    if (value.type == "event") {
-                        list.eventName = value.name + "(";
-                        for (let i = 0; i < value.inputs.length; i++) {
-                            if (i == value.inputs.length - 1) {
-                                list.eventName =
-                                    list.eventName +
-                                    value.inputs[i].type +
-                                    " " +
-                                    value.inputs[i].name;
-                            } else {
-                                list.eventName =
-                                    list.eventName +
-                                    value.inputs[i].type +
-                                    " " +
-                                    value.inputs[i].name +
-                                    ",";
-                            }
-                        }
-                        list.eventName = list.eventName + ")";
-                        let eventData = web3.eth.abi.decodeLog(
-                            value.inputs,
-                            list.data,
-                            list.topics
-                        );
-                        list.outData = {};
-                        list.eventLgData = [];
-                        for (const key in eventData) {
-                            if (+key || +key == 0) {
-                                list.outData[key] = eventData[key];
-                            }
-                        }
-                        if (
-                            value.inputs.length &&
-                            JSON.stringify(list.outData) != "{}"
-                        ) {
-                            for (const key in list.outData) {
-                                value.inputs.forEach((items, index) => {
-                                    if (index == key) {
-                                        list.eventLgData[index] = {};
-                                        list.eventLgData[index].name =
-                                            items.name;
-                                        list.eventLgData[index].data =
-                                            list.outData[key];
-                                    }
-                                });
-                            }
-                        }
+                list.eventName = list.eventName + ")";
+                let eventResult = web3.eth.abi.decodeLog(eventData.abiInfo.inputs,list.data,list.topics);
+                list.outData = {};
+                list.eventLgData = [];
+                for (const key in eventResult) {
+                    if (+key || +key == 0) {
+                        list.outData[key] = eventResult[key];
                     }
-                });
-            }
-            this.$set(this.eventLog, index, list);
+                }
+                if (eventData.abiInfo.inputs.length && JSON.stringify(list.outData) != "{}") {
+                    for (const key in list.outData) {
+                        eventData.abiInfo.inputs.forEach((items, index) => {
+                            if (index == key) {
+                                list.eventLgData[index] = {};
+                                list.eventLgData[index].name = items.name;
+                                list.eventLgData[index].data = list.outData[key];
+                            }
+                        });
+                    }
+                }
+            return list
         },
     }
     }
