@@ -7,6 +7,7 @@ cd deploy
 
 2、修改配置（没有变化的可以不修改）：
 ```shell
+修改要下载的git分支：sed -i "s/master/${git_branch}/g" common.properties
 修改数据库IP：sed -i "s/127.0.0.1/${your_db_ip}/g" common.properties
 修改数据库用户名：sed -i "s/root/${your_db_account}/g" common.properties
 修改数据库密码：sed -i "s/123456/${your_db_password}/g" common.properties
