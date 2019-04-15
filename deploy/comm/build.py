@@ -58,7 +58,7 @@ def changeConfig():
     web_server_port = getCommProperties("web_server.port")
     mysql_host = getCommProperties("mysql.host")
     mysql_user = getCommProperties("mysql.user")
-    mysql_password = getCommProperties("mysql.root.password")
+    mysql_password = getCommProperties("mysql.password")
     mysql_database = getCommProperties("mysql.database")
     nginx_port = getCommProperties("nginx.proxy.port")
     web_server_ip = getCommProperties("web_server.ip")

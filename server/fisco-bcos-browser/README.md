@@ -28,11 +28,11 @@
 git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 ```
 
-**注意**：代码拉取后，切换到相应分支。
+**注意**：代码拉取后，可以切换到相应分支（如：dev）。
 
 ```shell
 cd fisco-bcos-browser
-git checkout XXXXX
+git checkout dev
 ```
 
 ## 3.2 编译代码
@@ -61,9 +61,9 @@ cd dist/conf
 ```shell
 修改当前服务端口：sed -i "s/8088/${your_server_port}/g" application.yml
 修改数据库IP：sed -i "s/127.0.0.1/${your_db_ip}/g" application.yml
-修改数据库名称：sed -i "s/testDB/${your_db_name}/g" application.yml
 修改数据库用户名：sed -i "s/root/${your_db_account}/g" application.yml
 修改数据库密码：sed -i "s/123456/${your_db_password}/g" application.yml
+修改数据库名称：sed -i "s/testdb/${your_db_name}/g" application.yml
 例子（将端口由8088改为8090）：sed -i "s/8088/8090/g" application.yml
 ```
 
@@ -183,9 +183,14 @@ mysql > SET PASSWORD FOR 'root'@'localhost' = PASSWORD('123456');
 mysql > GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
 ```
 
+**安全温馨提示：**
+
+1. 例子中给出的数据库密码（123456）仅为样例，强烈建议设置成复杂密码
+2. 例子中的远程授权设置会使数据库在所有网络上都可以访问，请按具体的网络拓扑和权限控制情况，设置网络和权限帐号
+
 授权test用户本地访问数据库
 ```sql
-mysql > create user 'test'@'localhost' identified by 'test1234';
+mysql > create user 'test'@'localhost' identified by '123456';
 ```
 
 （5）测试连接
@@ -193,7 +198,7 @@ mysql > create user 'test'@'localhost' identified by 'test1234';
 另开一个ssh测试本地用户test是否可以登录数据库
 
 ```shell
-mysql -utest -ptest1234 -h 127.0.0.1 -P 3306
+mysql -utest -p123456 -h 127.0.0.1 -P 3306
 ```
 
 登陆成功后，执行以下sql语句，若出现错误，则用户授权不成功
@@ -208,13 +213,13 @@ mysql > use test;
 登录数据库
 
 ```shell
-mysql -utest -ptest1234 -h 127.0.0.1 -P 3306
+mysql -utest -p123456 -h 127.0.0.1 -P 3306
 ```
 
 创建数据库
 
 ```sql
-mysql > create database testDB;
+mysql > create database testdb;
 ```
 
 ### 5.3.1 常见错误 
