@@ -77,27 +77,26 @@ public class NodeService {
             node.setRpcPort(data.get(i).getRpcPort());
             node.setP2pPort(data.get(i).getP2pPort());
 
-            List<Integer> groups = web3jRpc.getGroupList(node);
-            if (groups == null || groups.size() == 0) {
+            List<Integer> groupIds = web3jRpc.getGroupList(node);
+            if (groupIds == null || groupIds.size() == 0) {
                 throw new BaseException(ConstantCode.NODE_ERROR_OR_NOT_ACTIVE);
             }
-            if (!groups.contains(reqAddNode.getGroupId())) {
+            if (!groupIds.contains(reqAddNode.getGroupId())) {
                 throw new BaseException(ConstantCode.NODE_NO_NOT_BELONG);
             }
-            List<Group> groupList = groupMapper.getGroupList();
-            for(int k = 0; k < groups.size(); k++){
-                Group group = groupMapper.getGroupById(groups.get(k));
-                if(groupList.contains(group)){
-                    SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groups.get(k), node);
+            for (int k = 0; k < groupIds.size(); k++) {
+                Group group = groupMapper.getGroupById(groupIds.get(k));
+                if (group != null) {
+                    SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groupIds.get(k), node);
                     node.setNodeId(syncInfo.getNodeId());
+                    node.setGroupId(groupIds.get(k));
                     node.setType(0);
                     nodeMapper.add(node);
-
                     // sync node info
                     for (Peer peer: syncInfo.getPeers()) {
                         Node syncNode = new Node();
                         syncNode.setNodeId(peer.getNodeId());
-                        syncNode.setGroupId(groupId);
+                        syncNode.setGroupId(groupIds.get(k));
                         syncNode.setType(1);
                         nodeMapper.sync(syncNode);
                     }
