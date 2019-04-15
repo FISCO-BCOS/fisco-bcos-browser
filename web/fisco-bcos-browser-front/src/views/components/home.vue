@@ -438,7 +438,7 @@
     }
 </style>
 <script type="text/babel">
-    import {getTbBlcokChainInfo,getTxnByLastFourteenDay,getTbBlockInfo,getTbTransactionInfo,getTbNodeConnection,getAnalyzeData,getBytecode,getContractList} from '@/api/api'
+    import {getTbBlcokChainInfo,getTxnByLastFourteenDay,getTbBlockInfo,getTbTransactionInfo,getTbNodeConnection,getAbiFunction,getTbTransactionByPkHash,getAbi} from '@/api/api'
     import { Message } from 'element-ui';
     import {message} from '@/util/util'
     import {timeState,MonthState,MonthNumber,intiDate} from '@/util/util'
@@ -505,13 +505,15 @@
                 groupId: null,
                 tranList: [],
                 codeList: [],
+                newData: [],
+                oladata: ""
             }
         },
         mounted: function () {
             this.$nextTick(function () {
                 this.groupId = localStorage.getItem("groupId")
                 if(this.groupId){
-                    this.getContracts();
+                    // this.getContracts();
                     this.chartStatistics.chartSize.width = this.$refs.chart.offsetWidth;
                     this.chartStatistics.chartSize.height = this.$refs.chart.offsetHeight;
                     this.searchTxnByLastFourteenDay();
@@ -536,22 +538,22 @@
         methods: {
             copyPubilcKey: function(val){
                 if (!val) {
+                this.$message({
+                    type: "fail",
+                    showClose: true,
+                    message: "key为空，不复制。",
+                    duration: 2000
+                });
+            } else {
+                this.$copyText(val).then(e => {
                     this.$message({
-                        type: "fail",
+                        type: "success",
                         showClose: true,
-                        message: "key为空，不复制。",
+                        message: "复制成功",
                         duration: 2000
                     });
-                } else {
-                    this.$copyText(val).then(e => {
-                        this.$message({
-                            type: "success",
-                            showClose: true,
-                            message: "复制成功",
-                            duration: 2000
-                        });
-                    });
-                }
+                });
+            }
             },
             changChart: function (val) {
                 this.chartStatistics.time = MonthState(val);
@@ -765,7 +767,22 @@
                             if(this.transactionList.length > 4){
                                 this.transactionList.length = 4
                             }
-                            this.GetAnalyzeData(list);
+                            this.transactionList.forEach((value,index) => {
+                                if(value.to){
+                                    this.newData[index] = null
+                                    let inputData = this.getTransationDetail(value.transHash,'to',index)
+                                    setTimeout(() => {
+                                        this.$set(value,'funcName',this.newData[index])
+                                    },400)
+                                }else{
+                                    this.newData[index] = null;
+                                    let inputData = this.getTransationDetail(value.transHash,"",index)
+                                    setTimeout(() => {
+                                        this.$set(value,'funcName',this.newData[index])
+                                    },400)
+                                }
+                            })
+                            // this.GetAnalyzeData(list);
                         }
                     }else{
                         message(errorcode[res.data.code].cn,'error')
@@ -778,16 +795,18 @@
                     }
                 })
             },
-            GetAnalyzeData: function(list){
+            getTransationDetail: function(val,type,index){
                 let data = {
-                    groupId: this.groupId,
-                    data: list
-                }
-                getAnalyzeData(data).then(res => {
+                    groupId: localStorage.getItem("groupId"),
+                    transHash: val,    
+                };
+                getTbTransactionByPkHash(data).then(res => {
                     if(res.data.code === 0){
-                        this.tranList = res.data.data
-                        if(res.data.data.length){
-                           this.decode(); 
+                        if(res.data.data.input && type){
+                            this.getMethod(res.data.data.input,index)
+                            
+                        }else if(res.data.data.input){
+                            this.getCodeabi(res.data.data.input,index)
                         }
                     }else{
                         message(errorcode[res.data.code].cn,'error')
@@ -796,15 +815,24 @@
                     message(constant.ERROR,'error');
                 })
             },
-            getContracts: function(){
-                let data = {
-                    pageNumber: 1,
-                    pageSize: 500
-                };
-                getContractList(data).then(res => {
+            getMethod: function(val,index){
+                let funcName = ""
+                let data = val.substring(0,10);
+                getAbiFunction(data).then(res => {
                     if(res.data.code === 0){
-                        this.contractList = res.data.data;
-                        
+                        if(res.data.data){
+                            let inputData = JSON.parse(res.data.data.abiInfo) 
+                            funcName = inputData.name + "("
+                            inputData.inputs.forEach((item,indexs) => {
+                                if (indexs == inputData.inputs.length - 1) {
+                                    funcName =  funcName + item.type +" " + item.name;
+                                }else{
+                                    funcName = funcName + item.type + " " + item.name + ",";
+                                }  
+                            })
+                            funcName =  funcName + ")"
+                            this.newData[index] = funcName
+                        }  
                     }else{
                         message(errorcode[res.data.code].cn,'error')
                     }
@@ -812,163 +840,35 @@
                     message(constant.ERROR,'error');
                 })
             },
-            decode: function(){
-                let list = [];
-                let arry = [];
-                this.tranList.forEach(value => {
-                    if(value && value.transactionFromChain && value.transactionFromChain.to){
-                        constant.SYSTEM_CONTRACT_ADDRESS.forEach(item => {
-                            if(value.transactionFromChain.to == item.contractAddress){
-                                this.decodeInputs(value.transactionFromChain.hash,value.transactionFromChain.input,value.transactionFromChain.to,'system');
-                            }else if(value.transactionFromChain.to != "0x0000000000000000000000000000000000000000" ){
-                                list.push(value);
-                                arry.push(value.transactionFromChain.to)
+            getCodeabi: function(val,index){
+                let data = val.substring(2)
+                getAbi(data).then(res => {
+                    if(res.data.code == 0){
+                        if(res.data.data){
+                            this.decodeDeloy(res.data.data,index)
+                        }
+                    }
+                })
+            },
+            decodeDeloy: function(items,index) {
+            if (items) {
+                let input = JSON.parse(items.contractAbi);
+                let funcName = items.contractName + "(";
+                input.forEach(value => {
+                    if(value.type == "constructor"){
+                        value.inputs.forEach((item,indexs) => {
+                            if (indexs == value.inputs.length - 1) {
+                                funcName =  funcName + item.type +" " + item.name;
                             }else{
-                                list.push(value);
-                                arry.push(value.receiptFromChain.contractAddress)
-                            }
+                                funcName = funcName + item.type + " " + item.name + ",";
+                            }  
                         })
                     }
-                });
-                if(list.length && arry.length){
-                    this.getCodeList(arry,list)
-                }
-                
-               
-            },
-            decodeInputs: function(hash,input,adr,type){
-                let web3 = new Web3(Web3.givenProvider);
-                let abi = "";
-                let abiData = [];
-                let data = input.substring(0, 10);
-                let funcData = "";
-                if(type){
-                    if (this.contractList && this.contractList.length) {
-                        this.contractList.forEach(value => {
-                            if (value.contractAddress == adr){
-                                abi = value.contractAbi;
-                            }
-                        });
-                    }
-                }else{
-                    let code = adr.substring(0,2)
-                    if(code == '0x'){
-                        adr = adr.substring(2);
-                        adr = adr.substring(0,adr.length-68)
-                    }
-                    if (this.contractList && this.contractList.length) {
-                        this.contractList.forEach(value => {
-                            if(!value.show && value.contractBin){
-                                value.contractBin = value.contractBin.substring(0,value.contractBin.length-68);
-                                value.show = true;
-                            }
-                            if (value.contractBin == adr){
-                                abi = value.contractAbi;
-                            }
-                        });
-                    }
-                }
-                if(abi){
-                    abiData = JSON.parse(abi);
-                    abiData.forEach(value => {
-                        value.encode = web3.eth.abi.encodeFunctionSignature({
-                            name: value.name,
-                            type: value.type,
-                            inputs: value.inputs
-                        });
-                    });
-                    abiData.forEach(value => {
-                        if (value.encode === data) {
-                            funcData = value.name;
-                            if(value.inputs.length){
-                                funcData = funcData + '(';
-                                value.inputs.forEach((items,index) => {
-                                    funcData = `${funcData}${items.type} ${items.name},`
-                                })
-                                funcData = funcData.substring(0,funcData.length-1) + ")"
-                            }
-                        }
-                    })
-                };
-                if(funcData){
-                    this.transactionList.forEach((value,index) => {
-                        if(value.transHash == hash){
-                            this.$set(this.transactionList[index],'funcName',funcData)
-                        }
-                    })
-                }
-            },
-            decodeDeloy: function(hash,input,bin){
-                let data = input.substring(0, 10);
-                let abi = "";
-                let contractName = "";
-                let code = bin.substring(0,2);
-                let funcData = '';
-                let abiData = [];
-                if(code == '0x'){
-                    bin = bin.substring(2);
-                    bin = bin.substring(0,bin.length-68)
-                }
-                if (this.contractList && this.contractList.length) {
-                    this.contractList.forEach(value => {
-                        if(!value.show && value.contractBin){
-                            value.contractBin = value.contractBin.substring(0,value.contractBin.length-68);
-                            value.show = true;
-                        }
-                        if (value.contractBin === bin) {
-                            abi = value.contractAbi;
-                            funcData = value.contractName;
-                        }
-                    });
-                }
-                if(abi){
-                    abiData = JSON.parse(abi);
-                    abiData.forEach(value => {
-                        if(value.type == 'constructor'){
-                           if(value.inputs.length){
-                                funcData = funcData + '('
-                                value.inputs.forEach((items,index) => {
-                                    funcData = `${funcData}${items.type} ${items.name},`
-                                })
-                                funcData = funcData.substring(0,funcData.length-1) + ")"
-                            } 
-                        }
-                    })
-                }
-                if(funcData){
-                    this.transactionList.forEach((value,index) => {
-                        if(value.transHash == hash){
-                            this.$set(this.transactionList[index],'funcName',funcData)
-                        }
-                    })
-                }
-            },
-            getCodeList: function(list,itemList){
-
-                let data = {
-                    groupId: this.groupId,
-                    data: list
-                }
-                getBytecode(data).then(res => {
-                    if(res.data.code === 0){
-                        this.codeList = res.data.data;
-                        itemList.forEach((value,index) => {
-                            value.bin = this.codeList[index];
-                            if(value.transactionFromChain.to != '0x0000000000000000000000000000000000000000'){
-                                this.decodeInputs(value.transactionFromChain.hash,value.transactionFromChain.input,value.bin)
-                            }else{
-                               this.decodeDeloy(value.transactionFromChain.hash,value.transactionFromChain.input,value.bin) 
-                            }
-                            
-                        });
-
-                    }else{
-                        message(errorcode[res.data.code].cn,'error')
-                    }
-                }).catch(err => {
-                    message(constant.ERROR,'error');
                 })
-            },
+                funcName =  funcName + ")"
+                this.newData[index] = funcName
+            }
+        },
 
         },
         filters: {

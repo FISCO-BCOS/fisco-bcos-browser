@@ -465,8 +465,8 @@
             this.methodId = input.substring(0, 10);
             // this.methodId = data;
             let inputDatas = "0x" + input.substring(10);
-            abiData.abiInfo = JSON.parse(abiData.abiInfo)
             if(abiData){
+                abiData.abiInfo = JSON.parse(abiData.abiInfo)
                 abiData.abiInfo.inputs.forEach((val, index) => {
                     if (val && val.type && val.name) {
                         this.abiType[index] = val.type + " " + val.name;
