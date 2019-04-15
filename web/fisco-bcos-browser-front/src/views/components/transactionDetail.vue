@@ -518,17 +518,23 @@
             if (items) {
                 let input = JSON.parse(items.contractAbi);
                 this.funcData = items.contractName;
-                input.inputs.forEach((item, index) => {
-                    if (item && item.type && item.name) {
-                        this.abiType[index] = item.type + " " + item.name;
-                    } else if (item && item.name) {
-                        this.abiType[index] = item.name;
-                    } else if (item && item.type) {
-                        this.abiType[index] = item.type;
-                    } else if (item) {
-                        this.abiType[index] = item;
+                input.forEach(value => {
+                    if(value.type == "constructor"){
+                        value.inputs.forEach((item,index) => {
+                            if (item && item.type && item.name) {
+                                this.abiType[index] = item.type + " " + item.name;
+                            } else if (item && item.name) {
+                                this.abiType[index] = item.name;
+                            } else if (item && item.type) {
+                                this.abiType[index] = item.type;
+                            } else if (item) {
+                                this.abiType[index] = item;
+                            }
+                        })
                     }
-                });
+                })
+                this.showDecode = true;
+                this.buttonTitle = "还原";
             }else{
                 this.buttonSHow = false;
                 this.showDecode = false;
