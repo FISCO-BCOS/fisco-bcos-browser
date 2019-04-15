@@ -1,5 +1,5 @@
 <template>
-    <div class="search-main">
+    <div class="search-main" style="height: calc(100% - 120px);overflow: hidden;">
         <div class="container" style="padding-bottom: 0;height: 100%;">
             <v-nav :hrTitle="btitle" :hrcontent="btitle"></v-nav>
             <div class="search-nav">
@@ -8,7 +8,7 @@
                     <el-tooltip class="item" effect="dark" content="1、上传合约可以上传sol文件和zip包; 2、sol文件可以批量上传，zip包不能批量上传; 3、zip包里面只能含有一层目录，且不能含有非sol文件" placement="top-start">
                         <i class="el-icon-info"></i>
                     </el-tooltip>
-                    <input type="file" ref='file' id="file" class="inputFiles" multiple="multiple"  name="chaincodes" @change="upLoadFiles($event)"/>
+                    <input type="file" ref='file' id="file" class="inputFiles" multiple="multiple" accept=".sol,.zip"  name="chaincodes" @change="upLoadFiles($event)"/>
                 </div>
                 <div class="hashInput">
                     <el-button type="primary" @click="complie" :disabled="buttonShow">编译合约</el-button>
@@ -17,11 +17,11 @@
                     </el-tooltip>
                 </div>
             </div>
-            <div class="search-table" style="font-size: 0;height: calc(100% - 115px); box-sizing: border-box;">
+            <div class="search-table" style="font-size: 0; box-sizing: border-box;height: 100%;">
                 <div class="contract-menu">
                     <v-codeMenu :data='contractArry'></v-codeMenu>
                 </div>
-                <div class="contract-content">
+                <div class="contract-content" style="height: 100%;">
                     <div ref='codeContent' :style="{height: codeHight}" v-loading="loading" element-loading-background="rgba(0, 0, 0, 0.8)">
                         <div  class="ace-editor" ref="ace" v-show='editorShow' id='aceEditor'></div>
                     </div>
@@ -30,6 +30,7 @@
                         <span style="width: 100%;word-break:break-all;">{{errorInfo}}</span>
                     </div>
                 </div>
+                <div style="clear: both"></div>
             </div>
         </div>
     </div>
@@ -37,7 +38,7 @@
 <script>
 let Base64 = require("js-base64").Base64;
 import navs from '@/components/content-nav'
-import { addContract,getContractList,deleteContract,updateContract,uploadData } from "@/api/api"
+import { addContract,getContractList,deleteContract,updateContract,uploadData,addAbiFunction } from "@/api/api"
 import {message} from '@/util/util'
 import constant from '@/util/constant'
 import errorcode from "@/util/errorCode"
@@ -50,7 +51,7 @@ import ace from 'ace-builds'
 // import 'ace-builds/webpack-resolver' 
 import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/mode-javascript'
-import 'ace-builds/src-noconflict/ext-language_tools';  
+import 'ace-builds/src-noconflict/ext-language_tools';
 require('ace-mode-solidity/build/remix-ide/mode-solidity')
 import Bus from "@/bus"
 
@@ -136,6 +137,7 @@ export default {
             this.contractArry = this.setContractList(this.resultList)
         })
         Bus.$on("complite",data => {
+            
             this.loading = true;
             data.forEach(value => {
                 this.complieContract(value)
@@ -167,7 +169,7 @@ export default {
                 theme: this.themePath, 
                 mode: this.modePath, 
                 tabSize: 4,
-                useSoftTabs: true
+                useSoftTabs: true,
             })
             this.aceEditor.setOptions({
                 enableSnippets: true,
@@ -177,6 +179,7 @@ export default {
             let editor = this.aceEditor.alignCursors();
             this.aceEditor.getSession().setUseWrapMode(true);
             this.aceEditor.resize();  
+            this.aceEditor.setReadOnly(true);  
         },
         setContent: function(val){
             this.codeHight = '100%';
@@ -362,17 +365,80 @@ export default {
                     this.changeAllcontarctList(this.allContractList)
                     if(res.data.data && res.data.data.length){
                         this.changeContractData(res.data.data)
-                        this.selectData(res.data.data[0])
+                        this.selectData(res.data.data[0]);
+                        this.getAbiMethod(res.data.data)
                     }else{
                         this.contractArry = []
                     }
-                    
                     this.pagination.total = res.data.totalCount;
                 }else{
                     message(errorcode[res.data.code].cn,'error')
                 }
             }).catch(err => {
                 message(constant.ERROR,'error');
+            })
+        },
+        //Get all ABI methods
+        getAbiMethod: function(list){
+            let arry = [];
+            let methodArry = []
+            list.forEach(value => {
+                if(value && value.contractAbi){
+                    let abi = JSON.parse(value.contractAbi)
+                    arry.push(abi)
+                }
+            })
+            arry.forEach(value => {
+                if(value && value.length){
+                    value.forEach(item => {
+                        methodArry.push(item)
+                    })
+                }
+            })
+            this.decodeMethodId(methodArry)
+        },
+        decodeMethodId: function(list){
+            let web3 = new Web3(Web3.givenProvider);
+            let arry = []
+            list.forEach((value,index) => {
+                if(value.name && value.type =='function'){
+                    let data = {}
+                    let methodId = web3.eth.abi.encodeFunctionSignature({
+                        name: value.name,
+                        type: value.type,
+                        inputs: value.inputs
+                    });
+                    data.methodId = methodId;
+                    data.abiInfo = JSON.stringify(value);
+                    data.type = value.type
+                    arry.push(data)
+                }else if(value.name && value.type =='event'){
+                    let data = {}
+                    let methodId = web3.eth.abi.encodeEventSignature({
+                        name: value.name,
+                        type: value.type,
+                        inputs: value.inputs
+                    });
+                    data.methodId = methodId;
+                    data.abiInfo = JSON.stringify(value);
+                    data.type = value.type
+                    arry.push(data)
+                }
+            })
+            this.addMethod(arry)
+        },
+        addMethod: function(list){
+            let data = {
+                data: list
+            }
+            addAbiFunction(data).then(res => {
+                if(res.data.code === 0 ){
+                    console.log("method 保存成功！")
+                }else{
+                    message(errorcode[res.data.code].cn,'error')
+                }
+            }).catch(err => {
+                 message(constant.ERROR,'error');
             })
         },
         changeContractData: function(list){
@@ -613,7 +679,8 @@ export default {
                 }
                 if(arry.length){
                     val.abiFile = arry[0].abi;
-                    val.bin = arry[0].evm.deployedBytecode.object;
+                    val.bin = arry[0].evm.bytecode.object;
+                    val.bin = val.bin.substring(0,val.bin.length-69)
                 }else{
                     val.errorInfo = "合约编译失败！";
                 }
@@ -723,6 +790,9 @@ export default {
     display: inline-block;
     width: 300px;
     height: 100%;
+    /* padding-bottom: 9999px;
+    margin-bottom: -9999px; */
+    /* float: left; */
     font-size: 14px;
     color: #fff;
     vertical-align: top;
