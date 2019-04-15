@@ -179,3 +179,26 @@ export function uploadData(data){
         }
     })
 }
+//add abi function 
+export function addAbiFunction(data){
+    return post({
+        url: url.ADDFUNCTION,
+        method: 'post',
+        data: data
+    })
+}
+//get abi function 
+export function getAbiFunction(data){
+    return get({
+        url: `${url.GET_ABI_FUNCTION}/${data}`,
+        method: 'get',
+    })
+}
+
+//getAbi
+export function getAbi(data){
+    return get({
+        url: `${url.GET_ABI}/${data}`,
+        method: 'get',
+    })
+}

@@ -1,5 +1,5 @@
 <template>
-    <div class="search-main">
+    <div class="search-main" style="height: auto;">
         <div class="container">
             <v-nav :hrTitle="title" :hrcontent="title" :route="'transaction'"></v-nav>
             <div class="search-nav">
@@ -27,7 +27,7 @@
                     <el-table-column prop="blockTimesStr" label="交易时间" align="center" :show-overflow-tooltip="true" min-width="150px"></el-table-column>
                     <el-table-column prop="from" label="发送者"  :show-overflow-tooltip="true" align="center"></el-table-column>
                     <el-table-column   align="center" width="30px">
-                        <template slot-scope="scope">
+                        <template>
                             <img src="../../assets/images/s-right.png">
                         </template>
                     </el-table-column>
