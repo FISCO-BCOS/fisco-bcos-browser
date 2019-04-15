@@ -116,7 +116,8 @@ public class SchedulerService {
 
         Timestamp timestamp = null;
         String sealer = "0x0";
-        if (number == 0 || "0".equals(blockInfo.getTimestamp().substring(2))) {
+        // Compatibility with older version
+        if (number == 0 || "0xffffffffffffffff".equals(blockInfo.getTimestamp())) {
             timestamp = Timestamp.valueOf("2000-01-01 08:00:01");
         } else {
             timestamp = new Timestamp(Long.parseLong(blockInfo.getTimestamp().substring(2), 16));
@@ -161,16 +162,21 @@ public class SchedulerService {
         }
     }
 
-
+    /**
+     * deleteTxnSchedule.
+     */
     public void deleteTxnSchedule() {
         List<Group> list = groupMapper.getGroupList();
         for (Group loop : list) {
-            transactionMapper.deletePartTransaction(loop.getGroupId());
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("groupId", loop.getGroupId());
+            int count = transactionMapper.getAllTransactionCount(map);
+            if (count > constants.getKeepTxnCnt()) {
+                int subTransNum = count - constants.getKeepTxnCnt();
+                transactionMapper.deletePartTxn(loop.getGroupId(), subTransNum);
+            }
         }
     }
-
-
-
 
     /**
      * syncNodeInfo.
@@ -194,13 +200,12 @@ public class SchedulerService {
             List<Node> nodeList = nodeMapper.getAllNode(groupId);
             List<String> nodeIds = web3jRpc.getGroupPeers(groupId);
             for (Node loop : nodeList) {
-                if (!nodeIds.contains(loop.getNodeId())) {
+                if (nodeIds.size() > 0 && !nodeIds.contains(loop.getNodeId())) {
                     nodeMapper.deleteNodeById(groupId, loop.getNodeId());
                 }
             }
         }
     }
-
 
     /**
      * checkNodeActive.

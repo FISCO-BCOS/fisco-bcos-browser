@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.bcos.browser.mapper.FunctionMapper">
+    <sql id="ALL_COLUMN">
+        method_id as methodId,
+        abi_info as abiInfo,
+        type as type
+    </sql>
+
+    <insert id="add" parameterType="org.bcos.browser.entity.dto.Function">
+        INSERT INTO tb_function(
+            method_id,
+            abi_info,
+            type,
+            gmt_create,
+            gmt_modify
+        ) VALUES (
+            #{methodId},
+            #{abiInfo},
+            #{type},
+            now(),
+            now()
+        )
+    </insert>
+    
+    <select id="getFunctionById" resultType="org.bcos.browser.entity.dto.Function">
+        SELECT <include refid="ALL_COLUMN" /> 
+        FROM tb_function
+        WHERE method_id = #{methodId}
+    </select>
+
+</mapper>

@@ -16,11 +16,12 @@ public interface ContractMapper {
             @Param(value = "contractName") String contractName,
             @Param(value = "contractPath") String contractPath);
 
-    
     int getContractCnts();
     
     List<Contract> getContractList(@Param(value = "start") int start,
             @Param(value = "pageSize") int pageSize);
+    
+    Contract getAbiByInput(@Param(value = "input") String input);
 
     void updateContract(Contract contract);
 

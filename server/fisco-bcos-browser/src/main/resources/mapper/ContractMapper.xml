@@ -38,8 +38,9 @@
     </select>
 
     <select id="getContractByNameAndPath" resultType="java.lang.Integer">
-    SELECT count(1) FROM tb_contract
-    WHERE contract_name = #{contractName} AND contract_path = #{contractPath}
+	    SELECT count(1) FROM tb_contract
+	    WHERE contract_name = #{contractName} 
+	      AND contract_path = #{contractPath}
     </select>
 
     <select id="getContractCnts" resultType="java.lang.Integer">
@@ -51,6 +52,13 @@
         FROM tb_contract
         ORDER BY contract_id DESC
         LIMIT #{start},#{pageSize}
+    </select>
+    
+    <select id="getAbiByInput" resultType="org.bcos.browser.entity.dto.Contract">
+        SELECT contract_abi as contractAbi,
+               contract_name as contractName
+        FROM tb_contract
+        where locate(contract_bin,#{input})
     </select>
 
     <update id="updateContract" parameterType="org.bcos.browser.entity.dto.Contract">
