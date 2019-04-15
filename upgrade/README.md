@@ -1,11 +1,11 @@
 # 数据库脚本升级说明
 
-## 1.进入数据库升级目录：
+1.进入数据库升级目录：
 ```shell
 cd upgrade
 ```
 
-## 2.修改配置（没有变化的可以不修改）：
+2.修改配置（没有变化的可以不修改）：
 ```shell
 修改数据库IP：sed -i "s/127.0.0.1/${your_db_ip}/g" fisco-bcos.sh
 修改数据库端口：sed -i "s/3306/${your_db_port}/g" fisco-bcos.sh
@@ -17,7 +17,7 @@ cd upgrade
 例子（将密码由123456改为abcd）：sed -i "s/123456/abcd/g" fisco-bcos.sh
 ```
 
-## 3.执行
+3.执行
 ```shell
 sh fisco-bcos.sh
 ```
