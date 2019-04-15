@@ -1,11 +1,11 @@
 # 一键部署说明
 
-1.进入一键部署目录：
+1、进入一键部署目录：
 ```shell
 cd deploy
 ```
 
-2.修改配置（没有变化的可以不修改）：
+2、修改配置（没有变化的可以不修改）：
 ```shell
 修改数据库IP：sed -i "s/127.0.0.1/${your_db_ip}/g" common.properties
 修改数据库用户名：sed -i "s/root/${your_db_account}/g" common.properties
@@ -17,9 +17,9 @@ cd deploy
 
 例子（将密码由123456改为abcd）：sed -i "s/123456/abcd/g" common.properties
 ```
-** 数据库服务器和数据库需要提前准备 **
+**数据库服务器和数据库需要提前准备**
 
-3.部署
+3、部署
 
 ```shell
 python deploy.py build
