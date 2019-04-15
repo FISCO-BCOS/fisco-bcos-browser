@@ -1,5 +1,6 @@
 package org.bcos.browser.service;
 
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -7,11 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.Constants;
 import org.bcos.browser.entity.base.BasePageResponse;
 import org.bcos.browser.entity.base.BaseResponse;
+import org.bcos.browser.entity.dto.BlockFromChain;
 import org.bcos.browser.entity.dto.ReceiptFromChain;
 import org.bcos.browser.entity.dto.Transaction;
 import org.bcos.browser.entity.dto.TransactionAndReceipt;
@@ -26,6 +27,7 @@ import org.bcos.browser.util.DateTimeUtils;
 import org.bcos.browser.util.Web3jRpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -67,6 +69,7 @@ public class TransactionService {
                 Duration.between(startTime, Instant.now()).toMillis());
 
         List<RspGetTransaction> list = new ArrayList<>();
+        // get from db
         if (total > 0) {
             Instant startTime1 = Instant.now();
             List<Transaction> listTbTransactionDto = transactionMapper.getTbTransactionByPage(map);
@@ -87,11 +90,51 @@ public class TransactionService {
                     list.add(rspEntity);
                 }
             }
+        } else { // get from chain
+            if (CommonUtils.trimSpaces(transHash) != null) {
+                log.info("getTransInfoByPage transHash:{} get from chain", transHash);
+                TransactionFromChain transInfo = web3jRpc.getTransByHash(groupId, transHash);
+                if (transInfo != null) {
+                    BlockFromChain blockInfo = web3jRpc.getBlockByNumber(groupId, CommonUtils.parseHexStr2Int(transInfo.getBlockNumber()));
+                    RspGetTransaction rspEntity = getTransactionFromChain(transInfo, blockInfo.getTimestamp());
+                    list.add(rspEntity);
+                }
+                total = list.size();
+            } else if (CommonUtils.trimSpaces(blockNumber) != null) {
+                log.info("getTransInfoByPage blockNumber:{} get from chain", blockNumber);
+                BlockFromChain blockInfo = web3jRpc.getBlockByNumber(groupId, Integer.valueOf(blockNumber));
+                for (TransactionFromChain transInfo : blockInfo.getTransactions()) {
+                    RspGetTransaction rspEntity = getTransactionFromChain(transInfo, blockInfo.getTimestamp());
+                    list.add(rspEntity);
+                }
+                total = list.size();
+            }
         }
         BasePageResponse response = new BasePageResponse(ConstantCode.SUCCESS);
         response.setTotalCount(total);
         response.setData(list);
         return response;
+    }
+    
+    /**
+     * getTransactionFromChain.
+     * 
+     * @param transInfo info
+     * @param timeStr time
+     * @return
+     */
+    private RspGetTransaction getTransactionFromChain(TransactionFromChain transInfo, String timeStr) {
+        RspGetTransaction rspEntity = new RspGetTransaction();
+        rspEntity.setTransHash(transInfo.getHash());
+        rspEntity.setBlockHash(transInfo.getBlockHash());
+        rspEntity.setBlockNumber(CommonUtils.parseHexStr2Int(transInfo.getBlockNumber()));
+        rspEntity.setBlockTimesStr(DateTimeUtils.timestamp2String(
+                new Timestamp(Long.parseLong(timeStr.substring(2), 16)), 
+                Constants.DEFAULT_DATA_TIME_FORMAT));
+        rspEntity.setFrom(transInfo.getFrom());
+        rspEntity.setTo(transInfo.getTo());
+        rspEntity.setTransIndex(CommonUtils.parseHexStr2Int(transInfo.getTransactionIndex()));
+        return rspEntity;
     }
 
     /**

@@ -12,7 +12,6 @@ public interface ConstantCode {
     String NODE_RPCPORT_IS_EMPTY = "{\"code\":205005,\"msg\":\"node rpcPort cannot be empty\"}";
     String NODE_P2PPORT_IS_EMPTY = "{\"code\":205006,\"msg\":\"node p2pPort cannot be empty\"}";
 
-
     /* general error */
     RetCode GROUP_ID_IS_EXISTED = RetCode.mark(305001, "group id is existed");
     RetCode GROUP_NAME_IS_EXISTED = RetCode.mark(305002, "group name is existed");
@@ -28,8 +27,6 @@ public interface ConstantCode {
     RetCode DO_NOT_ALL_ZIP_FILE = new RetCode(305012,"zip file can't contain zipfile");
     RetCode FOLDERS_ARE_NOT_ALLOWED = new RetCode(305013,"folders are not allowed");
     RetCode CONTRACT_ALREADY_EXIST = new RetCode(305014,"folder is already exist");
-    RetCode METHOD_ID_ALREADY_EXIST = new RetCode(305015,"method id is already exist");
-
 
     /* system error */
     RetCode SYSTEM_ERROR = RetCode.mark(105001, "system error");
