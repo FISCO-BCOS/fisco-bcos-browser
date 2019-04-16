@@ -8,8 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.Constants;
+import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BasePageResponse;
 import org.bcos.browser.entity.base.BaseResponse;
 import org.bcos.browser.entity.dto.BlockFromChain;
@@ -27,6 +29,7 @@ import org.bcos.browser.util.DateTimeUtils;
 import org.bcos.browser.util.Web3jRpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -196,11 +199,16 @@ public class TransactionService {
      * @param groupId groupId
      * @param transHash transHash
      * @return
+     * @throws BaseException 
      */
-    public BaseResponse getTransactionByHash(int groupId, String transHash) {
+    public BaseResponse getTransactionByHash(int groupId, String transHash) throws BaseException {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         TransactionFromChain info = web3jRpc.getTransByHash(groupId, transHash);
-        response.setData(info);
+        if (info != null) {
+        	response.setData(info);
+        } else {
+        	throw new BaseException(ConstantCode.NODE_ABNORMAL);
+        }
         log.debug("###getTransactionByHash response:{}###", response);
         return response;
     }
@@ -211,11 +219,16 @@ public class TransactionService {
      * @param groupId groupId
      * @param transHash transHash
      * @return
+     * @throws BaseException 
      */
-    public BaseResponse getReceiptByHash(int groupId, String transHash) {
+    public BaseResponse getReceiptByHash(int groupId, String transHash) throws BaseException {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         ReceiptFromChain info = web3jRpc.getReceiptByHash(groupId, transHash);
-        response.setData(info);
+        if (info != null) {
+        	response.setData(info);
+        } else {
+        	throw new BaseException(ConstantCode.NODE_ABNORMAL);
+        }
         log.debug("###getTransactionReceiptByHash response:{}###", response);
         return response;
     }
@@ -229,10 +242,18 @@ public class TransactionService {
     public BaseResponse getCode(ReqGetCode reqGetCode) {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         List<String> data = new ArrayList<>();
-        for (int i = 0; i < reqGetCode.getData().size(); i++) {
-            String code = web3jRpc.getCode(reqGetCode.getGroupId(), 
-                    reqGetCode.getData().get(i));
-            data.add(code);
+        
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("groupId", reqGetCode.getGroupId());
+        map.put("type", 0);
+        map.put("status", 0);
+        int total = nodeMapper.getNodeCnts(map);
+        if (total > 0) {
+        	for (int i = 0; i < reqGetCode.getData().size(); i++) {
+        		String code = web3jRpc.getCode(reqGetCode.getGroupId(), 
+        				reqGetCode.getData().get(i));
+        		data.add(code);
+        	}
         }
         
         response.setData(data);
