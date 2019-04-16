@@ -83,7 +83,6 @@
         SELECT <include refid="ALL_COLUMN" />
         FROM tb_node_#{groupId} 
         WHERE type=0
-          AND status=0
     </select>
 
     <select id="getAllNode" resultType="org.bcos.browser.entity.dto.Node">
