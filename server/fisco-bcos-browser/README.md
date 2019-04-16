@@ -63,7 +63,7 @@ cd dist/conf
 修改数据库IP：sed -i "s/127.0.0.1/${your_db_ip}/g" application.yml
 修改数据库用户名：sed -i "s/root/${your_db_account}/g" application.yml
 修改数据库密码：sed -i "s/123456/${your_db_password}/g" application.yml
-修改数据库名称：sed -i "s/testdb/${your_db_name}/g" application.yml
+修改数据库名称：sed -i "s/testDB/${your_db_name}/g" application.yml
 例子（将端口由8088改为8090）：sed -i "s/8088/8090/g" application.yml
 ```
 
@@ -219,7 +219,7 @@ mysql -utest -p123456 -h 127.0.0.1 -P 3306
 创建数据库
 
 ```sql
-mysql > create database testdb;
+mysql > create database testDB;
 ```
 
 ### 5.3.1 常见错误 
