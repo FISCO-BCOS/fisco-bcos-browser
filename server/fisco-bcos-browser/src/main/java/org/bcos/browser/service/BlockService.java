@@ -9,6 +9,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.Constants;
+import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BasePageResponse;
 import org.bcos.browser.entity.base.BaseResponse;
 import org.bcos.browser.entity.dto.Block;
@@ -79,13 +80,16 @@ public class BlockService {
      * @param groupId groupId
      * @param blockHash blockHash
      * @return
+     * @throws BaseException 
      */
-    public BaseResponse getBlockInfoByHash(int groupId, String blockHash) {
+    public BaseResponse getBlockInfoByHash(int groupId, String blockHash) throws BaseException {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         Object[] params = new Object[] {groupId, blockHash, true};
         Object result = web3j.rpcRequest(groupId, Constants.GET_BLOCK_BY_HASH, params);
         if (result != null) {
             response.setData(JSON.parse(JSON.toJSONString(result)));
+        } else {
+        	throw new BaseException(ConstantCode.NODE_ABNORMAL);
         }
         log.debug("###getBlockInfoByHash response:{}###", response);
         return response;

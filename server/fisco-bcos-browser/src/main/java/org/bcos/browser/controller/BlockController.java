@@ -1,6 +1,7 @@
 package org.bcos.browser.controller;
 
 import org.bcos.browser.base.BaseController;
+import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BasePageResponse;
 import org.bcos.browser.entity.base.BaseResponse;
 import org.bcos.browser.service.BlockService;
@@ -44,10 +45,11 @@ public class BlockController extends BaseController {
      * @param groupId groupId
      * @param blockHash blockHash
      * @return
+     * @throws BaseException 
      */
     @GetMapping("/blockByHash/{groupId}/{blockHash}")
     public BaseResponse getBlockInfoByHash(@PathVariable("groupId") int groupId,
-            @PathVariable("blockHash") String blockHash) {
+            @PathVariable("blockHash") String blockHash) throws BaseException {
         BaseResponse response = blockService.getBlockInfoByHash(groupId, blockHash);
         return response;
     }
