@@ -197,8 +197,9 @@ export function getAbiFunction(data){
 
 //getAbi
 export function getAbi(data){
-    return get({
-        url: `${url.GET_ABI}/${data}`,
-        method: 'get',
+    return post({
+        url: `${url.GET_ABI}`,
+        method: 'post',
+        data: data
     })
 }

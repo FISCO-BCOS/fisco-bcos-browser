@@ -4,6 +4,7 @@
             <h1 style="width:100%;text-align:center">FISCO-BCOS 2.0区块链浏览器帮助文档</h1>
             <h2>一、描述</h2>
             <h3>1.1、基本描述</h3>
+            <p><strong>全新适配FISCO-BCOS 2.0.0版本，如果使用FISCO-BCOS 1.2或1.3版本请用<a href="https://github.com/FISCO-BCOS/fisco-bcos-browser/releases/tag/v1.2.1">v1.2.1版本</a>。</strong></p>
             <p>区块链浏览器将区块链中的数据可视化，并进行实时展示。方便用户以Web页面的方式，获取当前区块链中的信息。本浏览器版本适配<strong><a href='https://github.com/FISCO-BCOS/FISCO-BCOS/tree/release-2.0.1'>FISCO-BCOS 2.0</a></strong>，关于2.0版本的特性可以参考此<a href='https://fisco-bcos-documentation.readthedocs.io/zh_CN/release-2.0/docs/introduction.html'>链接</a>。在使用本浏览器之前需要先理解2.0版本的群组特性，详情可以参考此<a href='https://fisco-bcos-documentation.readthedocs.io/zh_CN/release-2.0/docs/what_is_new.html#id2'>链接</a>。</p>
             <p><img :src='overview' alt='' referrerPolicy='no-referrer'/></p>
             <p>&nbsp;</p>
@@ -30,25 +31,28 @@
             <h3>2.2、区块链浏览器搭建</h3>
             <p>区块链浏览器分为两个部分：后台服务fisco-bcos-browser、前端web页面fisco-bcos-browser-front。</p>
             <h4>2.2.1、后台服务搭建</h4>
-            <p>区块链浏览器后台服务使用Spring Boot的JAVA后台服务，具体搭建流程参见<a href='https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/server/fisco-bcos-browser'>文档</a>。</p>
+            <p>区块链浏览器后台服务使用Spring Boot的JAVA后台服务，具体搭建流程参见<a href='https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/server/fisco-bcos-browser'><strong>安装文档</strong></a>。</p>
             <h4>2.2.2、前端web页面服务搭建</h4>
-            <p>区块链浏览器前端web页面使用框架vue-cli，具体搭建流程参见<a href='https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/web/fisco-bcos-browser-front'>文档</a>。</p>
+            <p>区块链浏览器前端web页面使用框架vue-cli，具体搭建流程参见<a href='https://github.com/FISCO-BCOS/fisco-bcos-browser/tree/dev2.0.0/web/fisco-bcos-browser-front'><strong>安装文档</strong></a>。</p>
             <h2>三、初始化环境</h2>
             <h3>3.1、添加群组</h3>
             <p><img :src='createGroup' alt='create_group' referrerPolicy='no-referrer' /></p>
             <p>服务搭建成功后，可使用网页浏览器访问nginx配置的前端IP和前端端口，进入到浏览器页面。未初始化群组的浏览器页面会引导大家到新建群组配置页面，新建群组需要配置群组ID，群组名称，描述。</p>
-            <p><strong>群组ID需要和区块链群组ID保持一致。</strong></p>
+            <p><strong>群组ID需要和区块链群组ID保持一致。</strong>群组ID有多种查看方式，1、<a href="https://fisco-bcos-documentation.readthedocs.io/zh_CN/release-2.0/docs/api.html#getgrouplist">rpc接口获取</a>。2、<a href="https://fisco-bcos-documentation.readthedocs.io/zh_CN/release-2.0/docs/manual/console.html">控制台命令</a>。</p>
             <p>群组名称是为群组ID取的一个有意义，便于理解的名字。</p>
             <p>描述字段是对名称的进一步说明。</p>
             <h3>3.2、添加节点</h3>
             <p><img :src='addNode' alt='add_node' referrerPolicy='no-referrer' /></p>
             <p>添加群组所在的节点信息，用于区块链浏览器连接拉取相关展示信息。节点的rpc端口信息和p2p端口信息可以从节点的 <strong>config.ini</strong>配置文件中获取。</p>
+            <p>为了使用方便，新添加的群组会自动同步添加其他群组已经配置的共用节点信息。</p>
             <h3>3.3、添加合约</h3>
-            <p><img :src='contract' alt='contract' referrerPolicy='no-referrer' /></p>
-            <p>本浏览器版本提供合约解析的功能。此功能需要用户把本群组使用的所有合约进行导入。</p>
+            <p>本浏览器版本提供合约解析的功能。此功能需要用户把本群组使用的所有合约进行导入。本版本支持用zip包上传一级目录，用于解决同名合约的问题。</p>
             <p>导入步骤：</p>
             <h4>3.3.1 上传合约</h4>
+            <ol>
+            <li>合约上传支持sol文件上传和将sol文件打包成zip包上传。</li><li>zip包最多支持一级目录，如果没有目录默认上传到根目录。zip包中只能有sol文件。</li></ol>
             <h4>3.3.2 编译合约</h4>
+            <p><img :src="contract" alt="contract"></p>
             <h2>四、功能介绍</h2>
             <h3>4.1、概览</h3>
             <h4>4.1.1 概览信息</h4>
