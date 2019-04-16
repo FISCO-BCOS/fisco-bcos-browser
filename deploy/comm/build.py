@@ -20,10 +20,11 @@ def do():
     return
 
 def pullBrowserServer():
-       # /Users/Van/PythonProjects/Deploy/MyDeploy
-    if not os.path.exists("{}/MyDeploy/fisco-bcos-browser".format(baseDir)):
-        print "Waiting for git clone fisco-bcos-browser......"
-        os.system("git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git")
+       # /Users/Van/PythonProjects/Deploy/deploy
+    git_comm = "git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git -b " + getCommProperties("git.branch")
+    if not os.path.exists("{}/deploy/fisco-bcos-browser".format(baseDir)):
+        print git_comm
+        os.system(git_comm)
 
 
 def gradleBuild():
@@ -69,7 +70,7 @@ def changeConfig():
     yml_config_dir = os.getcwd() + "/fisco-bcos-browser/server/fisco-bcos-browser/dist/conf"
     doCmd('sed -i "s/127.0.0.1/{}/g" {}/application.yml'.format(mysql_host, yml_config_dir))
     doCmd('sed -i "s/8088/{}/g" {}/application.yml'.format(web_server_port, yml_config_dir))
-    doCmd('sed -i "s/testDB/{}/g" {}/application.yml'.format(mysql_database, yml_config_dir))
+    doCmd('sed -i "s/testdb/{}/g" {}/application.yml'.format(mysql_database, yml_config_dir))
     doCmd('sed -i "s/root/{}/g" {}/application.yml'.format(mysql_user, yml_config_dir))
     doCmd('sed -i "s/123456/{}/g" {}/application.yml'.format(mysql_password, yml_config_dir))
 
@@ -82,7 +83,7 @@ def changeConfig():
     return
 
 def startSH():
-    dist_dir = baseDir + "/fisco-bcos-browser/server/fisco-bcos-browser/dist"
+    dist_dir = currentDir + "/fisco-bcos-browser/server/fisco-bcos-browser/dist"
     os.chdir(dist_dir)
     result = doCmd("sh start.sh")
     if result["status"] == 0:
@@ -90,5 +91,3 @@ def startSH():
     else:
         print "================start server fail!==================="
         sys.exit(0)
-
-
