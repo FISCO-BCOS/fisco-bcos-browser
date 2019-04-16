@@ -27,6 +27,7 @@ public interface ConstantCode {
     RetCode DO_NOT_ALL_ZIP_FILE = new RetCode(305012,"zip file can't contain zipfile");
     RetCode FOLDERS_ARE_NOT_ALLOWED = new RetCode(305013,"folders are not allowed");
     RetCode CONTRACT_ALREADY_EXIST = new RetCode(305014,"folder is already exist");
+    RetCode NODE_ABNORMAL = new RetCode(305015,"node may be abnormal, please confirm");
 
     /* system error */
     RetCode SYSTEM_ERROR = RetCode.mark(105001, "system error");

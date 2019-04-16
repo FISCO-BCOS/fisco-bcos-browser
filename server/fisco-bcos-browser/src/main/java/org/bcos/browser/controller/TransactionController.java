@@ -83,10 +83,11 @@ public class TransactionController extends BaseController {
      * @param groupId groupId
      * @param transHash transHash
      * @return
+     * @throws BaseException 
      */
     @GetMapping("/transactionByHash/{groupId}/{transHash}")
     public BaseResponse getTransactionByHash(@PathVariable("groupId") int groupId,
-            @PathVariable("transHash") String transHash) {
+            @PathVariable("transHash") String transHash) throws BaseException {
         BaseResponse response = transactionService.getTransactionByHash(groupId, transHash);
         return response;
     }
@@ -97,10 +98,11 @@ public class TransactionController extends BaseController {
      * @param groupId groupId
      * @param transHash transHash
      * @return
+     * @throws BaseException 
      */
     @GetMapping("/receiptByHash/{groupId}/{transHash}")
     public BaseResponse getReceiptByHash(@PathVariable("groupId") int groupId,
-            @PathVariable("transHash") String transHash) {
+            @PathVariable("transHash") String transHash) throws BaseException {
         BaseResponse response = transactionService.getReceiptByHash(groupId, transHash);
         return response;
     }
