@@ -820,6 +820,9 @@ export default {
     display: inline-block;
     padding-bottom: 20px;   
 }
+.contract-content>>>.ace_print-margin{
+    width: 0
+}
 
 
 </style>
