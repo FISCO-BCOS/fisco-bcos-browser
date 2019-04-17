@@ -9,23 +9,20 @@ baseDir = getBaseDir()
 currentDir = getCurrentBaseDir()
 
 def do():
-    print "==================staring git clone... =============="
-    pullBrowserServer()
-    print "==================staring build ====================="
-    gradleBuild()
-    print "==================end build ========================="
-    # log.infoPrint("pullFramework success")
-    startSH()
-    startNginx()
+    print "==================deploy start... =================="
+    pullSource()
+    changeConfig()
+    startServer()
+    startWeb()
+    print "==================deploy end... =================="
     return
 
-def pullBrowserServer():
-       # /Users/Van/PythonProjects/Deploy/deploy
-    git_comm = "git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git -b " + getCommProperties("git.branch")
-    if not os.path.exists("{}/deploy/fisco-bcos-browser".format(baseDir)):
+def pullSource():
+    git_comm = "wget " + getCommProperties("package.url")
+    if not os.path.exists("{}/server".format(currentDir)):
         print git_comm
         os.system(git_comm)
-
+    doCmdIgnoreException("unzip -o fisco-bcos-browser*.zip")
 
 def gradleBuild():
     work_dir = os.getcwd() + "/fisco-bcos-browser/"
@@ -35,59 +32,66 @@ def gradleBuild():
     os.chdir(work_dir+"server/fisco-bcos-browser")
     result = doCmd("gradle build")
     if result["status"] == 0:
-        print "================build success!====================="
+        print "======= build success! ======="
     else:
         print result["output"]
         sys.exit(0)
     os.chdir(currentDir)
-    changeConfig()
     return
 
-def startNginx():
-    nginx_config_dir = currentDir + "/comm/nginx.conf"
-    res = doCmd("which nginx")
-    if res["status"] == 0:
-        res2 = doCmd(res["output"] + " -c " +nginx_config_dir)
-        if res2["status"] == 0:
-            print "nginx start success"
-        else:
-            print "nginx start failed"
-            sys.exit(0)
-
 def changeConfig():
-    # 读取配置
-    web_server_port = getCommProperties("web_server.port")
-    mysql_host = getCommProperties("mysql.host")
+    # get properties
+    mysql_ip = getCommProperties("mysql.ip")
+    mysql_port = getCommProperties("mysql.port")
     mysql_user = getCommProperties("mysql.user")
     mysql_password = getCommProperties("mysql.password")
     mysql_database = getCommProperties("mysql.database")
-    nginx_port = getCommProperties("nginx.proxy.port")
-    web_server_ip = getCommProperties("web_server.ip")
+    deploy_ip = getCommProperties("deploy.ip")
+    server_port = getCommProperties("server.port")
+    web_port = getCommProperties("web.port")
 
-    # print "web_server_port : {},mysql_host : {}, mysql_database : {}".format\
-    #     (web_server_port,mysql_host,mysql_database)
-    # 修改server配置
-    yml_config_dir = os.getcwd() + "/fisco-bcos-browser/server/fisco-bcos-browser/dist/conf"
-    doCmd('sed -i "s/127.0.0.1/{}/g" {}/application.yml'.format(mysql_host, yml_config_dir))
-    doCmd('sed -i "s/8088/{}/g" {}/application.yml'.format(web_server_port, yml_config_dir))
-    doCmd('sed -i "s/testdb/{}/g" {}/application.yml'.format(mysql_database, yml_config_dir))
-    doCmd('sed -i "s/root/{}/g" {}/application.yml'.format(mysql_user, yml_config_dir))
-    doCmd('sed -i "s/123456/{}/g" {}/application.yml'.format(mysql_password, yml_config_dir))
+    # change server config
+    server_dir = currentDir + "/server/conf"
+    doCmd('sed -i "s/10.0.0.1/{}/g" {}/application.yml'.format(mysql_ip, server_dir))
+    doCmd('sed -i "s/3306/{}/g" {}/application.yml'.format(mysql_port, server_dir))
+    doCmd('sed -i "s/root/{}/g" {}/application.yml'.format(mysql_user, server_dir))
+    doCmd('sed -i "s/123456/{}/g" {}/application.yml'.format(mysql_password, server_dir))
+    doCmd('sed -i "s/testDB/{}/g" {}/application.yml'.format(mysql_database, server_dir))
+    doCmd('sed -i "s/127.0.0.1/{}/g" {}/application.yml'.format(deploy_ip, server_dir))
+    doCmd('sed -i "s/8088/{}/g" {}/application.yml'.format(server_port, server_dir))
 
-    # change nginx config
-    config_dir = currentDir
-    doCmd('sed -i "s/8081/{}/g" {}/comm/nginx.conf'.format(nginx_port, config_dir))
-    doCmd('sed -i "s/127.0.0.1/{}/g" {}/comm/nginx.conf'.format(web_server_ip, config_dir))
-    doCmd('sed -i "s/web_page_url/{}/g" {}/comm/nginx.conf'.format(mysql_password, config_dir))
+    # change web config
+    web_dir = currentDir + "/web"
+    web_log_dir = web_dir + "/log"
+    doCmd('mkdir -p {}'.format(web_log_dir))
+    doCmd('sed -i "s/127.0.0.1/{}/g" {}/comm/nginx.conf'.format(deploy_ip, currentDir))
+    doCmd('sed -i "s/8088/{}/g" {}/comm/nginx.conf'.format(server_port, currentDir))
+    doCmd('sed -i "s/8081/{}/g" {}/comm/nginx.conf'.format(web_port, currentDir))
+    doCmd('sed -i "s:log_path:{}:g" {}/comm/nginx.conf'.format(web_log_dir, currentDir))
+    doCmd('sed -i "s:web_page_url:{}:g" {}/comm/nginx.conf'.format(web_dir, currentDir))
 
     return
 
-def startSH():
-    dist_dir = currentDir + "/fisco-bcos-browser/server/fisco-bcos-browser/dist"
-    os.chdir(dist_dir)
+def startServer():
+    server_dir = currentDir + "/server"
+    os.chdir(server_dir)
     result = doCmd("sh start.sh")
     if result["status"] == 0:
-        print "================start server success!================"
+        print "======= server start success! ======="
     else:
-        print "================start server fail!==================="
+        print "======= server start fail! ======="
+        sys.exit(0)
+
+def startWeb():
+    nginx_config_dir = currentDir + "/comm/nginx.conf"
+    res = doCmd("which nginx")
+    if res["status"] == 0:
+        res2 = doCmd(res["output"] + " -c " + nginx_config_dir)
+        if res2["status"] == 0:
+            print "======= web start success! ======="
+        else:
+            print "======= web start fail! ======="
+            sys.exit(0)
+    else:
+        print "======= error, nginx is not install! ======="
         sys.exit(0)

@@ -10,8 +10,10 @@ import struct
 import os
 import platform
 from distutils.dir_util import copy_tree
+
 log = deployLog.getLogger()
 platformStr = platform.platform()
+
 def getIpAddress(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     return socket.inet_ntoa(fcntl.ioctl(
@@ -22,6 +24,19 @@ def getIpAddress(ifname):
 
 def getLocalIp():
     return getIpAddress("eth0")
+    
+def net_if_used(ip,port):
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    s.settimeout(0.5)
+    try:
+        result=s.connect_ex((ip, int(port)))
+        if result==0:
+            print "error! port {} is used. please check.".format(port)
+            return True
+        else:
+            return False
+    finally:
+        s.close()
 
 def isUbuntu():
     return platformStr.lower().find("ubuntu") > -1
@@ -100,8 +115,6 @@ def replaceConfDir(filePath,oldStr,newStr):
         for file in files:
             replaceConf(os.path.join(root,file),oldStr,newStr)
     return
-
-
 
 if __name__ == '__main__':
     print(getIpAddress("eth0"))
