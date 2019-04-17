@@ -57,7 +57,6 @@ def changeConfig():
     doCmd('sed -i "s/root/{}/g" {}/application.yml'.format(mysql_user, server_dir))
     doCmd('sed -i "s/123456/{}/g" {}/application.yml'.format(mysql_password, server_dir))
     doCmd('sed -i "s/testDB/{}/g" {}/application.yml'.format(mysql_database, server_dir))
-    doCmd('sed -i "s/127.0.0.1/{}/g" {}/application.yml'.format(deploy_ip, server_dir))
     doCmd('sed -i "s/8088/{}/g" {}/application.yml'.format(server_port, server_dir))
 
     # change web config
