@@ -506,7 +506,7 @@
                 this.buttonTitle = "还原";
             }
         },
-        getDeloyAbi: function(input){
+        getDeloyAbi: function(val){
             if(val && val != "0x"){
                 let data = {
                         input: val.substring(2)
