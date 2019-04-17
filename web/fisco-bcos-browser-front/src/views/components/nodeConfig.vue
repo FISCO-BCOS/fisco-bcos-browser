@@ -184,13 +184,3 @@
         }
     }
 </script>
-<style scoped>
-@media screen and (max-width: 1150px){
-    .hashInput{
-        position: relative;
-        display: inline-block;
-        padding: 10px 0 0 30px;
-    }
-}
-</style>
-

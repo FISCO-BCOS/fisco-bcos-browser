@@ -1,5 +1,5 @@
 import url from './url'
-import axios from 'axios'
+import axios from './http'
 import { post, get, patch, put, deleted } from './http'
 import { reviseParam } from '@/util/util'
 
@@ -115,11 +115,11 @@ export function getContractList(data,list) {  //get a list of contracts
     })  
 }
 
-export function deleteContract(data) {  //delete a contract
+export function deleteContract(data,list) {  //delete a contract
+    const params = reviseParam(data, list);
     return deleted({
-        url: `${url.DELETE_CONTRACT}`,
+        url: `${url.DELETE_CONTRACT}/${params.str}`,
         method: 'delete',
-        params: data
     })
 }
 
@@ -168,14 +168,5 @@ export function getAnalyzeData(data) {
         url: url.GET_TRANSACTION_ANALYZEDATA,
         method: 'post',
         data: data
-    })
-}
-
-//upload zip file
-export function uploadData(data){
-    return axios.post(url.UPLOAD,data,{
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
     })
 }
