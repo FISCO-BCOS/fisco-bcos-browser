@@ -58,7 +58,8 @@
         SELECT contract_abi as contractAbi,
                contract_name as contractName
         FROM tb_contract
-        where locate(contract_bin,#{input})
+        WHERE locate(contract_bin,#{input})
+        LIMIT 1
     </select>
 
     <update id="updateContract" parameterType="org.bcos.browser.entity.dto.Contract">
