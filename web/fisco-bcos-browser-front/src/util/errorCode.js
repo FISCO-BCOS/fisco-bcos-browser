@@ -88,5 +88,9 @@ export default {
     "305014": {
         cn: "文件夹已存在",
         en: "Folder already exists."
+    },
+    "305015": {
+        cn: "节点异常",
+        en: "node may be abnormal, please confirm"
     }
 }

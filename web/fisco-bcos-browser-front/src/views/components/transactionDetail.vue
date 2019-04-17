@@ -60,7 +60,7 @@
                                     <span class="label-title">logs:</span>
                                     <div class="label-content">
                                         <span class="input-data" v-if="!eventSHow">{{transactionReceiptByPkHash.logs}}</span>
-                                        <div class="input-data" v-for="item in eventLog" v-if="eventSHow">
+                                        <div class="input-data" v-for="item in eventLog" v-if="eventSHow" :key='item.address'>
                                             <div class="item">
                                                 <span class="label">Address :</span>
                                                 <span>{{item.address}}</span>
@@ -506,14 +506,26 @@
                 this.buttonTitle = "还原";
             }
         },
-         getDeloyAbi: function(input){
-                let data = input.substring(2)
+        getDeloyAbi: function(input){
+            if(val && val != "0x"){
+                let data = {
+                        input: val.substring(2)
+                    }
                 getAbi(data).then(res => {
                     if(res.data.code == 0){
-                        this.decodeDeloy(res.data.data)
+                        if(res.data.data){
+                            this.decodeDeloy(res.data.data)
+                        }
+                    }else{
+                    message(errorcode[res.data.code].cn,'error');
+                }
+                }).catch(err => {
+                    if(err.response && err.response.code !== 200){
+                        message(constant.ERROR,'error');
                     }
                 })
-            },
+            }       
+        },
         decodeDeloy: function(items) {
             if (items) {
                 let input = JSON.parse(items.contractAbi);

@@ -770,16 +770,16 @@
                             this.transactionList.forEach((value,index) => {
                                 if(value.to){
                                     this.newData[index] = null
-                                    let inputData = this.getTransationDetail(value.transHash,'to',index)
-                                    setTimeout(() => {
-                                        this.$set(value,'funcName',this.newData[index])
-                                    },400)
+                                    this.getTransationDetail(value.transHash,'to',index)
+                                    // setTimeout(() => {
+                                    //     this.$set(value,'funcName',this.newData[index])
+                                    // },400)
                                 }else{
                                     this.newData[index] = null;
-                                    let inputData = this.getTransationDetail(value.transHash,"",index)
-                                    setTimeout(() => {
-                                        this.$set(value,'funcName',this.newData[index])
-                                    },400)
+                                    this.getTransationDetail(value.transHash,"",index)
+                                    // setTimeout(() => {
+                                    //     this.$set(value,'funcName',this.newData[index])
+                                    // },400)
                                 }
                             })
                             // this.GetAnalyzeData(list);
@@ -831,7 +831,8 @@
                                 }  
                             })
                             funcName =  funcName + ")"
-                            this.newData[index] = funcName
+                            this.newData[index] = funcName;
+                            this.$set(this.transactionList[index],'funcName',this.newData[index])
                         }  
                     }else{
                         message(errorcode[res.data.code].cn,'error')
@@ -841,14 +842,22 @@
                 })
             },
             getCodeabi: function(val,index){
-                let data = val.substring(2)
-                getAbi(data).then(res => {
-                    if(res.data.code == 0){
-                        if(res.data.data){
-                            this.decodeDeloy(res.data.data,index)
-                        }
+                if(val && val != "0x"){
+                    let data = {
+                        input: val.substring(2)
                     }
-                })
+                    getAbi(data).then(res => {
+                        if(res.data.code == 0){
+                            if(res.data.data){
+                                this.decodeDeloy(res.data.data,index)
+                            }
+                        }else{
+                            message(errorcode[res.data.code].cn,'error')
+                        }
+                    }).catch(err => {
+                        message(constant.ERROR,'error');
+                    })
+                }    
             },
             decodeDeloy: function(items,index) {
             if (items) {
@@ -866,7 +875,8 @@
                     }
                 })
                 funcName =  funcName + ")"
-                this.newData[index] = funcName
+                this.newData[index] = funcName;
+                this.$set(this.transactionList[index],'funcName',this.newData[index])
             }
         },
 
