@@ -13,11 +13,11 @@
 
 # 2. <a id="chapter-2"></a>前提条件
 
-| 环境     | 版本              |
-| ------ | --------------- |
-| Java   | jdk1.8.0_121或以上版本    |
-| gradle | gradle-5.0或以上版本 |
-| 数据库    | mysql-5.6或以上版本  |
+| 环境   | 版本                   |
+| ------ | ---------------------- |
+| Java   | jdk1.8.0_121或以上版本 |
+| gradle | gradle-5.0或以上版本   |
+| 数据库 | mysql-5.6或以上版本    |
 备注：安装说明请参看附录。
 
 # 3. <a id="chapter-3"></a>部署说明
@@ -32,7 +32,6 @@ git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 
 ```shell
 cd fisco-bcos-browser
-git checkout XXXXX
 ```
 
 ## 3.2 编译代码
@@ -182,6 +181,10 @@ mysql -u root
 mysql > SET PASSWORD FOR 'root'@'localhost' = PASSWORD('123456');
 mysql > GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '123456' WITH GRANT OPTION;
 ```
+**安全温馨提示：**
+
+1. 例子中给出的数据库密码（123456）仅为样例，强烈建议设置成复杂密码
+2. 例子中的远程授权设置会使数据库在所有网络上都可以访问，请按具体的网络拓扑和权限控制情况，设置网络和权限帐号
 
 授权test用户本地访问数据库
 ```sql
@@ -226,10 +229,9 @@ mysql > create database testDB;
 ```
 2. 保存后重启mysql
 ```shell
-   service mysqld restart 
+   service mysqld restart 
 ```
 3. 输入以下命令，回车后输入密码再回车登录Mysql
 ```shell
-   mysql -uroot -p mysql  
+   mysql -uroot -p mysql  
 ```
-

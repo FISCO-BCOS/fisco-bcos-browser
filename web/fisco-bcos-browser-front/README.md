@@ -40,7 +40,6 @@ git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 
 ```shell
 cd fisco-bcos-browser
-git checkout XXXXX
 ```
 
  然后将其中./web/fisco-bcos-browser-front/目录中的dist目录放到/data/app/web目录下。目录可以自己指定，只需要nginx配置文件步骤2保持一致即可。
@@ -59,8 +58,8 @@ git checkout XXXXX
 
 ```Nginx
     server {
-            listen       8089 default_server;   #步骤1、前端端口
-            server_name  192.168.0.1;         #步骤1、前端地址，可配置为域名
+            listen       8089 default_server;   #步骤1、前端nginx监听端口
+            server_name  192.168.0.1;         #步骤1、前端nginx地址，可配置为域名
             location / {
                     root    /data/app/web/dist;   #步骤2、前端文件路径
                     index  index.html index.htm;
@@ -72,7 +71,7 @@ git checkout XXXXX
 
             location /api {
                     proxy_pass    http://192.168.0.2:8090/;    #步骤3、后端服务(fisco-bcos-browser)地址及端口
-               	 	proxy_set_header		Host				$host;
+               	 	  proxy_set_header		Host				$host;
                     proxy_set_header		X-Real-IP			$remote_addr;
                     proxy_set_header		X-Forwarded-For		$proxy_add_x_forwarded_for;
             }
