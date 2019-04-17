@@ -6,16 +6,20 @@ import sys
 from utils import *
 
 log = deployLog.getLogger()
-checkDependent = ["git","wget","-y zlib zlib-devel","-y openssl openssl-devel","nginx"]
+checkDependent = ["git","wget"]
 
 def installRequirements():
-    result = doCmd("which nginx")
+    print "checking nginx"
+    result = doCmdIgnoreException("which nginx")
     if result["status"] == 0:
         info = raw_input("此操作将会清除原有nginx，请确认无其他nginx服务在运行，按y键继续执行[y/n]:")
         if info == "y" or info == "Y":
             doCmdIgnoreException("yum -y remove nginx")
+            doCmdIgnoreException("yum -y install nginx")
         else:
             sys.exit(0)
+    else:
+        doCmdIgnoreException("yum -y install nginx")
     for require in checkDependent:
         print "checking {}".format(require)
         installIfNotExistsByYum(require)
