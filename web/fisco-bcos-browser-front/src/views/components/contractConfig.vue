@@ -211,6 +211,7 @@ export default {
             getContractList(data,{}).then(res => {
                 if(res.data.code === 0){
                     this.contractList = res.data.data;
+                    this.allContractList = res.data.data;
                     this.pagination.total = res.data.totalCount;
                 }else{
                     message(errorcode[res.data.code].cn,'error')
