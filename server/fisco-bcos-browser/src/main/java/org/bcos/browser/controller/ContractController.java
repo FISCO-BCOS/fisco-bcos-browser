@@ -116,8 +116,8 @@ public class ContractController extends BaseController {
      * @param input info
      * @return
      */
-    @GetMapping("/abi/{input}")
-    public BaseResponse getContractAbi(@PathVariable("input") String input) {
+    @PostMapping("/abi")
+    public BaseResponse getContractAbi(@RequestBody String input) {
         BaseResponse response = contractService.getContractAbi(input);
         return response;
     }
