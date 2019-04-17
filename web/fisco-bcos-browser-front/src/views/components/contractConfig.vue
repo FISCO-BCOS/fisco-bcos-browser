@@ -1,5 +1,5 @@
 <template>
-    <div class="search-main" style="height: calc(100% - 120px);overflow: hidden;">
+    <div class="search-main" style="height: calc(100% - 120px);overflow: auto;">
         <div class="container" style="padding-bottom: 0;height: 100%;">
             <v-nav :hrTitle="btitle" :hrcontent="btitle"></v-nav>
             <div class="search-nav">
@@ -17,11 +17,11 @@
                     </el-tooltip>
                 </div>
             </div>
-            <div class="search-table" style="font-size: 0; box-sizing: border-box;height: 100%;">
-                <div class="contract-menu">
+            <div class="search-table" style="font-size: 0; box-sizing: border-box;height: calc(100% - 114px);">
+                <div class="contract-menu" style="height: 100%">
                     <v-codeMenu :data='contractArry'></v-codeMenu>
                 </div>
-                <div class="contract-content" style="height: 100%;">
+                <div class="contract-content" style="height: 100%;background-color: rgb(39, 40, 34)">
                     <div ref='codeContent' :style="{height: codeHight}" v-loading="loading" element-loading-background="rgba(0, 0, 0, 0.8)">
                         <div  class="ace-editor" ref="ace" v-show='editorShow' id='aceEditor'></div>
                     </div>
@@ -89,7 +89,7 @@ export default {
             modePath: 'ace/mode/solidity',
             indexData: null,
             resultList: [],
-            codeHight: '100%',
+            codeHight: 'calc(100% - 26px)',
             errorInfo: "",
             compliteData: null,
             contractAbi: "",
@@ -161,8 +161,8 @@ export default {
         },
         initEditor: function(){
             this.aceEditor = ace.edit('aceEditor', {
-                maxLines: Math.ceil((this.$refs.codeContent.offsetHeight)/17) + 1,
-                minLines: Math.ceil((this.$refs.codeContent.offsetHeight)/17) + 1,
+                maxLines: Math.ceil((this.$refs.codeContent.offsetHeight) / 17) + 1,
+                minLines: Math.ceil((this.$refs.codeContent.offsetHeight) / 17)  + 1,
                 fontSize: 14, 
                 fontFamily: 'Consolas,Monaco,monospace',
 
@@ -182,12 +182,12 @@ export default {
             this.aceEditor.setReadOnly(true);  
         },
         setContent: function(val){
-            this.codeHight = '100%';
+            this.codeHight = 'calc(100% - 26px)';
             this.errorInfo = "";
             this.contractAbi = val.contractAbi
             if(val.errorInfo && !val.contractAbi){
                 this.errorInfo = val.errorInfo;
-                this.codeHight = '70%'
+                this.codeHight = 'calc(70% - 26px)'
             }
             setTimeout(() => {
                 this.aceEditor.setOptions({
@@ -804,7 +804,7 @@ export default {
     display: inline-block;
     width: calc(100% - 300px);
     height: 100%;
-    min-height: 400px;
+    /* min-height: 400px; */
     font-size: 14px;
     color: #fff;
 }
