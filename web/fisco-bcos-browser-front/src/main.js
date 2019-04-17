@@ -8,10 +8,6 @@ import ElementUI from 'element-ui';
 import axios from 'axios'
 import JsonViewer from "vue-json-viewer"
 import 'element-ui/lib/theme-chalk/index.css'
-/*iconfont*/
-import '@/assets/icon/iconfont.css'
-import '@/assets/icon/iconfont.js'
-import '@/assets/icon/iconfont_webaas.css'
 
 promise.polyfill();
 
