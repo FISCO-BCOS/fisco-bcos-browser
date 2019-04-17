@@ -7,20 +7,19 @@ def do():
     if len(sys.argv)==1:
         help()
         return
-    param =  sys.argv[1]
-    if "all" == param:
+    param = sys.argv[1]
+    if "run" == param:
         check()
         build()
     elif "check"== param:
         check()
-    elif "build" == param:
-        check()
-        build()
+    elif "test"== param:
+        test()
+    elif "help"== param:
+        help()
     else:
         paramError()
-        return
     return
-
 
 def check():
     browserCheck.do()
@@ -28,34 +27,31 @@ def check():
 def build():
     browserBuild.do()
 
-
 def test():
     pass
 
-
 def help():
-    helpMsg = '''This script is used to deploy fisco-bcos-browser
+    helpMsg = '''
 Usage: $0 Receiver Message [other]
+
 Parameter:
-    all : check the environment,build the code ,deploy and test
+    run : check the environment and deploy
     check : check the environment
-    build : build the code to get binary file
-    deploy : deploy the frame ,you must run the command build to get  binary file
-    test :  test if all the server are ok
+    test : check if the servers are ok
+    
 Attention:
-    1.support with python 2.7
+    1.support with python 2.7, jdk1.8.0_121+, mysql 5.6+
     2.network unobstructed
-    3.you had installed :gcc-c++,cmake,yasm,glibc-devel,zlib-devel ,if not ,we will install it ,but It's possible to fail.
-    4.Tars uses /usr/local/mysql/ as default path. If yours is not this, please modify the file CMakeLists.txt(framework/tarscpp/CMakeLists.txt, framework/CMakeLists.txt) before compile.
+    3.you had installed: git,wget,zlib-devel,openssl-devel,nginx.If not,we will install,but it's possible fail.
     '''
     print helpMsg
     return
 
 def paramError():
-    print "param error! only supprot: check, build."
+    print "Param error! Please check."
+    print ""
     help()
     return
-
 
 if __name__ == '__main__':
     do()
