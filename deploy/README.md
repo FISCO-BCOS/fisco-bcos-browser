@@ -33,8 +33,8 @@ cd fisco-bcos-browser/deploy
 sudo python deploy.py run
 ```
 
-4、访问<br>
-备注：在浏览器输入以下访问地址，IP为部署服务器IP，端口为前端服务端口
+5、访问<br>
+在浏览器输入以下访问地址，IP为部署服务器IP，端口为前端服务端口
 ```
 http://127.0.0.1:8081/#/
 ```
