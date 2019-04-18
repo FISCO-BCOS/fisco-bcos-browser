@@ -52,7 +52,7 @@ def changeConfig():
 
     # change server config
     server_dir = currentDir + "/server/conf"
-    doCmd('sed -i "s/10.0.0.1/{}/g" {}/application.yml'.format(mysql_ip, server_dir))
+    doCmd('sed -i "s/127.0.0.1/{}/g" {}/application.yml'.format(mysql_ip, server_dir))
     doCmd('sed -i "s/3306/{}/g" {}/application.yml'.format(mysql_port, server_dir))
     doCmd('sed -i "s/root/{}/g" {}/application.yml'.format(mysql_user, server_dir))
     doCmd('sed -i "s/123456/{}/g" {}/application.yml'.format(mysql_password, server_dir))
