@@ -16,11 +16,11 @@ def installRequirements():
 
 def checkSoft():
     print "checking java"
-    res1 = doCmdIgnoreException("java -version")
+    res1 = doCmd("java -version")
     if res1["status"] != 0:
         print "  error! java is not install or configure!"
         sys.exit(0)
-    res2 = doCmdIgnoreException("which nginx")
+    res2 = doCmd("which nginx")
     if res2["status"] !=0:
         print "  error! nginx is not install!"
         sys.exit(0)
@@ -49,7 +49,7 @@ def hasInstallServer(server):
 
 def installByYum(server):
     if isCentos():
-        result = doCmd("yum -y install {}".format(server))
+        result = doCmd("sudo yum -y install {}".format(server))
         if result["status"] !=0:
             os.system("yum install epel-release")
             os.system("sudo yum install python-pip")
@@ -57,9 +57,9 @@ def installByYum(server):
             os.system("pip install requests")
             result = doCmd("yum install {}".format(server))
     elif isSuse():
-        os.system("zypper install  -y {}".format(server))
+        os.system("sudo zypper install  -y {}".format(server))
     elif isUbuntu():
-        os.system("apt-get install  -y {}".format(server))
+        os.system("sudo apt-get install  -y {}".format(server))
     else:
         raise Exception("error,not support this platform,only support centos,suse,ubuntu.")
     return
