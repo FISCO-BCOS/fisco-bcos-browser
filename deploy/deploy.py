@@ -13,8 +13,6 @@ def do():
         build()
     elif "check"== param:
         check()
-    elif "test"== param:
-        test()
     elif "help"== param:
         help()
     else:
@@ -35,14 +33,13 @@ def help():
 Usage: $0 Receiver Message [other]
 
 Parameter:
-    run : check the environment and deploy
     check : check the environment
-    test : check if the servers are ok
+    run : check the environment and deploy
     
 Attention:
     1.support with python 2.7, jdk1.8.0_121+, mysql 5.6+
     2.network unobstructed
-    3.you had installed: git,wget,zlib-devel,openssl-devel,nginx.If not,we will install,but it's possible fail.
+    3.you had installed: git,wget,nginx.If not,we will install,but it's possible fail.
     '''
     print helpMsg
     return
