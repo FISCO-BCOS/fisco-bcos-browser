@@ -1,6 +1,6 @@
 # 一键部署说明
 
-1、拉取代码
+1、拉取代码<br>
 执行命令：
 ```shell
 git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
@@ -13,7 +13,7 @@ cd fisco-bcos-browser/deploy
 
 3、修改配置（没有变化的可以不修改）：
 ```shell
-浏览器编译包url：sed -i "s:packageUrl:${package_url}:g" common.properties
+浏览器编译包url：sed -i "s#packageUrl#${package_url}#g" common.properties
 
 数据库IP：sed -i "s/10.0.0.1/${your_db_ip}/g" common.properties
 数据库用户名：sed -i "s/root/${your_db_account}/g" common.properties
@@ -27,9 +27,16 @@ cd fisco-bcos-browser/deploy
 
 **数据库服务器和数据库需要提前准备**
 
-4、部署
+4、部署<br>
+备注：使用root权限操作
 ```shell
-python deploy.py run
+sudo python deploy.py run
+```
+
+5、访问<br>
+在浏览器输入以下访问地址，IP为部署服务器IP，端口为前端服务端口
+```
+http://127.0.0.1:8081/#/
 ```
 
 
