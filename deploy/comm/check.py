@@ -6,38 +6,28 @@ import sys
 from utils import *
 
 log = deployLog.getLogger()
-checkDependent = ["git","wget"]
+checkDependent = ["git","wget","nginx"]
 
 def installRequirements():
-    print "checking nginx"
-    result = doCmdIgnoreException("which nginx")
-    if result["status"] == 0:
-        info = raw_input("此操作将会清除原有nginx，请确认无其他nginx服务在运行，按y键继续执行[y/n]:")
-        if info == "y" or info == "Y":
-            doCmdIgnoreException("yum -y remove nginx")
-            doCmdIgnoreException("yum -y install nginx")
-        else:
-            sys.exit(0)
-    else:
-        doCmdIgnoreException("yum -y install nginx")
     for require in checkDependent:
         print "checking {}".format(require)
-        installIfNotExistsByYum(require)
+        installByYum(require)
     return
 
 def checkSoft():
     print "checking java"
     res1 = doCmdIgnoreException("java -version")
     if res1["status"] != 0:
-        print "error, java is not install or configure!"
+        print "  error! java is not install or configure!"
         sys.exit(0)
     res2 = doCmdIgnoreException("which nginx")
     if res2["status"] !=0:
-        print "error, nginx is not install!"
+        print "  error! nginx is not install!"
         sys.exit(0)
     return
     
 def checkPort():
+    print "checking port"
     deploy_ip = getCommProperties("deploy.ip")
     server_port = getCommProperties("server.port")
     web_port = getCommProperties("web.port")
@@ -57,7 +47,7 @@ def hasInstallServer(server):
     else:
         return false
 
-def installIfNotExistsByYum(server):
+def installByYum(server):
     if isCentos():
         result = doCmd("yum -y install {}".format(server))
         if result["status"] !=0:
@@ -75,11 +65,11 @@ def installIfNotExistsByYum(server):
     return
 
 def do():
-    print "checking envrionment..."
+    print "================== envrionment check... =================="
     installRequirements()
     checkSoft()
     checkPort()
-    print "check completed. environment is ready"
+    print "================== envrionment ready... =================="
 
 if __name__ == '__main__':
     pass
