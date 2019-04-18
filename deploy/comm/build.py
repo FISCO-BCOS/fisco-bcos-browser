@@ -26,14 +26,14 @@ def pullSource():
         info = raw_input("fisco-bcos-browser.zip压缩包已经存在，是否要覆盖[y/n]:")
         if info == "y" or info == "Y":
             doCmd("rm -rf fisco-bcos-browser.zip")
+            doCmd("rm -rf server")
+            doCmd("rm -rf web")
             os.system(git_comm)
-        else:
-            if os.path.exists("{}/server".format(currentDir)):
-                return
-    doCmd("unzip -o fisco-bcos-browser.zip")
     if not os.path.exists("{}/server".format(currentDir)):
-        print "file extract failed!"
-        sys.exit(0)
+    	doCmd("unzip -o fisco-bcos-browser.zip")
+    	if not os.path.exists("{}/server".format(currentDir)):
+            print "file extract failed!"
+            sys.exit(0)
 
 def gradleBuild():
     work_dir = os.getcwd() + "/fisco-bcos-browser/"
@@ -85,6 +85,7 @@ def changeConfig():
 def startServer():
     server_dir = currentDir + "/server"
     os.chdir(server_dir)
+    doCmd("source /etc/profile")
     result = doCmd("sh start.sh")
     if result["status"] == 0:
         print "======= server start success! ======="
@@ -96,7 +97,7 @@ def startWeb():
     nginx_config_dir = currentDir + "/comm/nginx.conf"
     res = doCmd("which nginx")
     if res["status"] == 0:
-        res2 = doCmd(res["output"] + " -c " + nginx_config_dir)
+        res2 = doCmd("sudo " + res["output"] + " -c " + nginx_config_dir)
         if res2["status"] == 0:
             print "=======  web  start success! ======="
         else:

@@ -35,7 +35,7 @@ class Logger:
 
 loggermap = {}
 def getLogger():
-    logPath ="../logs"
+    logPath ="./log/"
     logName="info.log"
     isExists=os.path.exists(logPath)
     if not isExists:
