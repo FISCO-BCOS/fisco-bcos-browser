@@ -41,8 +41,8 @@ http://127.0.0.1:8081/#/
 6、日志路径
 ```
 部署日志：log/
-后端日志：server/log
-前端日志：web/log
+后端日志：server/log/
+前端日志：web/log/
 ```
 
 
