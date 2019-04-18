@@ -9,20 +9,31 @@ baseDir = getBaseDir()
 currentDir = getCurrentBaseDir()
 
 def do():
-    print "==================deploy start... =================="
+    print "================== deploy start... =================="
     pullSource()
     changeConfig()
     startServer()
     startWeb()
-    print "==================deploy end... =================="
+    print "================== deploy end... =================="
     return
 
 def pullSource():
     git_comm = "wget " + getCommProperties("package.url")
-    if not os.path.exists("{}/server".format(currentDir)):
-        print git_comm
+    print git_comm
+    if not os.path.exists("{}/fisco-bcos-browser.zip".format(currentDir)):
         os.system(git_comm)
-    doCmdIgnoreException("unzip -o fisco-bcos-browser*.zip")
+    else:
+        info = raw_input("fisco-bcos-browser.zip压缩包已经存在，是否要覆盖[y/n]:")
+        if info == "y" or info == "Y":
+            doCmd("rm -rf fisco-bcos-browser.zip")
+            os.system(git_comm)
+        else:
+            if os.path.exists("{}/server".format(currentDir)):
+                return
+    doCmd("unzip -o fisco-bcos-browser.zip")
+    if not os.path.exists("{}/server".format(currentDir)):
+        print "file extract failed!"
+        sys.exit(0)
 
 def gradleBuild():
     work_dir = os.getcwd() + "/fisco-bcos-browser/"
@@ -87,9 +98,9 @@ def startWeb():
     if res["status"] == 0:
         res2 = doCmd(res["output"] + " -c " + nginx_config_dir)
         if res2["status"] == 0:
-            print "======= web start success! ======="
+            print "=======  web  start success! ======="
         else:
-            print "======= web start fail! ======="
+            print "=======  web  start fail! ======="
             sys.exit(0)
     else:
         print "======= error, nginx is not install! ======="
