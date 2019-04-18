@@ -31,7 +31,7 @@ def net_if_used(ip,port):
     try:
         result=s.connect_ex((ip, int(port)))
         if result==0:
-            print "error! port {} is used. please check.".format(port)
+            print "  error! port {} has been used. please check.".format(port)
             return True
         else:
             return False
