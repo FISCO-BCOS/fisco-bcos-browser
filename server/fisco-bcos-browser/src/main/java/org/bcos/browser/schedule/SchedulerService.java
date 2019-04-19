@@ -117,7 +117,7 @@ public class SchedulerService {
         Timestamp timestamp = null;
         String sealer = "0x0";
         // Compatibility with older version
-        if (number == 0 || "0xffffffffffffffff".equals(blockInfo.getTimestamp())) {
+        if (number == 0 && "0xffffffffffffffff".equals(blockInfo.getTimestamp())) {
             timestamp = Timestamp.valueOf("2000-01-01 08:00:01");
         } else {
             timestamp = new Timestamp(Long.parseLong(blockInfo.getTimestamp().substring(2), 16));

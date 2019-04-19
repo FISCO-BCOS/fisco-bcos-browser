@@ -28,11 +28,8 @@
 git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 ```
 
-**注意**：代码拉取后，可以切换到相应分支（如：dev）。
-
 ```shell
 cd fisco-bcos-browser
-git checkout dev
 ```
 
 ## 3.2 编译代码
@@ -50,12 +47,17 @@ gradle build
 
 ## 3.3 修改配置
 
-（1）进入目录：
+（1）dist目录中提供了一份配置模板，供拷贝参考：
+
+```shell
+cp dist/conf_template dist/conf -rf
+```
+（2）进入目录：
 ```shell
 cd dist/conf
 ```
 
-（2）修改服务配置（没变化可以不修改）：
+（3）修改服务配置（没变化可以不修改）：
 
 数据库服务器，和数据库需要提前准备，创建方法可以参照附录。
 ```shell
@@ -63,11 +65,17 @@ cd dist/conf
 修改数据库IP：sed -i "s/127.0.0.1/${your_db_ip}/g" application.yml
 修改数据库用户名：sed -i "s/root/${your_db_account}/g" application.yml
 修改数据库密码：sed -i "s/123456/${your_db_password}/g" application.yml
-修改数据库名称：sed -i "s/testdb/${your_db_name}/g" application.yml
-例子（将端口由8088改为8090）：sed -i "s/8088/8090/g" application.yml
+修改数据库名称：sed -i "s/testDB/${your_db_name}/g" application.yml
+
+例子（将数据库IP由127.0.0.1改为0.0.0.0）：sed -i "s/127.0.0.1/0.0.0.0/g" application.yml
 ```
 
+**温馨提示：**
+
+1. 实际生产中建议将编译后的安装包（dist目录）放到服务部署目录。例如/data/app/fisco-bcos-browser
+
 ## 3.4 服务启停
+
 进入到已编译的代码根目录：
 ```shell
 cd dist
@@ -219,7 +227,7 @@ mysql -utest -p123456 -h 127.0.0.1 -P 3306
 创建数据库
 
 ```sql
-mysql > create database testdb;
+mysql > create database testDB;
 ```
 
 ### 5.3.1 常见错误 
