@@ -67,7 +67,7 @@ cd dist/conf
 修改数据库密码：sed -i "s/123456/${your_db_password}/g" application.yml
 修改数据库名称：sed -i "s/testDB/${your_db_name}/g" application.yml
 
-例子（将端口由8088改为8090）：sed -i "s/8088/8090/g" application.yml
+例子（将数据库IP由127.0.0.1改为0.0.0.0）：sed -i "s/127.0.0.1/0.0.0.0/g" application.yml
 ```
 
 **温馨提示：**
