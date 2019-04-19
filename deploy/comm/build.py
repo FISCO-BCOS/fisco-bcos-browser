@@ -23,7 +23,7 @@ def pullSource():
     if not os.path.exists("{}/fisco-bcos-browser.zip".format(currentDir)):
         os.system(git_comm)
     else:
-        info = raw_input("fisco-bcos-browser.zip压缩包已经存在，是否要覆盖[y/n]:")
+        info = raw_input("fisco-bcos-browser.zip编译包已经存在，是否要重新下载[y/n]:")
         if info == "y" or info == "Y":
             doCmd("rm -rf fisco-bcos-browser.zip")
             doCmd("rm -rf server")
@@ -85,7 +85,7 @@ def changeConfig():
 def startServer():
     server_dir = currentDir + "/server"
     os.chdir(server_dir)
-    doCmd("source /etc/profile")
+    doCmdIgnoreException("source /etc/profile")
     result = doCmd("sh start.sh")
     if result["status"] == 0:
         print "======= server start success! ======="
