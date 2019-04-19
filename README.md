@@ -48,11 +48,19 @@
 
 区块链浏览器分为两个部分：后台服务fisco-bcos-browser、前端web页面fisco-bcos-browser-front。
 
-#### *<u>2.2.1、后台服务搭建</u>*
+当前版本我们提供了两种搭建方式：[**一键搭建**](./deploy/README.md)和手动搭建。
+
+#### 2.2.1、一键搭建
+
+适合前后端同机部署，快速体验的情况使用。具体搭建流程参见[**安装文档**](./deploy/README.md)。
+
+#### 2.2.2、手动搭建
+
+##### *<u>2.2.2.1、后台服务搭建</u>*
 
 区块链浏览器后台服务使用Spring Boot的JAVA后台服务，具体搭建流程参见[**安装文档**](./server/fisco-bcos-browser/README.md)。
 
-#### *<u>2.2.2、前端web页面服务搭建</u>*
+##### *<u>2.2.2.1、前端web页面服务搭建</u>*
 
 区块链浏览器前端web页面使用框架`vue-cli`，具体搭建流程参见[**安装文档**](./web/fisco-bcos-browser-front/README.md)。
 
