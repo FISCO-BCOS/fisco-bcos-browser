@@ -95,6 +95,13 @@ export default {
             contractAbi: "",
         }
     },
+    beforeDestroy: function(){
+        Bus.$off("check")
+        Bus.$off("deleteFile")
+        Bus.$off("deleteFolder")
+        Bus.$off("open")
+        Bus.$off("complite")
+    },
     mounted: function(){
         this.groupId = localStorage.getItem("groupId")
         this.initEditor();

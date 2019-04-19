@@ -59,7 +59,7 @@ git checkout XXXXX
 
 ```Nginx
     server {
-            listen       8089 default_server;   #步骤1、前端端口
+            listen       8081 default_server;   #步骤1、前端端口（和后端服务不能一样）
             server_name  192.168.0.1;         #步骤1、前端地址，可配置为域名
             location / {
                     root    /data/app/web/dist;   #步骤2、前端文件路径
@@ -71,7 +71,7 @@ git checkout XXXXX
             include /etc/nginx/default.d/*.conf;
 
             location /api {
-                    proxy_pass    http://192.168.0.2:8090/;    #步骤3、后端服务(fisco-bcos-browser)地址及端口
+                    proxy_pass    http://192.168.0.1:8088/;    #步骤3、后端服务(fisco-bcos-browser)地址及端口
                	 	proxy_set_header		Host				$host;
                     proxy_set_header		X-Real-IP			$remote_addr;
                     proxy_set_header		X-Forwarded-For		$proxy_add_x_forwarded_for;
