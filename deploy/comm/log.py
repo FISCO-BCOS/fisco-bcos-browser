@@ -3,7 +3,6 @@
 
 import logging, os
 
-
 class Logger:
     def __init__(self, path, clever=logging.DEBUG, Flevel=logging.DEBUG):
         self.logger = logging.getLogger(path)
@@ -35,8 +34,9 @@ class Logger:
 
 
 loggermap = {}
-def getLogger(logName="info.log"):
-    logPath ="../logs"
+def getLogger():
+    logPath ="./log/"
+    logName="info.log"
     isExists=os.path.exists(logPath)
     if not isExists:
         os.makedirs(logPath)
