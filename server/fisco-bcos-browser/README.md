@@ -47,7 +47,7 @@ gradle build
 
 ## 3.3 修改配置
 
-（1）dis目录中提供了一份配置模板dist/conf_template，**供拷贝参考**：
+（1）dist目录中提供了一份配置模板dist/conf_template，**供拷贝参考**：
 
 ```shell
  需要根据配置模板生成一份实际配置dist/conf。初次安装可直接拷贝。
