@@ -30,10 +30,19 @@ def pullSource():
             doCmd("rm -rf web")
             os.system(git_comm)
     if not os.path.exists("{}/server".format(currentDir)):
-    	doCmd("unzip -o fisco-bcos-browser.zip")
-    	if not os.path.exists("{}/server".format(currentDir)):
+        doCmd("unzip -o fisco-bcos-browser.zip")
+        if not os.path.exists("{}/server".format(currentDir)):
             print "file extract failed!"
             sys.exit(0)
+    else:
+        info1 = raw_input("fisco-bcos-browser.zip已经解压过，是否要重新解压[y/n]:")
+        if info == "y" or info == "Y":
+            doCmd("rm -rf server")
+            doCmd("rm -rf web")
+            doCmd("unzip -o fisco-bcos-browser.zip")
+            if not os.path.exists("{}/server".format(currentDir)):
+                print "file extract failed!"
+                sys.exit(0)
 
 def gradleBuild():
     work_dir = os.getcwd() + "/fisco-bcos-browser/"
@@ -88,7 +97,12 @@ def startServer():
     doCmdIgnoreException("source /etc/profile")
     result = doCmd("sh start.sh")
     if result["status"] == 0:
-        print "======= server start success! ======="
+        if_success = 'Success' in result["output"]
+        if if_success:
+            print "======= server start success! ======="
+        else:
+            print "======= server start fail! ======="
+            sys.exit(0)
     else:
         print "======= server start fail! ======="
         sys.exit(0)
