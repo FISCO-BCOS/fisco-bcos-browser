@@ -7,22 +7,25 @@
 | Java   | jdk1.8.0_121或以上版本 |
 | python | 2.7                    |
 | 数据库 | mysql-5.6或以上版本    |
-## 2、拉取代码
+## 2、获取安装包
 
-执行命令：
-
+获取安装包：
 ```shell
-git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
+wget https://github.com/FISCO-BCOS/fisco-bcos-browser/releases/download/v2.0.0-rc2/fisco-bcos-browser.zip
+```
+解压安装包：
+```shell
+unzip fisco-bcos-browser.zip
 ```
 
-## 3、进入一键部署目录：
+## 3、进入目录：
 ```shell
-cd fisco-bcos-browser/deploy
+cd fisco-bcos-browser
 ```
 
 ## 4、修改配置（没有变化的可以不修改）：
 
-**注意：**1、数据库服务和数据需要提前准备。2、前端服务端口不能小于1024
+**注意：** 1、数据库服务和数据需要提前准备。2、服务端口不能小于1024
 
 ```shell
 数据库IP：sed -i "s/10.0.0.1/${your_db_ip}/g" common.properties
@@ -47,7 +50,7 @@ python deploy.py startAll
 python deploy.py help
 ```
 
-** 一键部署之后，如果需要修改配置，需手动修改配置文件并重启**
+**一键部署之后，如果需要修改配置，需手动修改配置文件并重启** </br>
 后端服务配置文件：
 ```
 server/conf/application.yml
