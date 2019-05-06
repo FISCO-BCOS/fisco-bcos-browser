@@ -10,11 +10,15 @@ currentDir = getCurrentBaseDir()
 
 def do():
     print "================== deploy start... =================="
-    pullSource()
     changeConfig()
     startServer()
     startWeb()
     print "================== deploy end... =================="
+    return
+    
+def end():
+    stopServer()
+    stopWeb()
     return
 
 def pullSource():
@@ -43,21 +47,6 @@ def pullSource():
             if not os.path.exists("{}/server".format(currentDir)):
                 print "file extract failed!"
                 sys.exit(0)
-
-def gradleBuild():
-    work_dir = os.getcwd() + "/fisco-bcos-browser/"
-    print "word_dir:{}".format(work_dir)
-    os.chdir(work_dir)
-    doCmdIgnoreException("git checkout dev2.0.0")
-    os.chdir(work_dir+"server/fisco-bcos-browser")
-    result = doCmd("gradle build")
-    if result["status"] == 0:
-        print "======= build success! ======="
-    else:
-        print result["output"]
-        sys.exit(0)
-    os.chdir(currentDir)
-    return
 
 def changeConfig():
     # get properties
@@ -106,6 +95,22 @@ def startServer():
     else:
         print "======= server start fail! ======="
         sys.exit(0)
+        
+def stopServer():
+    server_dir = currentDir + "/server"
+    os.chdir(server_dir)
+    doCmdIgnoreException("source /etc/profile")
+    result = doCmd("sh stop.sh")
+    if result["status"] == 0:
+        if_success = 'Success' in result["output"]
+        if if_success:
+            print "======= server stop success! ======="
+        else:
+            print "======= server stop fail! ======="
+            sys.exit(0)
+    else:
+        print "======= server stop fail! ======="
+        sys.exit(0)
 
 def startWeb():
     nginx_config_dir = currentDir + "/comm/nginx.conf"
@@ -113,9 +118,22 @@ def startWeb():
     if res["status"] == 0:
         res2 = doCmd("sudo " + res["output"] + " -c " + nginx_config_dir)
         if res2["status"] == 0:
-            print "=======  web  start success! ======="
+            print "=======   web  start success! ======="
         else:
-            print "=======  web  start fail! ======="
+            print "=======   web  start fail! ======="
+            sys.exit(0)
+    else:
+        print "======= error, nginx is not install! ======="
+        sys.exit(0)
+        
+def stopWeb():
+    res = doCmd("which nginx")
+    if res["status"] == 0:
+        res2 = doCmd("sudo " + res["output"] + " -s stop")
+        if res2["status"] == 0:
+            print "=======   web  stop success! ======="
+        else:
+            print "=======   web  stop fail! ======="
             sys.exit(0)
     else:
         print "======= error, nginx is not install! ======="

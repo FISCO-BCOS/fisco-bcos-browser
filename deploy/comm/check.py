@@ -11,7 +11,9 @@ checkDependent = ["git","wget","nginx"]
 def installRequirements():
     for require in checkDependent:
         print "checking {}".format(require)
-        installByYum(require)
+        hasInstall = hasInstallServer(require)
+        if not hasInstall:
+            installByYum(require)
     return
 
 def checkSoft():
@@ -19,10 +21,6 @@ def checkSoft():
     res1 = doCmd("java -version")
     if res1["status"] != 0:
         print "  error! java is not install or configure!"
-        sys.exit(0)
-    res2 = doCmd("which nginx")
-    if res2["status"] !=0:
-        print "  error! nginx is not install!"
         sys.exit(0)
     return
     
@@ -43,9 +41,9 @@ def checkPort():
 def hasInstallServer(server):
     result = doCmdIgnoreException("which {}".format(server))
     if result["status"] == 0:
-        return true
+        return True
     else:
-        return false
+        return False
 
 def installByYum(server):
     if isCentos():

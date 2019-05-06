@@ -37,11 +37,24 @@ cd fisco-bcos-browser/deploy
 例子（将数据库IP由10.0.0.1改为0.0.0.0）：sed -i "s/10.0.0.1/0.0.0.0/g" application.yml
 ```
 
-
-
 ## 4、部署
+使用以下命令进行部署：
 ```shell
-python deploy.py run
+python deploy.py startAll
+```
+前后端的单独启停和相关说明可查看帮助：
+```shell
+python deploy.py help
+```
+
+** 一键部署之后，如果需要修改配置，需手动修改配置文件并重启**
+后端服务配置文件：
+```
+server/conf/application.yml
+```
+前端服务配置文件：
+```
+comm/nginx.conf
 ```
 
 ## 5、访问

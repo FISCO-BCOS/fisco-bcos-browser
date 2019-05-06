@@ -8,9 +8,19 @@ def do():
         help()
         return
     param = sys.argv[1]
-    if "run" == param:
+    if "startAll" == param:
         check()
-        build()
+        startAll()
+    elif "stopAll" == param:
+        stopAll()
+    elif "startServer" == param:
+        startServer()
+    elif "stopServer" == param:
+        stopServer()
+    elif "startWeb" == param:
+        startWeb()
+    elif "stopWeb" == param:
+        stopWeb()
     elif "check"== param:
         check()
     elif "help"== param:
@@ -22,23 +32,40 @@ def do():
 def check():
     browserCheck.do()
 
-def build():
+def startAll():
     browserBuild.do()
-
-def test():
-    pass
+    
+def stopAll():
+    browserBuild.end()
+    
+def startServer():
+    browserBuild.startServer()
+    
+def stopServer():
+    browserBuild.stopServer()
+    
+def startWeb():
+    browserBuild.startWeb()
+    
+def stopWeb():
+    browserBuild.stopWeb()
 
 def help():
     helpMsg = '''
-Usage: $0 Receiver Message [other]
+Usage: python deploy [Parameter]
 
 Parameter:
     check : check the environment
-    run : check the environment and deploy
+    startAll : check the environment, deploy server and web
+    stopAll : stop server and web
+    startServer : start server
+    stopServer : stop server
+    startWeb : start web
+    stopWeb : stop web
     
 Attention:
-    1.support with python 2.7, jdk1.8.0_121+, mysql 5.6+
-    2.network unobstructed
+    1.rely on jdk1.8.0_121+, mysql 5.6+
+    2.network is unobstructed
     3.you had installed: git,wget,nginx.If not,we will install,but it's possible fail.
     '''
     print helpMsg
