@@ -50,7 +50,7 @@ python deploy.py startAll
 python deploy.py help
 ```
 
-**一键部署之后，如果需要修改配置，需手动修改配置文件并重启** </br>
+**注意：一键部署之后，如果需要修改配置，需手动修改配置文件并重启** </br>
 后端服务配置文件：
 ```
 server/conf/application.yml
