@@ -37,7 +37,7 @@ cd fisco-bcos-browser
 后端服务端口：sed -i "s/8088/${your_server_port}/g" common.properties
 前端服务端口：sed -i "s/8081/${your_web_port}/g" common.properties
 
-例子（将数据库IP由10.0.0.1改为0.0.0.0）：sed -i "s/10.0.0.1/0.0.0.0/g" application.yml
+例子（将数据库IP由10.0.0.1改为0.0.0.0）：sed -i "s/10.0.0.1/0.0.0.0/g" common.properties
 ```
 
 ## 4、部署
@@ -48,16 +48,6 @@ python deploy.py startAll
 前后端的单独启停和相关说明可查看帮助：
 ```shell
 python deploy.py help
-```
-
-**注意：一键部署之后，如果需要修改配置，需手动修改配置文件并重启** </br>
-后端服务配置文件：
-```
-server/conf/application.yml
-```
-前端服务配置文件：
-```
-comm/nginx.conf
 ```
 
 ## 5、访问

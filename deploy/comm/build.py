@@ -59,8 +59,19 @@ def changeConfig():
     server_port = getCommProperties("server.port")
     web_port = getCommProperties("web.port")
 
-    # change server config
+    # init configure file
     server_dir = currentDir + "/server/conf"
+    web_conf_dir = currentDir + "/comm"
+    if not os.path.exists(server_dir + "/temp.yml"):
+        doCmd('cp -f {}/application.yml {}/temp.yml'.format(server_dir, server_dir))
+    else:
+        doCmd('cp -f {}/temp.yml {}/application.yml'.format(server_dir, server_dir))
+    if not os.path.exists(web_conf_dir + "/temp.conf"):
+        doCmd('cp -f {}/nginx.conf {}/temp.conf'.format(web_conf_dir, web_conf_dir))
+    else:
+        doCmd('cp -f {}/temp.conf {}/nginx.conf'.format(web_conf_dir, web_conf_dir))
+    
+    # change server config
     doCmd('sed -i "s/127.0.0.1/{}/g" {}/application.yml'.format(mysql_ip, server_dir))
     doCmd('sed -i "s/3306/{}/g" {}/application.yml'.format(mysql_port, server_dir))
     doCmd('sed -i "s/root/{}/g" {}/application.yml'.format(mysql_user, server_dir))
@@ -86,6 +97,11 @@ def startServer():
     doCmdIgnoreException("source /etc/profile")
     result = doCmd("sh start.sh")
     if result["status"] == 0:
+        if_started = 'started' in result["output"]
+        if if_started:
+            print " server process is already existed. please check."
+            print "======= server start fail! ======="
+            sys.exit(0)
         if_success = 'Success' in result["output"]
         if if_success:
             print "======= server start success! ======="
@@ -102,6 +118,10 @@ def stopServer():
     doCmdIgnoreException("source /etc/profile")
     result = doCmd("sh stop.sh")
     if result["status"] == 0:
+        if_running = 'not running' in result["output"]
+        if if_running:
+            print " server is not running."
+            sys.exit(0)
         if_success = 'Success' in result["output"]
         if if_success:
             print "======= server stop success! ======="
