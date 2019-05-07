@@ -7,6 +7,7 @@
 | Java   | jdk1.8.0_121或以上版本 |
 | python | 2.7                    |
 | 数据库 | mysql-5.6或以上版本    |
+
 ## 2、获取安装包
 
 获取安装包：
@@ -17,13 +18,12 @@ wget https://github.com/FISCO-BCOS/fisco-bcos-browser/releases/download/v2.0.0-r
 ```shell
 unzip fisco-bcos-browser.zip
 ```
-
-## 3、进入目录：
+进入目录：
 ```shell
 cd fisco-bcos-browser
 ```
 
-## 4、修改配置（没有变化的可以不修改）：
+## 3、修改配置（没有变化的可以不修改）：
 
 **注意：** 1、数据库服务和数据需要提前准备。2、服务端口不能小于1024
 
