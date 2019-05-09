@@ -147,14 +147,14 @@ def startWeb():
         sys.exit(0)
         
 def stopWeb():
-    res = doCmd("which nginx")
-    if res["status"] == 0:
-        res2 = doCmd("sudo " + res["output"] + " -s stop")
-        if res2["status"] == 0:
-            print "=======   web  stop success! ======="
-        else:
-            print "=======   web  stop fail! ======="
-            sys.exit(0)
+    if os.path.exists("/run/nginx-browser-web.pid"):
+        fin = open('/run/nginx-webase-web.pid', 'r')
+        pid = fin.read()
+        cmd = "sudo kill -QUIT {}".format(pid)
+        os.system(cmd)
+        doCmdIgnoreException("sudo rm -rf /run/nginx-browser-web.pid")
+        print "=======   web  stop success! ======="
     else:
-        print "======= error, nginx is not install! ======="
+        print "=======   web is not running ======="
         sys.exit(0)
+    return
