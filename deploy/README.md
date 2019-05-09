@@ -29,6 +29,7 @@ cd fisco-bcos-browser
 
 ```shell
 数据库IP：sed -i "s/10.0.0.1/${your_db_ip}/g" common.properties
+数据库端口：sed -i "s/3306/${your_db_port}/g" common.properties
 数据库用户名：sed -i "s/root/${your_db_account}/g" common.properties
 数据库密码：sed -i "s/123456/${your_db_password}/g" common.properties
 数据库名称：sed -i "s/testDB/${your_db_name}/g" common.properties
