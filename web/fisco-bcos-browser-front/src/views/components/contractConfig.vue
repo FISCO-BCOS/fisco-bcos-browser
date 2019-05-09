@@ -1,5 +1,5 @@
 <template>
-    <div class="search-main" style="height: calc(100% - 120px);overflow: auto;">
+    <div class="search-main" style="height: calc(100% - 120px);overflow: auto;"  v-loading.fullscreen.lock="loading">
         <div class="container" style="padding-bottom: 0;height: 100%;">
             <v-nav :hrTitle="btitle" :hrcontent="btitle"></v-nav>
             <div class="search-nav">
@@ -19,10 +19,10 @@
             </div>
             <div class="search-table" style="font-size: 0; box-sizing: border-box;height: calc(100% - 114px);">
                 <div class="contract-menu" style="height: 100%">
-                    <v-codeMenu :data='contractArry'></v-codeMenu>
+                    <v-codeMenu  :data='contractArry'></v-codeMenu>
                 </div>
                 <div class="contract-content" style="height: 100%;background-color: rgb(39, 40, 34)">
-                    <div ref='codeContent' :style="{height: codeHight}" v-loading="loading" element-loading-background="rgba(0, 0, 0, 0.8)">
+                    <div ref='codeContent' :style="{height: codeHight}">
                         <div  class="ace-editor" ref="ace" v-show='editorShow' id='aceEditor'></div>
                     </div>
                     <div v-if='errorInfo && !contractAbi' class="contract-errorInfo">
@@ -93,6 +93,7 @@ export default {
             errorInfo: "",
             compliteData: null,
             contractAbi: "",
+            contractData: null,
         }
     },
     beforeDestroy: function(){
@@ -144,14 +145,15 @@ export default {
             this.contractArry = this.setContractList(this.resultList)
         })
         Bus.$on("complite",data => {
-            
-            this.loading = true;
-            data.forEach(value => {
-                this.complieContract(value)
-            })
-            setTimeout(() => {
-                this.editContract(data)
-            },1000)
+             this.loading = true
+            for(let i = 0; i < data.length; i++){
+                this.complieContract(data[i])
+                if(i == data.length -1 ){
+                    setTimeout(() => {
+                        this.editContract(data)
+                    },100)
+                }
+            }
         })
     },
     methods: {
@@ -595,17 +597,21 @@ export default {
             });
             setTimeout(() => {
                 this.editContract()
-            },1000)   
+            },1500)   
         },
         complieContract: function(val){
+            // this.loading = false;
+            // this.loading = true
+            console.log((new Date()).getTime())
+            this.contractData = val
             let wrapper = require("solc/wrapper");
             let solc = wrapper(window.Module);
             let content = "";
             let output;
-            let input = {
+            let input = {                                    
                 language: "Solidity",
                 settings: {
-                    outputSelection: {
+                    outputSelection: {                                  
                         "*": {
                             "*": ["*"]
                         }
@@ -645,32 +651,70 @@ export default {
         // Compile contract callback function
         findImports: function(path){
             let arry = path.split("/");
-            let newpath = "";
+            // let newpath = "";
+            let newpath = arry[arry.length - 1];
+            let num = 0;
             if(arry.length > 1){
-                newpath = "/" + path;
-                let num = 0;
-                for(let i = 0; i < this.allContractList.length; i++){
-                    if (newpath == this.allContractList[i].realPath){
-                        return {contents: Base64.decode(this.allContractList[i].contractSource)}
-                    }else{
-                        num++;
-                    } 
-                }
-                if(num == this.allContractList.length){
+                let newPath = arry[0]
+                let oldPath = arry[arry.length - 1]
+                let importArry = [];
+                this.allContractList.forEach(value => {
+                    if(value.realFolder == newPath){
+                        importArry.push(value)
+                    }
+                })
+                if(importArry.length){
+                    for(let i = 0; i < importArry.length; i++){
+                        if(oldPath == importArry[i].contractName + ".sol"){
+                            return {
+                                contents: Base64.decode(
+                                    importArry[i].contractSource
+                                )
+                            };
+                        }
+                    }
+                }else{
                     return { error: "File not found" };
                 }
+    
             }else{
-                newpath = path;
-                let num = 0;
-                for(let i = 0; i < this.allContractList.length; i++){
-                    if (newpath == (this.allContractList[i].contractName + '.sol')){
-                        return {contents: Base64.decode(this.allContractList[i].contractSource)}
-                    }else{
-                        num++;
-                    } 
-                }
-                if(num == this.allContractList.length){
-                    return { error: "File not found" };
+                let newpath = arry[arry.length - 1];
+                let newArry = []
+                this.allContractList.forEach(value => {
+                    if(value.contractPath == this.contractData.contractPath){
+                        newArry.push(value)
+                    }
+                })
+                if(newArry.length > 1){
+                    for(let i = 0; i < newArry.length; i++){
+                        if(newpath == newArry[i].contractName + ".sol"){
+                            return {
+                                contents: Base64.decode(
+                                    newArry[i].contractSource
+                                )
+                            };
+                        }
+                    }
+                    for (let i = 0; i < this.allContractList.length; i++) {
+                        if (newpath == this.allContractList[i].contractName + ".sol") {
+                            return {
+                                contents: Base64.decode(this.allContractList[i].contractSource)
+                            };
+                        } else {
+                            num++;
+                        }
+                    }
+                    if(num){
+                        return { error: "File not found" };
+                    }
+                }else{
+                    for (let i = 0; i < this.allContractList.length; i++) {
+                        if (newpath == this.allContractList[i].contractName + ".sol") {
+                            return {
+                                contents: Base64.decode(this.allContractList[i].contractSource)
+                            };
+                        } 
+                    }
                 }
             }
             
@@ -698,6 +742,7 @@ export default {
         },
         // update a  contact
         editContract: function(val){
+            
             let arry = [];
             this.contractList.forEach(value => {
                 if(value.contractAbi && value.contractStatus != 1){

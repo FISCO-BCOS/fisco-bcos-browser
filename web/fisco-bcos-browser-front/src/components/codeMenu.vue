@@ -146,7 +146,10 @@ export default {
                 data = [val]
             }
             if(this.buttonShow){
+                console.log((new Date()).getTime())
+                this.$emit("compile",data)
                 Bus.$emit("complite",data)
+                
             }
             this.buttonShow = false
             setTimeout(() => {
