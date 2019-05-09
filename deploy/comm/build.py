@@ -120,17 +120,17 @@ def stopServer():
     if result["status"] == 0:
         if_running = 'not running' in result["output"]
         if if_running:
-            print " server is not running."
-            sys.exit(0)
+            print "======= server is not running ======="
+            return
         if_success = 'Success' in result["output"]
         if if_success:
             print "======= server stop success! ======="
         else:
             print "======= server stop fail! ======="
-            sys.exit(0)
+            return
     else:
         print "======= server stop fail! ======="
-        sys.exit(0)
+        return
 
 def startWeb():
     nginx_config_dir = currentDir + "/comm/nginx.conf"
@@ -141,10 +141,10 @@ def startWeb():
             print "=======   web  start success! ======="
         else:
             print "=======   web  start fail! ======="
-            sys.exit(0)
+            return
     else:
         print "======= error, nginx is not install! ======="
-        sys.exit(0)
+        return
         
 def stopWeb():
     if os.path.exists("/run/nginx-browser-web.pid"):
@@ -156,5 +156,4 @@ def stopWeb():
         print "=======   web  stop success! ======="
     else:
         print "=======   web is not running ======="
-        sys.exit(0)
     return
