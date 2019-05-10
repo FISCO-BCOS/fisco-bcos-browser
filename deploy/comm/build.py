@@ -13,7 +13,8 @@ def do():
     changeConfig()
     startServer()
     startWeb()
-    print "================== deploy end... =================="
+    print "================== deploy end...   =================="
+    print "================== version dev-0.6 =================="
     return
     
 def end():
