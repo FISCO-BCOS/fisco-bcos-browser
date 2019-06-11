@@ -8,7 +8,7 @@
 | python | 2.7                    |
 | 数据库 | mysql-5.6或以上版本    |
 
-**备注：**安装说明请参看附录7。
+**备注：** 安装说明请参看附录7。
 
 ## 2、拉取代码
 
@@ -18,7 +18,7 @@
 git clone https://github.com/FISCO-BCOS/fisco-bcos-browser.git
 ```
 
-进入一键部署目录：
+进入目录：
 
 ```shell
 cd fisco-bcos-browser/deploy
