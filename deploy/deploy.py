@@ -1,16 +1,28 @@
 #!/usr/bin/python
 # encoding: utf-8
 import sys
-import comm.check as browserCheck
-import comm.build as browserBuild
+import comm.check as commCheck
+import comm.build as commBuild
 def do():
     if len(sys.argv)==1:
         help()
         return
     param = sys.argv[1]
-    if "run" == param:
-        check()
-        build()
+    if "startAll" == param:
+        commCheck.do()
+        commBuild.do()
+    elif "stopAll" == param:
+        commBuild.end()
+    elif "startServer" == param:
+        commCheck.checkServerPort()
+        commBuild.startServer()
+    elif "stopServer" == param:
+        commBuild.stopServer()
+    elif "startWeb" == param:
+        commCheck.checkWebPort()
+        commBuild.startWeb()
+    elif "stopWeb" == param:
+        commBuild.stopWeb()
     elif "check"== param:
         check()
     elif "help"== param:
@@ -19,22 +31,18 @@ def do():
         paramError()
     return
 
-def check():
-    browserCheck.do()
-
-def build():
-    browserBuild.do()
-
-def test():
-    pass
-
 def help():
     helpMsg = '''
-Usage: $0 Receiver Message [other]
+Usage: python deploy [Parameter]
 
 Parameter:
     check : check the environment
-    run : check the environment and deploy
+    startAll : check the environment, deploy server and web
+    stopAll : stop server and web
+    startServer : start server
+    stopServer : stop server
+    startWeb : start web
+    stopWeb : stop web
     
 Attention:
     1.support with python 2.7, jdk1.8.0_121+, mysql 5.6+
