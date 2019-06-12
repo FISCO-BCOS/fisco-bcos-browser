@@ -9,11 +9,15 @@ baseDir = getBaseDir()
 currentDir = getCurrentBaseDir()
 
 def do():
-    print "===================== deploy start... ====================="
+    print "=====================    deploy   start... ====================="
     pullSource()
     startServer()
     startWeb()
-    print "===================== deploy end... ====================="
+    print "=====================    deploy   end...   ====================="
+    
+    web_port = getCommProperties("web.port")
+    print "============== 通过以下链接访问，IP改成服务器IP ================"
+    print "http://IP:{}/".format(web_port)
     return
     
 def end():
@@ -109,9 +113,9 @@ def startServer():
         if if_success:
             print "======= server start success! ======="
         else:
-            print "======= server start fail! ======="
+            print "======= server start fail!    ======="
     else:
-        print "======= server start fail! ======="
+        print "======= server start fail!    ======="
     return
     
 def stopServer():
@@ -128,7 +132,7 @@ def stopServer():
         else:
             print "======= server is not running! ======="
     else:
-        print "======= server stop fail! ======="
+        print "======= server stop fail!    ======="
     return
 
 def changeWebConfig():
@@ -163,9 +167,9 @@ def startWeb():
     if res["status"] == 0:
         res2 = doCmd("sudo " + res["output"] + " -c " + nginx_config_dir)
         if res2["status"] == 0:
-            print "=======  web  start success! ======="
+            print "=======  web   start success! ======="
         else:
-            print "=======  web  start fail! ======="
+            print "=======  web   start fail!    ======="
     else:
         print "======= error, nginx is not install! ======="
     return
@@ -177,7 +181,7 @@ def stopWeb():
         cmd = "sudo kill -QUIT {}".format(pid)
         os.system(cmd)
         doCmdIgnoreException("sudo rm -rf /run/nginx-browser-web.pid")
-        print "======= web stop success! ======="
+        print "=======  web   stop success! ======="
     else:
-        print "======= web is not running ======="
+        print "=======  web   is not running! ======="
     return
