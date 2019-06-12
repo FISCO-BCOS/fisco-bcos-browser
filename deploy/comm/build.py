@@ -4,6 +4,7 @@
 import sys
 import os
 from utils import *
+from mysql import *
 
 baseDir = getBaseDir()
 currentDir = getCurrentBaseDir()
@@ -97,6 +98,7 @@ def changeServerConfig():
 def startServer():
     os.chdir(currentDir)
     changeServerConfig()
+    dbConnect()
     
     server_dir = currentDir + "/server"
     os.chdir(server_dir)
@@ -107,8 +109,21 @@ def startServer():
     if result["status"] == 0:
         if_started = 'started' in result["output"]
         if if_started:
-            print "server process is already exists. please check."
-            return
+            info = raw_input("server进程已经存在，是否kill进程强制安装？[y/n]:")
+            if info == "y" or info == "Y":
+                doCmd("sh stop.sh")
+                result_start = doCmd("sh start.sh")
+                if result_start["status"] == 0:
+                    if_success = 'Success' in result_start["output"]
+                    if if_success:
+                        print "======= server start success! ======="
+                    else:
+                        print "======= server start fail!    ======="
+                else:
+                    print "======= server start fail!    ======="
+                return
+            else:
+                sys.exit(0)
         if_success = 'Success' in result["output"]
         if if_success:
             print "======= server start success! ======="

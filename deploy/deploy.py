@@ -24,7 +24,7 @@ def do():
     elif "stopWeb" == param:
         commBuild.stopWeb()
     elif "check"== param:
-        check()
+        commCheck.do()
     elif "help"== param:
         help()
     else:

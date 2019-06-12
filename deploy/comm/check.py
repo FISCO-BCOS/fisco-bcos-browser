@@ -4,7 +4,6 @@
 import log as deployLog
 import sys
 from utils import *
-from mysql import *
 
 log = deployLog.getLogger()
 checkDependent = ["git","wget","nginx"]
@@ -59,14 +58,13 @@ def checkWebPort():
     return
     
 def checkDbConnect():
-    print "check database connection..."
+    print "check db connection..."
     mysql_ip = getCommProperties("mysql.ip")
     mysql_port = getCommProperties("mysql.port")
     ifLink = do_telnet(mysql_ip,mysql_port)
     if not ifLink:
         print 'The database ip:{} port:{} is disconnected, please confirm.'.format(mysql_ip, mysql_port)
         sys.exit(0)
-    dbConnect()
     print "check finished Sucessfully."
 
 def hasInstallServer(server):
