@@ -2,11 +2,12 @@
 
 ## 1、前提条件
 
-| 环境   | 版本                   |
-| ------ | ---------------------- |
-| Java   | jdk1.8.0_121或以上版本 |
-| python | 2.7                    |
-| 数据库 | mysql-5.6或以上版本    |
+| 环境         | 版本                   |
+| ------------ | ---------------------- |
+| Java         | jdk1.8.0_121或以上版本 |
+| python       | 2.7                    |
+| MySQL-python | 1.2.5                  |
+| 数据库       | mysql-5.6或以上版本    |
 
 **备注：** 安装说明请参看附录7。
 
@@ -28,7 +29,7 @@ cd fisco-bcos-browser/deploy
 
 ①、可以使用以下命令修改，也可以直接修改文件（vi common.properties）
 
-②、数据库需要提前创建（数据库创建请参看附录7.3）
+②、数据库需要提前安装（数据库安装请参看附录7.4）
 
 ③、服务端口不能小于1024
 
@@ -64,6 +65,8 @@ python deploy.py stopAll
 ```shell
 python deploy.py help
 ```
+
+**备注：** 部署过程出现问题可以查看 [常见问题](deploy_FAQ.md)。
 
 ## 5、访问
 
@@ -104,10 +107,25 @@ export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 ### 7.2 Python部署
 
 ```shell
-pip install requests或yum install requests
+pip install requests 或 sudo yum install -y requests
 ```
 
-### 7.3 数据库部署
+### 7.3 MySQL-python部署
+
+* CentOS
+
+  ```
+  sudo yum install -y MySQL-python
+  ```
+
+* Ubuntu
+
+  ```
+  sudo apt-get install -y python-pip
+  sudo pip install MySQL-python
+  ```
+
+### 7.4 数据库部署
 
 此处以Centos/Fedora为例。
 
@@ -188,9 +206,9 @@ mysql -utest -p123456 -h 127.0.0.1 -P 3306
 mysql > create database db_browser;
 ```
 
-#### 7.3.1 常见错误 
+#### 7.4.1 常见错误 
 
-##### 7.3.1.1 腾讯云centos mysql安装完成后，登陆报错：Access denied for user 'root'@'localhost'
+##### 7.4.1.1 腾讯云centos mysql安装完成后，登陆报错：Access denied for user 'root'@'localhost'
 
 ① 编辑 /etc/my.cnf ，在[mysqld] 部分最后添加一行
 
@@ -209,4 +227,3 @@ service mysqld restart
 ```
 mysql -uroot -p mysql
 ```
-
