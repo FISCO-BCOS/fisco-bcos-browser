@@ -88,9 +88,9 @@ def changeServerConfig():
     
     doCmd('sed -i "s/127.0.0.1/{}/g" {}/application.yml'.format(mysql_ip, server_dir))
     doCmd('sed -i "s/3306/{}/g" {}/application.yml'.format(mysql_port, server_dir))
-    doCmd('sed -i "s/dbUsername/{}/g" {}/application.yml'.format(mysql_user, server_dir))
-    doCmd('sed -i "s/dbPassword/{}/g" {}/application.yml'.format(mysql_password, server_dir))
-    doCmd('sed -i "s/db_browser/{}/g" {}/application.yml'.format(mysql_database, server_dir))
+    doCmd('sed -i "s/root/{}/g" {}/application.yml'.format(mysql_user, server_dir))
+    doCmd('sed -i "s/123456/{}/g" {}/application.yml'.format(mysql_password, server_dir))
+    doCmd('sed -i "s/testDB/{}/g" {}/application.yml'.format(mysql_database, server_dir))
     doCmd('sed -i "s/8088/{}/g" {}/application.yml'.format(server_port, server_dir))
 
     return
