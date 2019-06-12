@@ -9,7 +9,7 @@
 | MySQL-python | 1.2.5                  |
 | 数据库       | mysql-5.6或以上版本    |
 
-**备注：** 安装说明请参看附录7。
+**备注：** 安装说明请参看[附录](#7、 附录)。
 
 ## 2、拉取代码
 
@@ -29,7 +29,7 @@ cd fisco-bcos-browser/deploy
 
 ①、可以使用以下命令修改，也可以直接修改文件（vi common.properties）
 
-②、数据库需要提前安装（数据库安装请参看附录7.4）
+②、数据库需要提前安装（数据库安装请参看[附录7.4](#7.4 数据库部署)）
 
 ③、服务端口不能小于1024
 
@@ -66,7 +66,7 @@ python deploy.py stopAll
 python deploy.py help
 ```
 
-**备注：** 部署过程出现问题可以查看 [常见问题](deploy_FAQ.md)。
+**备注：** 部署过程出现问题可以查看 [常见问题](#8、常见问题)。
 
 ## 5、访问
 
@@ -206,9 +206,11 @@ mysql -utest -p123456 -h 127.0.0.1 -P 3306
 mysql > create database db_browser;
 ```
 
-#### 7.4.1 常见错误 
+## 8、常见问题
 
-##### 7.4.1.1 腾讯云centos mysql安装完成后，登陆报错：Access denied for user 'root'@'localhost'
+### 8.1 数据库安装后登录报错
+
+腾讯云centos mysql安装完成后，登录报错：Access denied for user 'root'@'localhost'
 
 ① 编辑 /etc/my.cnf ，在[mysqld] 部分最后添加一行
 
@@ -227,3 +229,38 @@ service mysqld restart
 ```
 mysql -uroot -p mysql
 ```
+
+### 8.2 找不到MySQLdb
+
+```
+Traceback (most recent call last):
+  File "deploy.py", line 4, in <module>
+    import comm.check as commCheck
+  File "/data/temp/browser/fisco-bcos-browser/deploy/comm/check.py", line 7, in <module>
+    from mysql import *
+  File "/data/temp/browser/fisco-bcos-browser/deploy/comm/mysql.py", line 6, in <module>
+    import MySQLdb as mdb
+ImportError: No module named MySQLdb
+```
+
+答：MySQL-python安装请参看部署附录7.3
+
+### 8.3 部署时数据库访问报错
+
+```
+...
+checking database connection
+Traceback (most recent call last):
+  File "/data/temp/browser/fisco-bcos-browser/deploy/comm/mysql.py", line 21, in dbConnect
+    conn = mdb.connect(host=mysql_ip, port=mysql_port, user=mysql_user, passwd=mysql_password, charset='utf8')
+  File "/usr/lib64/python2.7/site-packages/MySQLdb/__init__.py", line 81, in Connect
+    return Connection(*args, **kwargs)
+  File "/usr/lib64/python2.7/site-packages/MySQLdb/connections.py", line 193, in __init__
+    super(Connection, self).__init__(*args, **kwargs2)
+OperationalError: (1045, "Access denied for user 'root'@'localhost' (using password: YES)")
+```
+
+答：确认数据库用户名和密码
+
+
+
