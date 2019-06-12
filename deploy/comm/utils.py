@@ -7,8 +7,10 @@ import log as deployLog
 import socket
 import fcntl
 import struct
+import telnetlib
 import os
 import platform
+import shutil
 from distutils.dir_util import copy_tree
 
 log = deployLog.getLogger()
@@ -115,6 +117,14 @@ def replaceConfDir(filePath,oldStr,newStr):
         for file in files:
             replaceConf(os.path.join(root,file),oldStr,newStr)
     return
+    
+def do_telnet(host,port):
+    try:
+        tn = telnetlib.Telnet(host, port, timeout=5)
+        tn.close()
+    except:
+        return False
+    return True
 
 if __name__ == '__main__':
     print(getIpAddress("eth0"))
