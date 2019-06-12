@@ -4,6 +4,7 @@
 import log as deployLog
 import sys
 from utils import *
+from mysql import *
 
 log = deployLog.getLogger()
 checkDependent = ["git","wget","nginx"]
@@ -61,6 +62,7 @@ def checkDbConnect():
     if not ifLink:
         print 'The database ip:{} port:{} is disconnected, please confirm.'.format(mysql_ip, mysql_port)
         sys.exit(0)
+    dbConnect()
 
 def hasInstallServer(server):
     result = doCmdIgnoreException("which {}".format(server))
