@@ -9,7 +9,7 @@
 | MySQL-python | 1.2.5                  |
 | 数据库       | mysql-5.6或以上版本    |
 
-**备注：** 安装说明请参看 [附录](#chapter-7)。
+**备注：** 安装说明请参看 [附录](#7附录)。
 
 ## 2、拉取代码
 
@@ -29,7 +29,7 @@ cd fisco-bcos-browser/deploy
 
 ①、可以使用以下命令修改，也可以直接修改文件（vi common.properties）
 
-②、数据库需要提前安装（数据库安装请参看 [附录7.4](#chapter-7-4)）
+②、数据库需要提前安装（数据库安装请参看 [附录7.4](#74-数据库部署)）
 
 ③、服务端口不能小于1024
 
@@ -66,7 +66,7 @@ python deploy.py stopAll
 python deploy.py help
 ```
 
-**备注：** 部署过程出现问题可以查看 [常见问题](#chapter-8)。
+**备注：** 部署过程出现问题可以查看 [常见问题](#8常见问题)。
 
 ## 5、访问
 
@@ -83,7 +83,7 @@ http://127.0.0.1:8081/
 前端日志：web/log/
 ```
 
-## 7、<a id="chapter-7"></a>附录
+## 7、附录
 
 ### 7.1 Java环境部署
 
@@ -125,7 +125,7 @@ pip install requests 或 sudo yum install -y requests
   sudo pip install MySQL-python
   ```
 
-### 7.4 <span id="chapter-7-4">数据库部署</span>
+### 7.4 数据库部署
 
 此处以Centos/Fedora为例。
 
@@ -206,7 +206,7 @@ mysql -utest -p123456 -h 127.0.0.1 -P 3306
 mysql > create database db_browser;
 ```
 
-## 8、<span id="chapter-8">常见问题</span>
+## 8、常见问题
 
 ### 8.1 数据库安装后登录报错
 
