@@ -39,7 +39,6 @@ def checkServerPort():
     print "check server port.."
     deploy_ip = "127.0.0.1"
     server_port = getCommProperties("server.port")
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     res1 = net_if_used(deploy_ip,server_port)
     if res1:
         sys.exit(0)
@@ -50,7 +49,6 @@ def checkWebPort():
     print "check web port..."
     deploy_ip = "127.0.0.1"
     web_port = getCommProperties("web.port")
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     res2 = net_if_used(deploy_ip,web_port)
     if res2:
         sys.exit(0)
