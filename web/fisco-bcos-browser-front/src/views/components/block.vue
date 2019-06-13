@@ -79,8 +79,8 @@
                 hashData: this.$route.query.blockData || "",
                 blockList: [],
                 pagination: {
-                    currentPage: 1,
-                    pageSize: 10,
+                    currentPage:  this.$route.query.pageNumber || 1,
+                    pageSize: this.$route.query.pageSize || 10,
                     total: 0,
                 },
                 submitDisabled: false,
@@ -92,6 +92,8 @@
         mounted: function () {
             this.groupId = localStorage.getItem("groupId")
             this.searchTbBlockInfo();
+            this.pagination.currentPage = this.$route.query.pageNumber || 1;
+            this.pagination.pageSize = this.$route.query.pageSize || 10;
         },
         beforeDestroy: function () {
             this.clear()
@@ -113,7 +115,15 @@
                 window.clearInterval(this.setIntervalTime);
             },
             linkPage: function (name,label,data) {
-                return goPage(name,label,data);
+                let resData = {
+                    pageSize: this.pageSize,
+                    pageNumber: this.pageNumber,
+                };
+                resData[label] = data
+                router.push({
+                    name: name,
+                    query: resData
+                })
             },
             search: function(){
                 let reg=/^[0-9]+.?[0-9]*$/;
@@ -127,7 +137,16 @@
                     message("请输入块高或完整的哈希",'error')
                 }
                 this.searchTbBlockInfo();
-                this.searchKeyValue = ""
+                this.searchKeyValue = "";
+                router.push({
+                    // name: "block",
+                    query: {
+                        pageSize: this.pagination.pageSize,
+                        pageNumber: this.pagination.currentPage,
+                        blockNumber: this.blockNumber,
+                        blockHash: this.hashData,
+                    }
+                })
             },
             searchTbBlockInfo: function () {
                 this.submitDisabled = true;
@@ -185,10 +204,28 @@
             handleSizeChange(val) {
                 this.pagination.pageSize = val;
                 this.pagination.currentPage = 1;
+                router.push({
+                    // name: "block",
+                    query: {
+                        pageSize: this.pagination.pageSize,
+                        pageNumber: this.pagination.currentPage,
+                        blockNumber: this.blockNumber,
+                        blockHash: this.hashData,
+                    }
+                })
                 this.searchTbBlockInfo();
             },
             handleCurrentChange(val) {
                 this.pagination.currentPage = val;
+                router.push({
+                    // name: "block",
+                    query: {
+                        pageSize: this.pagination.pageSize,
+                        pageNumber: this.pagination.currentPage,
+                        blockNumber: this.blockNumber,
+                        blockHash: this.hashData,
+                    }
+                })
                 this.searchTbBlockInfo();
             }
         }
