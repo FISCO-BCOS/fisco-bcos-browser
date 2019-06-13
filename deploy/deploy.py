@@ -45,9 +45,9 @@ Parameter:
     stopWeb : stop web
     
 Attention:
-    1.support with python 2.7, jdk1.8.0_121+, mysql 5.6+
-    2.network unobstructed
-    3.you had installed: git,wget,nginx.If not,we will install,but it's possible fail.
+    1. Need to install python2.7, jdk1.8.0_121+, mysql 5.6+, MySQL-python first
+    2. Need to ensure a smooth network
+    3. You need to install git, wget, nginx; if it is not installed, the installation script will automatically install these components, but this may fail.
     '''
     print helpMsg
     return
