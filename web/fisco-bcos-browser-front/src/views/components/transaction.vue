@@ -166,6 +166,7 @@
                 }else if(this.searchKeyValue){
                     message("请输入块高或完整的哈希",'error')
                 }
+                this.pagination.currentPage = 1
                 this.searchTbTransactionInfo()
                 this.searchKeyValue = "";
                 router.push({
