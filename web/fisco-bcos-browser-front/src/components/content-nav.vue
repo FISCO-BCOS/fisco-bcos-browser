@@ -16,7 +16,7 @@
 
     export default {
         name: 'navs',
-        props:  ['hrTitle','navContent','navSubtitle','hrcontent','route'],
+        props:  ['hrTitle','navContent','navSubtitle','hrcontent','route','page'],
         data: function () {
             return {
                 title: this.hrTitle || '',
@@ -27,6 +27,7 @@
                 chainType: this.$route.query.chainType || "01",
                 chainShow: false,
                 projectShow: true,
+                pages: this.page
             }
         },
         mounted: function () {
@@ -45,6 +46,7 @@
             linkPage: function (name) {
                router.push({
                    name: name,
+                   query: this.pages
                })
             },
             // goBlock: function (value) {
