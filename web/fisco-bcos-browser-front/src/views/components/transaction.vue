@@ -1,3 +1,4 @@
+
 <template>
     <div class="search-main" style="height: auto;">
         <div class="container">
@@ -64,6 +65,7 @@
     import constant from '@/util/constant'
     import {message} from '@/util/util'
     import {goPage} from '@/util/util'
+    // import router from "@/router"
     import {timeState,MonthState} from '@/util/util'
     import errorcode from "@/util/errorCode"
     import '@/assets/css/layout.css'
@@ -87,8 +89,8 @@
                 transactionList: [],
                 chainType: this.$route.query.chainType || "01",
                 pagination: {
-                    currentPage: 1,
-                    pageSize: 10,
+                    currentPage:  this.$route.query.pageNumber || 1,
+                    pageSize: this.$route.query.pageSize || 10,
                     total: 0,
                 },
                 submitDisabled: false,
@@ -120,6 +122,8 @@
         },
         mounted: function () {
             this.searchTbTransactionInfo();
+            this.pagination.currentPage = this.$route.query.pageNumber || 1;
+            this.pagination.pageSize = this.$route.query.pageSize || 10;
         },
         beforeDestroy: function () {
             window.clearInterval(this.setIntervalTime);
@@ -141,7 +145,15 @@
                 window.clearInterval(this.setIntervalTime);
             },
             linkPage: function (name,label,data) {
-                return goPage(name,label,data);
+                let resData = {
+                    pageSize: this.pagination.pageSize,
+                    pageNumber: this.pagination.currentPage,
+                };
+                resData[label] = data
+                router.push({
+                    name: name,
+                    query: resData
+                })
             },
             search: function(){
                 let reg=/^[0-9]+.?[0-9]*$/;
@@ -155,7 +167,15 @@
                     message("请输入块高或完整的哈希",'error')
                 }
                 this.searchTbTransactionInfo()
-                this.searchKeyValue = ""
+                this.searchKeyValue = "";
+                router.push({
+                    query: {
+                        pageSize: this.pagination.pageSize,
+                        pageNumber: this.pagination.currentPage,
+                        blockNumber: this.blockHeight,
+                        transHash: this.transactionData
+                    }
+                })
             },
             searchTbTransactionInfo: function () {
                 this.submitDisabled = true;
@@ -211,10 +231,28 @@
             handleSizeChange(val) {
                 this.pagination.pageSize = val;
                 this.pagination.currentPage = 1;
+                router.push({
+                    // name: "transaction",
+                    query: {
+                        pageSize: this.pagination.pageSize,
+                        pageNumber: this.pagination.currentPage,
+                        blockNumber: this.blockHeight,
+                        transHash: this.transactionData
+                    }
+                })
                 this.searchTbTransactionInfo();
             },
             handleCurrentChange(val) {
                 this.pagination.currentPage = val;
+                router.push({
+                    // name: "transaction",
+                    query: {
+                        pageSize: this.pagination.pageSize,
+                        pageNumber: this.pagination.currentPage,
+                        blockNumber: this.blockHeight,
+                        transHash: this.transactionData
+                    }
+                })
                 this.searchTbTransactionInfo();
             }
         }
