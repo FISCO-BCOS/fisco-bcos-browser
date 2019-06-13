@@ -10,7 +10,6 @@ import struct
 import telnetlib
 import os
 import platform
-import shutil
 from distutils.dir_util import copy_tree
 
 log = deployLog.getLogger()
