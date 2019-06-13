@@ -29,11 +29,11 @@ cd fisco-bcos-browser/deploy
 
 ## 3、修改配置（没有变化的可以不修改）
 
-①、可以使用以下命令修改，也可以直接修改文件（vi common.properties）
+① 可以使用以下命令修改，也可以直接修改文件（vi common.properties）
 
-②、数据库需要提前安装（数据库安装请参看 [附录7.4](#74-数据库部署)）
+② 数据库需要提前安装（数据库安装请参看 [附录7.4](#74-数据库部署)）
 
-③、服务端口不能小于1024
+③ 服务端口不能小于1024
 
 ```shell
 数据库IP：sed -i "s/127.0.0.1/${your_db_ip}/g" common.properties
@@ -247,7 +247,21 @@ ImportError: No module named MySQLdb
 
 答：MySQL-python安装请参看部署附录7.3
 
-### 8.3 部署时数据库访问报错
+### 8.3 部署时编译包下载慢
+
+```
+...
+Connecting to github-production-release-asset-2e65be.s3.amazonaws.com (github-production-release-asset-2e65be.s3.amazonaws.com)|52.216.112.19|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 22793550 (22M) [application/octet-stream]
+Saving to: ‘fisco-bcos-browser.zip’
+
+ 0% [                                                                                                                                ] 77,974      37.8KB/s    
+```
+
+答：部署过程会下载工程编译包，可能会因为网络原因导致过慢。此时，可以先手动下载 [编译包](https://github.com/FISCO-BCOS/fisco-bcos-browser/releases/download/v2.0.0-rc2/fisco-bcos-browser.zip)，再上传至服务器deploy目录，在部署过程中根据提示不再重新下载编译包。
+
+### 8.4 部署时数据库访问报错
 
 ```
 ...
