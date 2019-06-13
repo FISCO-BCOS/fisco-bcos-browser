@@ -247,31 +247,19 @@ ImportError: No module named MySQLdb
 
 答：MySQL-python安装请参看部署附录7.3
 
-### 8.3 部署时编译包下载失败
+### 8.3 部署时编译包下载慢
 
 ```
 ...
-在 9452102/22793552 字节处发生读取错误 (Connection reset by peer)。Traceback (most recent call last):
-  File "deploy.py", line 62, in <module>
-    do()
-  File "deploy.py", line 13, in do
-    commBuild.do()
-  File "/data/temp/browser/fisco-bcos-browser/deploy/comm/build.py", line 14, in do
-    pullSource()
-  File "/data/temp/browser/fisco-bcos-browser/deploy/comm/build.py", line 43, in pullSource
-    doCmd("unzip -o fisco-bcos-browser.zip")
-  File "/data/temp/browser/fisco-bcos-browser/deploy/comm/utils.py", line 85, in doCmd
-    raise Exception("execute cmd  error ,cmd : {}, status is {} ,output is {}".format(cmd,status, output))
-Exception: execute cmd  error ,cmd : unzip -o fisco-bcos-browser.zip, status is 2304 ,output is Archive:  fisco-bcos-browser.zip
-  End-of-central-directory signature not found.  Either this file is not
-  a zipfile, or it constitutes one disk of a multi-part archive.  In the
-  latter case the central directory and zipfile comment will be found on
-  the last disk(s) of this archive.
-unzip:  cannot find zipfile directory in one of fisco-bcos-browser.zip or
-        fisco-bcos-browser.zip.zip, and cannot find fisco-bcos-browser.zip.ZIP, period.
+Connecting to github-production-release-asset-2e65be.s3.amazonaws.com (github-production-release-asset-2e65be.s3.amazonaws.com)|52.216.112.19|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 22793550 (22M) [application/octet-stream]
+Saving to: ‘fisco-bcos-browser.zip’
+
+ 0% [                                                                                                                                ] 77,974      37.8KB/s    
 ```
 
-答：部署过程会下载工程编译包，可能会因为网络原因导致下载失败。此时，可以先手动下载 [编译包](https://github.com/FISCO-BCOS/fisco-bcos-browser/releases/download/v2.0.0-rc2/fisco-bcos-browser.zip)，再上传至服务器deploy目录，在部署过程中根据提示不再重新下载编译包。
+答：部署过程会下载工程编译包，可能会因为网络原因导致过慢。此时，可以先手动下载 [编译包](https://github.com/FISCO-BCOS/fisco-bcos-browser/releases/download/v2.0.0-rc2/fisco-bcos-browser.zip)，再上传至服务器deploy目录，在部署过程中根据提示不再重新下载编译包。
 
 ### 8.4 部署时数据库访问报错
 
