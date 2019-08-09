@@ -50,8 +50,8 @@ vim src/main/resources/application.properties
 ```shell
 db.ip=127.0.0.1
 db.port=3306
-db.user=fisco-dev
-db.password=fisco-dev1234
+db.user=dbUser
+db.password=dbPassword
 db.database=test
 
 ```

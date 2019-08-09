@@ -48,8 +48,8 @@ vim ReportAgent.py
 ```python
 ACCESS_NODE_INTERVAL = 60 #60s 多久询问、上报一次node的信息
 
-HOST_IP = "123.207.123.123" #本机器的外网IP，仅作为浏览器端区分是哪台机器上报的数据
-BROWSER_SERVER_IP = "192.168.1.106" #上报server端的IP
+HOST_IP = "192.168.1.1" #本机器的外网IP，仅作为浏览器端区分是哪台机器上报的数据
+BROWSER_SERVER_IP = "192.168.1.1" #上报server端的IP
 BROWSER_SERVER_PORT = "8080" #上报server端的端口
 
 #node的名字, log.conf的路径, RPC端口号, node的log目录(可选)
