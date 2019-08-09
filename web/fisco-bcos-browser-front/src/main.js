@@ -20,7 +20,7 @@ axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.get['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.withCredentials = true;
 axios.defaults.timeout = 60*1000;
-// axios.defaults.baseURL = 'http://10.39.81.201:8081';//可以在此处修改baseURL地址
+
 Vue.prototype.$axios = axios;
 Vue.use(router);
 Vue.use(JsonViewer)
