@@ -4,7 +4,7 @@ import qs from 'qs'
 let axiosIns =  Axios.create({
     timeout: 30*1000
 });
-// axiosIns.defaults.baseURL = 'http://10.39.81.201:8081';
+// axiosIns.defaults.baseURL = 'http://127.0.0.1:8081';
 axiosIns.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest';
 axiosIns.defaults.headers.get['X-Requested-With'] = 'XMLHttpRequest';
 axiosIns.defaults.responseType = 'json';
