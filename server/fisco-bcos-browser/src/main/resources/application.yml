@@ -1,5 +1,5 @@
 server: 
-  port: 8088
+  port: 5101
   context-path: /fisco-bcos-browser
 
 spring: 
