@@ -91,7 +91,7 @@ def changeServerConfig():
     doCmd('sed -i "s/dbUsername/{}/g" {}/application.yml'.format(mysql_user, server_dir))
     doCmd('sed -i "s/dbPassword/{}/g" {}/application.yml'.format(mysql_password, server_dir))
     doCmd('sed -i "s/db_browser/{}/g" {}/application.yml'.format(mysql_database, server_dir))
-    doCmd('sed -i "s/8088/{}/g" {}/application.yml'.format(server_port, server_dir))
+    doCmd('sed -i "s/5101/{}/g" {}/application.yml'.format(server_port, server_dir))
 
     return
 
@@ -166,8 +166,8 @@ def changeWebConfig():
     web_dir = currentDir + "/web"
     web_log_dir = web_dir + "/log"
     doCmd('mkdir -p {}'.format(web_log_dir))
-    doCmd('sed -i "s/8088/{}/g" {}/comm/nginx.conf'.format(server_port, currentDir))
-    doCmd('sed -i "s/8081/{}/g" {}/comm/nginx.conf'.format(web_port, currentDir))
+    doCmd('sed -i "s/5101/{}/g" {}/comm/nginx.conf'.format(server_port, currentDir))
+    doCmd('sed -i "s/5100/{}/g" {}/comm/nginx.conf'.format(web_port, currentDir))
     doCmd('sed -i "s:log_path:{}:g" {}/comm/nginx.conf'.format(web_log_dir, currentDir))
     doCmd('sed -i "s:web_page_url:{}:g" {}/comm/nginx.conf'.format(web_dir, currentDir))
 
