@@ -32,6 +32,10 @@ def checkSoft():
     if res1["status"] != 0:
         print "  error! java is not install or configure!"
         sys.exit(0)
+    res_home = doCmd("echo $JAVA_HOME")
+    if res_home["output"].strip() == "":
+        print ("  error! JAVA_HOME has not been configured!")
+        sys.exit(0)
     print "check finished Sucessfully."
     return
     
