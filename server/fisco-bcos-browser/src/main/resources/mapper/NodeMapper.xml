@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.bcos.browser.mapper.NodeMapper">
+    <sql id="ALL_COLUMN">
+        node_id as nodeId,
+        group_id as groupId,
+        ip,
+        rpc_port as rpcPort,
+        p2p_port as p2pPort,
+        block_number as blockNumber,
+        pbft_view as pbftView,
+        status as status,
+        type
+    </sql>
+
+    <insert id="add" useGeneratedKeys="true"
+        parameterType="org.bcos.browser.entity.dto.Node">
+        INSERT INTO tb_node_#{groupId}
+            (node_id,group_id,ip,rpc_port,p2p_port,type,gmt_create,gmt_modify)
+        VALUES(#{nodeId},#{groupId},#{ip},#{rpcPort},#{p2pPort},#{type},now(),now())
+        ON DUPLICATE KEY
+        UPDATE ip = #{ip},
+               rpc_port = #{rpcPort},
+               p2p_port = #{p2pPort},
+               type = #{type},
+               gmt_modify=now()
+    </insert>
+    
+    <insert id="sync" useGeneratedKeys="true"
+        parameterType="org.bcos.browser.entity.dto.Node">
+        INSERT INTO tb_node_#{groupId}
+            (node_id,group_id,type,gmt_create,gmt_modify)
+        VALUES(#{nodeId},#{groupId},#{type},now(),now())
+        ON DUPLICATE KEY
+        UPDATE gmt_modify=now()
+    </insert>
+
+    <select id="getNodeCnts" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_node_#{groupId} 
+        WHERE 1 = 1
+        <if test="type == 0">
+            AND type = 0
+        </if>
+        <if test="status == 0">
+            AND status = 0
+        </if>
+        <if test="ip != null and ip != ''">
+            AND ip LIKE CONCAT('%',#{ip},'%')
+        </if>
+        <if test="rpcPort != null and rpcPort != ''">
+            AND rpc_port LIKE CONCAT('%',#{rpcPort},'%')
+        </if>
+        <if test="p2pPort != null and p2pPort != ''">
+            AND p2p_port LIKE CONCAT('%',#{p2pPort},'%')
+        </if>
+    </select>
+
+    <select id="getNodeListByPage" resultType="org.bcos.browser.entity.dto.Node">
+        SELECT
+        <include refid="ALL_COLUMN" />
+        FROM tb_node_#{groupId} 
+        WHERE 1 = 1
+        <if test="type == 0">
+            AND type = 0
+        </if>
+        <if test="status == 0">
+            AND status = 0
+        </if>
+        <if test="ip != null and ip != ''">
+            AND ip LIKE CONCAT('%',#{ip},'%')
+        </if>
+        <if test="rpcPort != null and rpcPort != ''">
+            AND rpc_port LIKE CONCAT('%',#{rpcPort},'%')
+        </if>
+        <if test="p2pPort != null and p2pPort != ''">
+            AND p2p_port LIKE CONCAT('%',#{p2pPort},'%')
+        </if>
+        ORDER BY ip,rpc_port,p2p_port ASC
+        LIMIT #{start},#{pageSize}
+    </select>
+
+    <select id="getManualNode" resultType="org.bcos.browser.entity.dto.Node">
+        SELECT <include refid="ALL_COLUMN" />
+        FROM tb_node_#{groupId} 
+        WHERE type=0
+    </select>
+
+    <select id="getAllNode" resultType="org.bcos.browser.entity.dto.Node">
+        SELECT <include refid="ALL_COLUMN" />
+        FROM tb_node_#{groupId}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE tb_node_#{groupId}
+        SET block_number = #{blockNumber},
+            pbft_view = #{pbftView},
+            status = #{status},
+            gmt_modify = now()
+        WHERE node_id = #{nodeId}
+    </update>
+
+    <update id="updateToSync">
+        UPDATE tb_node_#{groupId}
+        SET ip = null,
+            rpc_port = null,
+            p2p_port = null,
+            type = 1,
+            gmt_modify = now()
+        WHERE node_id = #{nodeId}
+    </update>
+    
+    <update id="deleteNodeById">
+        DELETE FROM tb_node_#{groupId}
+        WHERE node_id = #{nodeId}
+    </update>
+
+</mapper>

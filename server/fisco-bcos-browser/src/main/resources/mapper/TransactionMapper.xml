@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.bcos.browser.mapper.TransactionMapper">
+    <sql id="ALL_COLUMN">
+        trans_hash as transHash,
+        group_id as groupId,
+        block_hash as blockHash,
+        block_number as blockNumber,
+        trans_index as transIndex,
+        block_time as blockTime,
+        block_hash as blockHash,
+        trans_from as transFrom,
+        trans_to as transTo,
+        trans_index as transIndex,
+        method as method
+    </sql>
+
+    <insert id="add" useGeneratedKeys="true"
+        parameterType="org.bcos.browser.entity.dto.Transaction">
+        INSERT INTO
+        tb_transaction_#{groupId}(trans_hash,group_id,block_hash,block_number,block_time,block_date,trans_from,trans_to,trans_index,gmt_create,gmt_modify)
+        VALUES(#{transHash},#{groupId},#{blockHash},#{blockNumber},#{blockTime},#{blockDate},#{transFrom},#{transTo},#{transIndex},now(),now())
+    </insert>
+    
+    <delete id="deletePartTxn">
+        DELETE FROM tb_transaction_#{groupId}
+        ORDER BY block_number
+        limit #{subTransNum}
+    </delete>
+
+    <update id="updateMethod" parameterType="org.bcos.browser.entity.dto.Transaction">
+        UPDATE tb_transaction_#{groupId}
+        SET method = #{method},
+            gmt_modify = now()
+        WHERE trans_hash = #{transHash}
+    </update>
+
+    <select id="getAllTransactionCount" parameterType="java.util.Map" resultType="INTEGER">
+        SELECT count(1) FROM tb_transaction_#{groupId}
+        WHERE 1 = 1
+        <if test="transHash != null and transHash !=''">
+            AND trans_hash = #{transHash}
+        </if>
+        <if test="number != null and number !=''">
+            AND block_number = #{number}
+        </if>
+    </select>
+
+    <select id="getTbTransactionByPage" parameterType="java.util.Map"
+        resultType="org.bcos.browser.entity.dto.Transaction">
+        SELECT <include refid="ALL_COLUMN" />
+        FROM tb_transaction_#{groupId}
+        WHERE 1 = 1
+        <if test="transHash != null and transHash !=''">
+            AND trans_hash = #{transHash}
+        </if>
+        <if test="number != null and number !=''">
+            AND block_number = #{number}
+        </if>
+        ORDER BY block_number DESC,trans_index DESC
+        LIMIT #{start},#{pageSize}
+    </select>
+
+</mapper>

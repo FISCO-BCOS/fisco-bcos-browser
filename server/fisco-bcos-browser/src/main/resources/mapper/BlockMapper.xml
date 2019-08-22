@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.bcos.browser.mapper.BlockMapper">
+    <insert id="add" useGeneratedKeys="true"
+        parameterType="org.bcos.browser.entity.dto.Block">
+        INSERT INTO
+        tb_block_#{groupId}(block_hash,group_id,number,sealer,block_time,txn,gmt_create,gmt_modify)
+        VALUES(#{blockHash},#{groupId},#{number},#{sealer},#{blockTime},#{txn},now(),now())
+    </insert>
+
+    <select id="getAllBlockCount" resultType="int">
+        SELECT count(1) FROM tb_block_#{groupId}
+        WHERE 1 = 1
+        <if test="blockHash != null and blockHash !=''">
+            AND block_hash = #{blockHash}
+        </if>
+        <if test="number != null and number !=''">
+            AND number = #{number}
+        </if>
+    </select>
+
+    <select id="getBlockInfoByBage" resultType="org.bcos.browser.entity.dto.Block">
+        SELECT block_hash as blockHash,
+            number,
+            sealer,
+            block_time as blockTime,
+            txn
+        FROM tb_block_#{groupId}
+        WHERE 1 = 1
+        <if test="blockHash != null and blockHash !=''">
+            AND block_hash = #{blockHash}
+        </if>
+        <if test="number != null and number !=''">
+            AND number = #{number}
+        </if>
+        ORDER BY number DESC
+        LIMIT #{start},#{pageSize}
+    </select>
+
+    <select id="getMaxBlockNumber" resultType="int">
+        SELECT
+        IFNULL(MAX(number),0) FROM tb_block_#{groupId}
+    </select>
+
+</mapper>

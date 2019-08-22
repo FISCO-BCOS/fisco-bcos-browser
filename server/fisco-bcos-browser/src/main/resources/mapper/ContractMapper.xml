@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.bcos.browser.mapper.ContractMapper">
+    <sql id="ALL_COLUMN">
+        contract_id as contractId,
+        contract_name as contractName,
+        contract_source as contractSource,
+        contract_status as contractStatus,
+        contract_abi as contractAbi,
+        contract_bin as contractBin,
+        contract_address as contractAddress,
+        contract_desc as contractDesc,
+        error_info as errorInfo,
+        contract_path as contractPath
+    </sql>
+
+    <insert id="add" parameterType="org.bcos.browser.entity.dto.Contract">
+        INSERT INTO tb_contract(
+            contract_name,
+            contract_source,
+            contract_desc,
+            contract_path,
+            gmt_create,
+            gmt_modify
+        ) VALUES (
+            #{contractName},
+            #{contractSource},
+            #{contractDesc},
+            #{contractPath},
+            now(),
+            now()
+        )
+    </insert>
+    
+    <select id="getContractByName" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_contract
+        WHERE contract_name = #{contractName}
+    </select>
+
+    <select id="getContractByNameAndPath" resultType="java.lang.Integer">
+	    SELECT count(1) FROM tb_contract
+	    WHERE contract_name = #{contractName} 
+	      AND contract_path = #{contractPath}
+    </select>
+
+    <select id="getContractCnts" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_contract
+    </select>
+
+    <select id="getContractList" resultType="org.bcos.browser.entity.dto.Contract">
+        SELECT <include refid="ALL_COLUMN" />
+        FROM tb_contract
+        ORDER BY contract_id DESC
+        LIMIT #{start},#{pageSize}
+    </select>
+    
+    <select id="getAbiByInput" resultType="org.bcos.browser.entity.dto.Contract">
+        SELECT contract_abi as contractAbi,
+               contract_name as contractName
+        FROM tb_contract
+        WHERE locate(contract_bin,#{input})
+        LIMIT 1
+    </select>
+
+    <update id="updateContract" parameterType="org.bcos.browser.entity.dto.Contract">
+        UPDATE tb_contract
+        SET contract_bin = #{contractBin},
+            contract_abi = #{contractAbi},
+            contract_address = #{contractAddress},
+            contract_status = #{contractStatus},
+            error_info = #{errorInfo},
+            gmt_modify = now()
+        WHERE contract_id = #{contractId}
+    </update>
+
+    <delete id="deleteContract">
+        DELETE FROM tb_contract
+        WHERE contract_id=#{contractId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,26 @@
+server: 
+  port: 5101
+  context-path: /fisco-bcos-browser
+
+spring: 
+  datasource: 
+    url: jdbc:mysql://127.0.0.1:3306/db_browser?useUnicode=true&characterEncoding=utf8
+    username: dbUsername
+    password: dbPassword
+    driver-class-name: com.mysql.jdbc.Driver
+  
+mybatis:  
+  mapper-locations: classpath:mapper/*.xml  
+
+constant: 
+  cronBlockChainInfo: 0/10 * * * * ?
+  cronBlockInfo: 0/10 * * * * ?
+  cronTxnByDay: 30 0/1 * * * ?
+  cronAyncNode: 0 0/10 * * * ?
+  cronIfNodeActive: 0 0/1 * * * ?
+  cronDeleteTxn: 0 0/10 * * * ?
+  handleBlocks: 50
+  keepTxnCnt: 500000
+  
+logging: 
+  config: classpath:log4j2.xml

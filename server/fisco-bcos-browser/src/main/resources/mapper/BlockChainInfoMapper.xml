@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.bcos.browser.mapper.BlockChainInfoMapper">
+    <sql id="ALL_COLUMN">
+        group_id as groupId,
+        latest_number as latestNumber,
+        txn,
+        pending_txn as pendingTxn,
+        pbft_view as pbftView
+    </sql>
+
+    <insert id="add" parameterType="org.bcos.browser.entity.dto.BlockChainInfo">
+        REPLACE INTO
+        tb_blockChainInfo_#{groupId}(group_id,latest_number,txn,pending_txn,pbft_view,gmt_create,gmt_modify)
+        VALUES(#{groupId},#{latestNumber},#{txn},#{pendingTxn},#{pbftView},now(),now())
+    </insert>
+
+    <insert id="addTxnByDay">
+        REPLACE INTO tb_txnByDay_#{groupId}(pk_date,group_id,txn)
+        SELECT block_date as date,group_id,count(1) as txn
+        FROM tb_transaction_#{groupId}
+        GROUP BY date,group_id
+    </insert>
+
+    <select id="getBlockChainInfo" resultType="org.bcos.browser.entity.dto.BlockChainInfo">
+        select <include refid="ALL_COLUMN" />
+        from tb_blockChainInfo_#{groupId}
+    </select>
+
+    <select id="getBlockNumber" resultType="int">
+        SELECT IFNULL(MAX(latest_number),0)
+        FROM tb_blockChainInfo_#{groupId}
+    </select>
+
+    <select id="getLastTbTxnByDay" resultType="org.bcos.browser.entity.dto.TransactionByDay">
+        SELECT pk_date as pkDate,group_id as groupId,txn
+        FROM tb_txnByDay_#{groupId}
+        WHERE 1 = 1
+        <if test="dateTimeBegin != null and dateTimeBegin!=''">
+            <![CDATA[
+                AND pk_date >= STR_TO_DATE(#{dateTimeBegin},'%Y-%m-%d')
+            ]]>
+        </if>
+        <if test="dateTimeEnd != null and dateTimeEnd!=''">
+            <![CDATA[
+                AND pk_date <= STR_TO_DATE(#{dateTimeEnd},'%Y-%m-%d')
+            ]]>
+        </if>
+        ORDER BY pk_date DESC
+    </select>
+
+</mapper>
