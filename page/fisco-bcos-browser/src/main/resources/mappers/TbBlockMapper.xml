@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.bcos.browser.mapper.TbBlockMapper">
+    <resultMap id="TbBlockMap" type="org.bcos.browser.dto.TbBlockDto" >
+        <id column="pk_hash" jdbcType="VARCHAR" property="pkHash" javaType="java.lang.String" />
+        <result column="number" jdbcType="INTEGER" property="number" javaType="java.lang.Integer" />
+        <result column="parentHash" jdbcType="VARCHAR" property="parentHash" javaType="java.lang.String" />
+        <result column="miner" jdbcType="VARCHAR" property="miner" javaType="java.lang.String" />
+        <result column="genIndex" jdbcType="INTEGER" property="genIndex" javaType="java.lang.Integer" />
+        <result column="size" jdbcType="INTEGER" property="size" javaType="java.lang.Integer" />
+        <result column="gasLimit" jdbcType="BIGINT" property="gasLimit" javaType="java.math.BigInteger" />
+        <result column="gasUsed" jdbcType="BIGINT" property="gasUsed" javaType="java.math.BigInteger" />
+        <result column="avgGasPrice" jdbcType="DECIMAL" property="avgGasPrice" javaType="java.math.BigDecimal" />
+        <result column="timestamp" jdbcType="TIMESTAMP" property="timestamp" javaType="java.sql.Timestamp" />
+        <result column="txn" jdbcType="BIGINT" property="transactionNumber" javaType="java.math.BigInteger" />
+        <result column="extraData" jdbcType="VARCHAR" property="extraData" javaType="java.lang.String" />
+        <result column="detailInfo" jdbcType="VARCHAR" property="detailInfo" javaType="java.lang.String" />
+    </resultMap>
+
+
+    <sql id="ALL_COLUMN">
+       number,pk_hash,parentHash,miner,size,gasLimit,gasUsed,avgGasPrice,timestamp,txn,extraData,detailInfo,genIndex
+    </sql>
+
+    <!--Query the total number of block table records-->
+    <select id="getAllBlockCount" resultType="INTEGER">
+        SELECT count(1) blockCount FROM  tb_block t WHERE 1=1
+        <if test="hash != null and hash !=''">
+            AND t.pk_hash  LIKE CONCAT('%',#{hash},'%')
+        </if>
+        <if test="dateTime1 != null and dateTime1!=''">
+            AND t.timestamp &gt;= STR_TO_DATE(#{dateTime1},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="dateTime2 != null and dateTime2!=''">
+            AND t.timestamp &lt;= STR_TO_DATE(#{dateTime2},'%Y-%m-%d %H:%i:%s')
+        </if>
+    </select>
+
+    <!--Paging query block table records (first check number and then check the corresponding table data to increase the number of queries)-->
+    <select id="getBlockInfoByOffset" resultMap="TbBlockMap">
+        SELECT  b.number,b.pk_hash,b.parentHash,b.miner,b.size,b.gasLimit,b.gasUsed,b.avgGasPrice,b.timestamp,b.txn,b.extraData,b.detailInfo,b.genIndex
+        FROM (
+        SELECT t.number from tb_block t WHERE 1=1
+        <if test="hash != null and hash !=''">
+            AND t.pk_hash  LIKE CONCAT('%',#{hash},'%')
+        </if>
+        <if test="dateTime1 != null and dateTime1!=''">
+            AND t.timestamp &gt;= STR_TO_DATE(#{dateTime1},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="dateTime2 != null and dateTime2!=''">
+            AND t.timestamp &lt;= STR_TO_DATE(#{dateTime2},'%Y-%m-%d %H:%i:%s')
+        </if>
+         ORDER BY number DESC limit #{offset},#{size} ) a
+        LEFT JOIN tb_block b on a.number=b.number
+    </select>
+
+    <!--According to Block Hash Query Block-->
+    <select id="getBlockDetailInfoByBlockHash" resultType="org.bcos.browser.dto.TbBlockDto">
+        SELECT <include refid="ALL_COLUMN"/>
+        FROM tb_block
+        WHERE pk_hash = #{blockHash}  limit 1;
+    </select>
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.bcos.browser.mapper.TbStatMapper">
+    <resultMap id="TbStatMap" type="org.bcos.browser.dto.TbStatDto" >
+        <id column="pk_id" jdbcType="INTEGER" property="pkId" javaType="java.lang.Integer" />
+        <result column="object" jdbcType="VARCHAR" property="object" javaType="java.lang.String" />
+        <result column="attr" jdbcType="VARCHAR" property="attr" javaType="java.lang.String" />
+        <result column="attrName" jdbcType="VARCHAR" property="attrName" javaType="java.lang.String" />
+        <result column="collectTimestamp" jdbcType="TIMESTAMP" property="collectTimestamp" javaType="java.sql.Timestamp" />
+        <result column="metricValue" jdbcType="DOUBLE" property="metricValue" javaType="java.lang.Double" />
+        <result column="hostIp" jdbcType="VARCHAR" property="hostIp" javaType="java.lang.String" />
+        <result column="detailInfo" jdbcType="VARCHAR" property="detailInfo" javaType="java.lang.String" />
+    </resultMap>
+
+    <resultMap id="ObjectMap" type="java.lang.String" >
+        <result column="object" jdbcType="VARCHAR" property="object" javaType="java.lang.String" />
+    </resultMap>
+
+    <sql id="ALL_COLUMN">pk_id,object,attr,attrName,collectTimestamp,metricValue,hostIp,detailInfo</sql>
+
+    <select id="listAttr" resultMap="TbStatMap">
+        SELECT DISTINCT attr,attrName FROM ${tableName} ORDER BY attrName DESC
+    </select>
+
+
+    <!--Conditional Query Object List-->
+    <select id="listObject" resultMap="ObjectMap">
+        SELECT DISTINCT object FROM ${tableName}
+    </select>
+
+    <!--Query a single point statistics list-->
+    <select id="ListTbStat" parameterType="java.util.Map" resultMap="TbStatMap">
+        SELECT b.pk_id,b.object,b.attr,b.attrName,b.collectTimestamp,b.metricValue,b.hostIp,b.detailInfo
+        FROM (
+        SELECT pk_id  FROM ${tableName}
+         WHERE  object = #{object}  AND attr = #{attr}
+         <if test="timeStartStr != null and timeStartStr != ''">
+             AND DATE_FORMAT(collectTimestamp,'%H:%i:%s') &gt;=  #{timeStartStr}
+         </if>
+        <if test="timeEndStr != null and timeEndStr != ''">
+            AND DATE_FORMAT(collectTimestamp,'%H:%i:%s') &lt;= #{timeEndStr}
+        </if>
+         ORDER BY collectTimestamp DESC limit 120
+         ) a
+        LEFT JOIN ${tableName} b
+        ON (a.pk_id = b.pk_id)
+    </select>
+</mapper>

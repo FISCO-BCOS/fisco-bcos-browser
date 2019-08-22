@@ -1,0 +1,31 @@
+
+.table-responsive.block .table>thead>tr>th{
+    padding-left: 10px;
+    height: 40px;
+    line-height: 1.5;
+}
+
+
+#tableBody>tr>td{
+
+    padding: 10px 0 10px 10px;;
+}
+#tableBody>tr>td>span{
+    color: #989ba1;
+}
+.breadcrumbs{
+    padding: 0;
+    padding: 0!important;
+}
+.breadcrumbs .container{
+    background: #fff;
+
+}
+
+.profile.container {
+    padding: 0!important;
+}
+
+.row{
+    margin: 0!important;
+}

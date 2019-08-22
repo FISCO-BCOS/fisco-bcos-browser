@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+    <!--Loading non-web layer components-->
+    <!--Loaded via org.springframework.web.context.ContextLoaderListener in web.xml  -->
+    <context:component-scan base-package="org.bcos.browser">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- Loading properties files -->
+    <util:properties id="jdbc" location="classpath:jdbc.properties"/>
+
+    <bean class="org.bcos.browser.base.utils.SpringContextUtil" lazy-init="false"/>
+
+    <!-- Spring cited database configuration file -->
+    <import resource="classpath*:/spring/spring-dao.xml" />
+</beans>

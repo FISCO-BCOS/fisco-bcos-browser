@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info">
+	<Properties>
+        <Property name="logPath">/home/app/fisco-bcos-browser/server/logs/</Property>
+    </Properties>
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c{1}(%F:%L) - %m%n" />
+		</Console>
+
+		<RollingFile name="fileAppender" fileName="${logPath}bcos-server.log" filePattern="${logPath}bcos-server.%d{yyyy-MM-dd}.%i.log.gz">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %c{1}(%L) - %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="200 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="24" />
+		</RollingFile>
+		
+		<RollingFile name="monitor" fileName="${logPath}/monitor.log" filePattern="${logPath}/monitor.%d{yyyy-MM-dd}.log.gz">
+			<PatternLayout pattern="[%-5p][%d{yyyy-MM-dd HH:mm:ss.SSS}][%t][BSP][123][123][LOG_POINT]%m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="200 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="24" />
+		</RollingFile>
+
+	</Appenders>
+
+	<Loggers>
+		<Logger name="appmonitor" level="INFO" additivity="false">
+			<AppenderRef ref="monitor" />
+		</Logger>
+		<Root level="info">
+			<AppenderRef ref="fileAppender" />
+        </Root>
+	</Loggers>
+</Configuration>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.bcos.browser.mapper.TbTxnByDayMapper">
+    <resultMap id="tbTxnByDayMap" type="org.bcos.browser.dto.TbTxnByDayDto" >
+        <id column="pk_date" jdbcType="DATE" property="pkDate" javaType="java.util.Date"/>
+        <result column="txn" jdbcType="BIGINT" property="transactionNumber" javaType="java.math.BigInteger" />
+    </resultMap>
+
+    <sql id="ALL_COLUMN">
+       pk_date,txn
+    </sql>
+
+    <!--Paging query the latest record-->
+    <select id="getLastTbTxnByDayByOffset" resultMap="tbTxnByDayMap">
+        SELECT <include refid="ALL_COLUMN"/>
+        FROM tb_txnByDay ORDER BY pk_date DESC limit #{offset},#{size}
+    </select>
+</mapper>
