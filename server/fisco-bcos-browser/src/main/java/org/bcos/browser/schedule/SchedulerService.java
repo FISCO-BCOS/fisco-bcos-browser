@@ -139,6 +139,9 @@ public class SchedulerService {
             transaction.setTransFrom(loop.getFrom());
             transaction.setTransTo(loop.getTo());
             transaction.setTransIndex(CommonUtils.parseHexStr2Int(loop.getTransactionIndex()));
+            TransactionFromChain transInfo = web3jRpc.getTransByHash(groupId, loop.getHash());
+            String input = transInfo.getInput();
+            transaction.setMethod(input.substring(0,10));
             transactionMapper.add(transaction);
         }
         // add block info
