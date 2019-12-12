@@ -48,11 +48,18 @@ List io = [
 	'commons-fileupload:commons-fileupload:1.4'
 ]
 
+List jackson = [
+    "com.fasterxml.jackson.core:jackson-databind:2.10.0",
+    "com.fasterxml.jackson.module:jackson-module-parameter-names:2.10.0",
+    "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.0",
+    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.0"
+]
+
 dependencies {
-    compile spring,spring_boot,mysql,io
+    compile spring,spring_boot,mysql,io,jackson
     compile "com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.1"
     compile "org.apache.commons:commons-lang3:3.6"
-    compile 'com.alibaba:fastjson:1.2.29'
+    compile 'com.alibaba:fastjson:1.2.60'
     annotationProcessor 'org.projectlombok:lombok:1.18.2'
     compileOnly 'org.projectlombok:lombok:1.18.2'
 }
