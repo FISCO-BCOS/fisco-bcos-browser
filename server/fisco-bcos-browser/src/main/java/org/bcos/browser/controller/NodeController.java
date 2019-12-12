@@ -82,7 +82,7 @@ public class NodeController extends BaseController {
      * @param groupId groupId
      * @return
      */
-    @DeleteMapping("/getEncryptType/{groupId}")
+    @GetMapping("/getEncryptType/{groupId}")
     public BaseResponse getEncryptType(@PathVariable("groupId") int groupId) {
         BaseResponse response = nodeService.getEncryptType(groupId);
         return response;
