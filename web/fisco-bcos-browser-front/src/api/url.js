@@ -1,3 +1,4 @@
+console.log(process.env)
 let api = process.env.API_PATH;
 
 export default {
@@ -49,5 +50,7 @@ export default {
 
     GET_ABI_FUNCTION: `${api}/contract/function`,
 
-    GET_ABI: `${api}/contract/abi`
+    GET_ABI: `${api}/contract/abi`,
+
+    GET_ENCRYPTT_TYPE: `${api}/node/getEncryptType`
 }
