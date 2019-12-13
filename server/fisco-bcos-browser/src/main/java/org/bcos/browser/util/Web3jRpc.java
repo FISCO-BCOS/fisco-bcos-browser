@@ -130,7 +130,7 @@ public class Web3jRpc {
         }
         return result;
     }
-    
+
     /**
      * getTransByHash.
      * 
@@ -147,7 +147,7 @@ public class Web3jRpc {
         }
         return result;
     }
-    
+
     /**
      * getReceiptByHash.
      * 
@@ -164,7 +164,7 @@ public class Web3jRpc {
         }
         return result;
     }
-    
+
     /**
      * getCode.
      * 
@@ -174,11 +174,10 @@ public class Web3jRpc {
      */
     public String getCode(int groupId, String address) {
         Object[] params = new Object[] {groupId, address};
-        String result = (String) rpcRequest(groupId, Constants.GET_CODE, 
-                params);
+        String result = (String) rpcRequest(groupId, Constants.GET_CODE, params);
         return result;
     }
-    
+
     /**
      * getSyncInfo.
      * 
@@ -195,7 +194,7 @@ public class Web3jRpc {
         }
         return result;
     }
-    
+
     /**
      * getSyncInfo.
      * 
@@ -211,7 +210,7 @@ public class Web3jRpc {
         }
         return result;
     }
-    
+
     /**
      * getConsensusInfo.
      * 
@@ -230,7 +229,7 @@ public class Web3jRpc {
         }
         return result;
     }
-    
+
     /**
      * getGroupPeers.
      * 
@@ -262,5 +261,17 @@ public class Web3jRpc {
             result = CommonUtils.object2JavaBean(object, List.class);
         }
         return result;
+    }
+
+    /**
+     * getGroupPeers.
+     * 
+     * @param groupId groupId
+     * @return
+     */
+    public Object getClientVersion(int groupId) {
+        Object[] params = new Object[] {};
+        Object object = rpcRequest(groupId, Constants.GET_CLIENT_VERSION, params);
+        return object;
     }
 }

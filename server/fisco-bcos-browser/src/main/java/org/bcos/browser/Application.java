@@ -3,19 +3,27 @@ package org.bcos.browser;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.MultipartAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-//@EnableAutoConfiguration(exclude = {MultipartAutoConfiguration.class})
-@SpringBootApplication(exclude = {MultipartAutoConfiguration.class})
-@EnableTransactionManagement
-@MapperScan("org.bcos.browser.mapper")
+/**
+ * Startup class.
+ *
+ */
 @Slf4j
+@EnableTransactionManagement
+@SpringBootApplication(exclude = {MultipartAutoConfiguration.class})
+@MapperScan("org.bcos.browser.mapper")
 public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+        log.info("start success...");
+    }
+
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver multipartResolver() {
         CommonsMultipartResolver resolver = new CommonsMultipartResolver();
@@ -25,10 +33,4 @@ public class Application {
         resolver.setMaxUploadSize(5 * 1024 * 1024);
         return resolver;
     }
-
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-        log.info("start success...");
-    }
-
 }
