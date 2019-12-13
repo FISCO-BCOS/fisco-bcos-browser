@@ -1,5 +1,7 @@
 package org.bcos.browser.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -153,6 +155,25 @@ public class NodeService {
     public BaseResponse deleteNodeById(int groupId, String nodeId) {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         nodeMapper.updateToSync(groupId, nodeId);
+        return response;
+    }
+    
+    /**
+     * getEncryptType.
+     * 
+     * @param groupId groupId
+     * @return
+     */
+    public BaseResponse getEncryptType(int groupId) {
+        BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
+        Object object = web3jRpc.getClientVersion(groupId);
+        JSONObject result = JSONObject.parseObject(JSON.toJSONString(object));
+        String version = result.getString("FISCO-BCOS Version");
+        int encryptType = 0;
+        if (version.contains("gm")) {
+            encryptType = 1;
+        }
+        response.setData(encryptType);
         return response;
     }
 }

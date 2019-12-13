@@ -34,6 +34,7 @@ public class Constants {
     public static final String GET_SYNC_STATUS = "getSyncStatus";
     public static final String GET_GROUP_PEERS = "getGroupPeers";
     public static final String GET_GROUP_LIST = "getGroupList";
+    public static final String GET_CLIENT_VERSION = "getClientVersion";
 
     public static final String DEFAULT_DATA_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss:SSS";
     public static final String DATE_FORMAT_YYMMDD = "yyyy-MM-dd";
