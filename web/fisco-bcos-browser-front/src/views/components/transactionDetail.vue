@@ -236,6 +236,7 @@
     import errorcode from "@/util/errorCode"
     import '@/assets/css/layout.css'
     import '@/assets/css/public.css'
+    import web3 from "@/util/ethAbi"
     export default {
         name: 'transactionStatistics',
         components: {
@@ -465,7 +466,7 @@
         params @type string  0ptional   decode system contract
         */
         decodefun: function(input,abiData){
-            let web3 = new Web3(Web3.givenProvider);
+            let Web3EthAbi = web3;
             this.methodId = input.substring(0, 10);
             // this.methodId = data;
             let inputDatas = "0x" + input.substring(10);
@@ -484,7 +485,7 @@
                 });
                 this.funcData = abiData.abiInfo.name;
                 if (abiData.abiInfo.inputs.length) {
-                    this.decodeData = web3.eth.abi.decodeParameters( abiData.abiInfo.inputs,inputDatas);
+                    this.decodeData = Web3EthAbi.decodeParameters( abiData.abiInfo.inputs,inputDatas);
                     if (JSON.stringify(this.decodeData) != "{}") {
                         for (const key in this.decodeData) {
                             abiData.abiInfo.inputs.forEach((val, index) => {
@@ -580,7 +581,7 @@
             }
         },
         decodeEvent: function(eventData, data) {
-            let web3 = new Web3(Web3.givenProvider);
+            let Web3EthAbi = web3;
             let abi = "";
             eventData.abiInfo = JSON.parse(eventData.abiInfo)
             let list = data;
@@ -596,7 +597,7 @@
                     }   
                 }
                 list.eventName = list.eventName + ")";
-                let eventResult = web3.eth.abi.decodeLog(eventData.abiInfo.inputs,list.data,list.topics);
+                let eventResult = Web3EthAbi.decodeLog(eventData.abiInfo.inputs,list.data,list.topics);
                 list.outData = {};
                 list.eventLgData = [];
                 for (const key in eventResult) {
