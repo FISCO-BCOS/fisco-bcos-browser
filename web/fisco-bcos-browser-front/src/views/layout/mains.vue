@@ -11,7 +11,7 @@
 <script>
     import headers from './headers'
     import addGroup from "@/components/addGroup"
-    import { getGroupList } from "@/api/api"
+    import { getGroupList,getEncryptType } from "@/api/api"
     import '@/assets/css/layout.css'
     import '@/assets/css/public.css'
     import url from '@/api/url'
@@ -55,6 +55,7 @@
                                 localStorage.setItem("groupId",this.groupId);
                             }
                             localStorage.setItem("groupList",JSON.stringify(this.groupList))
+                            this.getEncrypt();
                             this.change();
                             if(this.$route.query.pkHash){
                                 router.push({
@@ -83,6 +84,17 @@
                         }
                     }else{
                         message(res.data.message,'error')
+                    }
+                }).catch(err => {
+                    message(constant.ERROR,'error');
+                })
+            },
+            getEncrypt: function(){
+                getEncryptType(localStorage.getItem("groupId")).then(res => {
+                    if(res.data.code === 0){
+                        localStorage.setItem("encryptionId",res.data.data)
+                    }else{
+                        message(errorcode[res.data.code].cn,'error')
                     }
                 }).catch(err => {
                     message(constant.ERROR,'error');
