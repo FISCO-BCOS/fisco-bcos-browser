@@ -47,7 +47,7 @@ const routes = [
                 meta: {
                     requireAuth: true, //
                 },
-                component: resolve => require(['@/views/components/blankPage'],resolve),
+                component: resolve => require(['@/views/components/blankpage'],resolve),
             },
             {
                 path: '/block',
