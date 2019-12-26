@@ -10,6 +10,3 @@
 详细了解,请阅读[**技术文档**](https://fisco-bcos-documentation.readthedocs.io/zh_CN/latest/docs/browser/browser.html)。
 
 
-**社区相关项目**
-
-1. [python版浏览器](https://github.com/Wall-ee/FiscoBcos-PyConsole)：后面加一个说明
