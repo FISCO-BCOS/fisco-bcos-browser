@@ -75,4 +75,16 @@ public class NodeController extends BaseController {
         BaseResponse response = nodeService.deleteNodeById(groupId, nodeId);
         return response;
     }
+    
+    /**
+     * getEncryptType.
+     * 
+     * @param groupId groupId
+     * @return
+     */
+    @GetMapping("/getEncryptType/{groupId}")
+    public BaseResponse getEncryptType(@PathVariable("groupId") int groupId) {
+        BaseResponse response = nodeService.getEncryptType(groupId);
+        return response;
+    }
 }
