@@ -203,3 +203,11 @@ export function getAbi(data){
         data: data
     })
 }
+
+//getEncryptType
+export function getEncryptType(data){
+    return get({
+        url: `${url.GET_ENCRYPTT_TYPE}/${data}`,
+        method: 'get'
+    })
+}

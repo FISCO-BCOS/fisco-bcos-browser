@@ -1,18 +1,28 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 
-import ConfigParser
-import commands
-import log as deployLog
+import os
+import sys
+try:
+    import ConfigParser
+except:
+    try:
+        import configparser as ConfigParser
+    except:
+        from six.moves import configparser as ConfigParser
+if sys.version_info.major == 2:
+    import commands
+else:
+    import subprocess
+from . import log as deployLog
 import socket
 import fcntl
 import struct
 import telnetlib
-import os
 import platform
 from distutils.dir_util import copy_tree
 
-log = deployLog.getLogger()
+log = deployLog.getLocalLogger()
 platformStr = platform.platform()
 
 def getIpAddress(ifname):
@@ -32,7 +42,7 @@ def net_if_used(ip,port):
     try:
         result=s.connect_ex((ip, int(port)))
         if result==0:
-            print "  error! port {} has been used. please check.".format(port)
+            print("  error! port {} has been used. please check.".format(port))
             return True
         else:
             return False
@@ -67,7 +77,10 @@ def copytree(src, dst):
 def doCmd(cmd):
     log.info(" execute cmd  start ,cmd : {}".format(cmd))
     result = dict()
-    (status, output) = commands.getstatusoutput(cmd)
+    if sys.version_info.major == 2:
+        (status, output) = commands.getstatusoutput(cmd)
+    else:
+        (status, output) = subprocess.getstatusoutput(cmd)
     result["status"] = status
     result["output"] = output
     log.info(" execute cmd  end ,cmd : {},status :{} , output: {}".format(cmd,status,output))
@@ -78,7 +91,10 @@ def doCmd(cmd):
 def doCmdIgnoreException(cmd):
     log.info(" execute cmd  start ,cmd : {}".format(cmd))
     result = dict()
-    (status, output) = commands.getstatusoutput(cmd)
+    if sys.version_info.major == 2:
+        (status, output) = commands.getstatusoutput(cmd)
+    else:
+        (status, output) = subprocess.getstatusoutput(cmd)
     result["status"] = status
     result["output"] = output
     log.info(" execute cmd  end ,cmd : {},status :{} , output: {}".format(cmd, status, output))
@@ -96,7 +112,7 @@ def getCommProperties(paramsKey):
 
 def replaceConf(fileName,oldStr,newStr):
     if not os.path.isfile(fileName):
-        print "{} is not a file ".format(fileName)
+        print("{} is not a file ".format(fileName))
         return
     oldData =""
     with open(fileName, "r") as f:
@@ -110,7 +126,7 @@ def replaceConf(fileName,oldStr,newStr):
 
 def replaceConfDir(filePath,oldStr,newStr):
     if not os.path.isdir(filePath):
-        print "{} is not a dir ".format(filePath)
+        print("{} is not a dir ".format(filePath))
         return
     for root, dirs, files in os.walk(filePath):
         for file in files:
@@ -124,7 +140,7 @@ def do_telnet(host,port):
     except:
         return False
     return True
-
+    
 if __name__ == '__main__':
-    print(getIpAddress("eth0"))
+    print((getIpAddress("eth0")))
     pass

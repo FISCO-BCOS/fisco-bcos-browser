@@ -46,7 +46,7 @@
 </template>
 <script type="es6">
     import nav from '@/components/content-nav'
-    import {getTbNodeConnection,deleteNodeConfigRow} from '@/api/api'
+    import {getTbNodeConnection,deleteNodeConfigRow,getEncryptType} from '@/api/api'
     import addNodes from '@/components/add-nodes'
     import url from '@/api/url'
     import {message} from '@/util/util'
@@ -137,7 +137,8 @@
                     this.loading = false;
                     if(res.data.code === 0){
                         if(res.data.data && res.data.data.length > 0){
-                            this.configList = res.data.data
+                            this.configList = res.data.data;
+                            this.getEncrypt();
                         }else{
                             this.configList = []
                             // message('无可用节点，请在节点配置添加节点！','warning')
@@ -156,6 +157,17 @@
                     this.clear();
                     this.rpcConfig = "";
                     this.p2pConfig = "";
+                })
+            },
+            getEncrypt: function(){
+                getEncryptType(localStorage.getItem("groupId")).then(res => {
+                    if(res.data.code === 0){
+                        localStorage.setItem("encryptionId",res.data.data)
+                    }else{
+                        message(errorcode[res.data.code].cn,'error')
+                    }
+                }).catch(err => {
+                    message(constant.ERROR,'error');
                 })
             },
             add: function () {

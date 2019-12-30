@@ -54,6 +54,7 @@ import 'ace-builds/src-noconflict/mode-javascript'
 import 'ace-builds/src-noconflict/ext-language_tools';
 require('ace-mode-solidity/build/remix-ide/mode-solidity')
 import Bus from "@/bus"
+import web3 from "@/util/ethAbi"
 
 export default {
     name: "contractConfig",
@@ -102,6 +103,19 @@ export default {
         Bus.$off("deleteFolder")
         Bus.$off("open")
         Bus.$off("complite")
+    },
+    beforeMount() {
+        var head = document.head;
+        var script = document.createElement("script");
+        if(localStorage.getItem("encryptionId") == 1){
+            script.src = "./static/js/soljson-v0.4.25-gm.js";
+        }else{
+            script.src = "./static/js/soljson-v0.4.25+commit.59dbf8f1.js";
+        }
+        script.setAttribute('id', 'soljson');
+        if (!document.getElementById('soljson')) {
+            head.append(script)
+        }
     },
     mounted: function(){
         this.groupId = localStorage.getItem("groupId")
@@ -407,27 +421,45 @@ export default {
             this.decodeMethodId(methodArry)
         },
         decodeMethodId: function(list){
-            let web3 = new Web3(Web3.givenProvider);
+            let Web3EthAbi = web3;
             let arry = []
             list.forEach((value,index) => {
                 if(value.name && value.type =='function'){
                     let data = {}
-                    let methodId = web3.eth.abi.encodeFunctionSignature({
-                        name: value.name,
-                        type: value.type,
-                        inputs: value.inputs
-                    });
+                    let methodId;
+                    if(localStorage.getItem("encryptionId") == 1){
+                        methodId = Web3EthAbi.smEncodeFunctionSignature({
+                            name: value.name,
+                            type: value.type,
+                            inputs: value.inputs
+                        });
+                    }else{
+                        methodId = Web3EthAbi.encodeFunctionSignature({
+                            name: value.name,
+                            type: value.type,
+                            inputs: value.inputs
+                        });
+                    }
                     data.methodId = methodId;
                     data.abiInfo = JSON.stringify(value);
                     data.type = value.type
                     arry.push(data)
                 }else if(value.name && value.type =='event'){
                     let data = {}
-                    let methodId = web3.eth.abi.encodeEventSignature({
-                        name: value.name,
-                        type: value.type,
-                        inputs: value.inputs
-                    });
+                    let methodId;
+                    if(localStorage.getItem("encryptionId") == 1){
+                        methodId = Web3EthAbi.smEncodeEventSignature({
+                            name: value.name,
+                            type: value.type,
+                            inputs: value.inputs
+                        });
+                    }else{
+                        methodId = Web3EthAbi.encodeEventSignature({
+                            name: value.name,
+                            type: value.type,
+                            inputs: value.inputs
+                        });
+                    }
                     data.methodId = methodId;
                     data.abiInfo = JSON.stringify(value);
                     data.type = value.type
