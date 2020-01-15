@@ -19,3 +19,9 @@
   并且对区块链数据及参数进行了Restful 的接口封装，可以直接进行HTTP请求。
 
   详情[点击这里](https://github.com/Wall-ee/FiscoBcos-PyConsole)
+
+- 基于 Docker 部署的区块链浏览器
+
+  方便一键部署，仅依赖 Docker 和 docker-compose，适配 FISCO BCOS 2.0。
+
+  详情[点击这里](https://github.com/YoungWilliamZ/fisco-bcos-browser-docker)
