@@ -9,4 +9,12 @@
 
 详细了解,请阅读[**技术文档**](https://fisco-bcos-documentation.readthedocs.io/zh_CN/latest/docs/browser/browser.html)。
 
+## 基于python-sdk开发的纯Python区块链浏览器 FiscoBcos-PyConsole
+
+FiscoBcos-PyConsole 是基于 python-sdk 开发的纯Python区块链浏览器。 对现有的浏览器进行了改进，本工程只需要Python3.5+ 即可,不再需要Python2.7, Java, 以及MySQL。
+
+并且对区块链数据及参数进行了Restful 的接口封装，可以直接进行HTTP请求。
+
+详情[点击这里](https://github.com/Wall-ee/FiscoBcos-PyConsole)
+
 
