@@ -17,6 +17,17 @@ public class BlockChainInfoController extends BaseController {
     BlockChainInfoService blockChainInfoService;
 
     /**
+     * isConfigAuth.
+     * 
+     * @return
+     */
+    @GetMapping("/isConfigAuth")
+    public BaseResponse ifShowConfig() {
+        BaseResponse response = blockChainInfoService.isConfigAuth();
+        return response;
+    }
+
+    /**
      * getBlockChainInfo.
      * 
      * @param groupId groupId

@@ -1,6 +1,7 @@
 package org.bcos.browser.controller;
 
 import java.io.IOException;
+import org.bcos.browser.auth.ConfigAuth;
 import org.bcos.browser.base.BaseController;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BasePageResponse;
@@ -36,6 +37,7 @@ public class ContractController extends BaseController {
      * @param result checkResult
      * @return
      */
+    @ConfigAuth
     @PostMapping("/add")
     public BaseResponse addContract(@RequestBody ReqContracts contracts,
             BindingResult result) throws BaseException {
@@ -49,6 +51,7 @@ public class ContractController extends BaseController {
      * @param zipFile
      * @return
      */
+    @ConfigAuth
     @PostMapping("/addBatch")
     public BaseResponse addBatchContracts(@RequestParam MultipartFile zipFile) 
     		throws IOException, BaseException {
@@ -62,6 +65,7 @@ public class ContractController extends BaseController {
      * 
      * @return
      */
+    @ConfigAuth
     @GetMapping("/contractList/{pageNumber}/{pageSize}")
     public BasePageResponse getContractList(
             @PathVariable("pageNumber") int pageNumber,
@@ -77,6 +81,7 @@ public class ContractController extends BaseController {
      * @param result checkResult
      * @return
      */
+    @ConfigAuth
     @PutMapping("/update")
     public BaseResponse updateContract(@RequestBody ReqContracts contracts,
             BindingResult result) throws BaseException {
@@ -92,6 +97,7 @@ public class ContractController extends BaseController {
      * @return
      * @throws BaseException
      */
+    @ConfigAuth
     @PostMapping("/addFunction")
     public BaseResponse addFunction(@RequestBody ReqFunction functions) {
         BaseResponse response = contractService.addFunction(functions);
@@ -128,6 +134,7 @@ public class ContractController extends BaseController {
      * @param  contractNOs contractNOs
      * @return
      */
+    @ConfigAuth
     @DeleteMapping("/deleteById")
     public BaseResponse deleteContract(@RequestParam("contractId") String contractNOs) {
         BaseResponse response = contractService.deleteContract(contractNOs);
