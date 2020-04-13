@@ -22,7 +22,7 @@ public class BlockChainInfoController extends BaseController {
      * @return
      */
     @GetMapping("/isConfigAuth")
-    public BaseResponse ifShowConfig() {
+    public BaseResponse isConfigAuth() {
         BaseResponse response = blockChainInfoService.isConfigAuth();
         return response;
     }
