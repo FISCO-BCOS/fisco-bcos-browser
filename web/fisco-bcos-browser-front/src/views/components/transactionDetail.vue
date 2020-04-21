@@ -597,7 +597,7 @@
                     }   
                 }
                 list.eventName = list.eventName + ")";
-                let eventResult = Web3EthAbi.decodeLog(eventData.abiInfo.inputs,list.data,list.topics);
+                let eventResult = Web3EthAbi.decodeLog(eventData.abiInfo.inputs,list.data,list.topics.slice(1));
                 list.outData = {};
                 list.eventLgData = [];
                 for (const key in eventResult) {
