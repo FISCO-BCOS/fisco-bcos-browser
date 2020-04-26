@@ -19,7 +19,7 @@ repositories {
     mavenCentral()
 }
 
-def spring_version="4.3.16.RELEASE"
+def spring_version="4.3.25.RELEASE"
 List spring =[ 
 	"org.springframework:spring-core:$spring_version", 
 	"org.springframework:spring-beans:$spring_version", 
@@ -34,7 +34,15 @@ List spring_boot =[
 	"org.springframework.boot:spring-boot-starter-web:1.5.9.RELEASE",
 	"org.springframework.boot:spring-boot-autoconfigure:1.5.9.RELEASE",
 	"org.springframework.boot:spring-boot-configuration-processor:1.5.9.RELEASE",
-	"org.springframework.boot:spring-boot-starter-log4j2:1.5.9.RELEASE"
+]
+
+def log4j_version="2.13.1"
+List logger = [
+		"org.apache.logging.log4j:log4j-api:$log4j_version",
+		"org.apache.logging.log4j:log4j-core:$log4j_version",
+		"org.apache.logging.log4j:log4j-slf4j-impl:$log4j_version",
+		"org.apache.logging.log4j:log4j-web:$log4j_version",
+		"org.slf4j:jcl-over-slf4j:1.7.12"
 ]
 
 List mysql = [
@@ -43,23 +51,11 @@ List mysql = [
 	'mysql:mysql-connector-java:5.1.30',
 ]
 
-List io = [
-	'commons-io:commons-io:2.6',
-	'commons-fileupload:commons-fileupload:1.4'
-]
-
-List jackson = [
-    "com.fasterxml.jackson.core:jackson-databind:2.10.0",
-    "com.fasterxml.jackson.module:jackson-module-parameter-names:2.10.0",
-    "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.0",
-    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.0"
-]
-
 dependencies {
-    compile spring,spring_boot,mysql,io,jackson
+    compile spring,spring_boot,logger,mysql
     compile "com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.1"
-    compile "org.apache.commons:commons-lang3:3.6"
-    compile 'com.alibaba:fastjson:1.2.60'
+	compile "org.apache.commons:commons-lang3:3.10"
+    compile 'com.alibaba:fastjson:1.2.67'
     annotationProcessor 'org.projectlombok:lombok:1.18.2'
     compileOnly 'org.projectlombok:lombok:1.18.2'
 }
