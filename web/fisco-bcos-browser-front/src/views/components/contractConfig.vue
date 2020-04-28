@@ -161,12 +161,12 @@ export default {
         Bus.$on("complite",data => {
              this.loading = true
             for(let i = 0; i < data.length; i++){
-                this.complieContract(data[i])
-                if(i == data.length -1 ){
-                    setTimeout(() => {
-                        this.editContract(data)
-                    },100)
-                }
+                this.complieContract(data[i],this.editContract)
+                // if(i == data.length -1 ){
+                //     setTimeout(() => {
+                //         this.editContract(data)
+                //     },100)
+                // }
             }
         })
     },
@@ -621,17 +621,17 @@ export default {
         complie: function(){
             this.buttonShow = true;
             this.loading = true;
-            this.contractList.forEach(value => {
-                if(value.contractStatus != 1){
+            this.contractList.forEach((value,index) => {
+                // if(value.contractStatus != 1){
                     this.compliteData = value;
-                    this.complieContract(value);
-                }    
+                    this.complieContract(value,this.editContract);
+                // }
             });
-            setTimeout(() => {
-                this.editContract()
-            },1500)   
+            // setTimeout(() => {
+            //     this.editContract()
+            // },1500)   
         },
-        complieContract: function(val){
+        complieContract: function(val,callback){
             // this.loading = false;
             // this.loading = true
             console.log((new Date()).getTime())
@@ -679,6 +679,7 @@ export default {
                     val.errorInfo = output.errors[0];
                 }
             }
+            callback()
         },
         // Compile contract callback function
         findImports: function(path){
@@ -774,7 +775,6 @@ export default {
         },
         // update a  contact
         editContract: function(val){
-            
             let arry = [];
             this.contractList.forEach(value => {
                 if(value.contractAbi && value.contractStatus != 1){
@@ -831,6 +831,7 @@ export default {
             }else{
                 this.buttonShow = false;
                 this.loading = false;
+                message('合约以全部编译完成，没有可编译的合约','success')
             }    
         },
         handleSizeChange(val) {
