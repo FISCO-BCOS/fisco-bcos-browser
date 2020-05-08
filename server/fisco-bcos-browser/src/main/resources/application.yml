@@ -13,6 +13,7 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml  
 
 constant: 
+  configAuth: true
   cronBlockChainInfo: 0/10 * * * * ?
   cronBlockInfo: 0/10 * * * * ?
   cronTxnByDay: 30 0/1 * * * ?
