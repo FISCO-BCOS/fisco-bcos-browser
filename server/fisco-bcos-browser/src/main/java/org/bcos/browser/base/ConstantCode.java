@@ -21,13 +21,14 @@ public interface ConstantCode {
     RetCode IP_FORMAT_ERROR = new RetCode(305006, "ip format error");
     RetCode NODE_ERROR_OR_NOT_ACTIVE = new RetCode(305007, "node error or not alive");
     RetCode NODE_NO_NOT_BELONG = new RetCode(305008, "node do not belong to this group");
-    RetCode EMPETY_FILE_ERROR = new RetCode(305009,"the file is empty!");
-    RetCode NOT_A_ZIP_FILE = new RetCode(305010,"it is not a zip file");
-    RetCode FILE_FORMAT_ERROR = new RetCode(305011,"file format error");
-    RetCode DO_NOT_ALL_ZIP_FILE = new RetCode(305012,"zip file can't contain zipfile");
-    RetCode FOLDERS_ARE_NOT_ALLOWED = new RetCode(305013,"folders are not allowed");
-    RetCode CONTRACT_ALREADY_EXIST = new RetCode(305014,"folder is already exist");
-    RetCode NODE_ABNORMAL = new RetCode(305015,"node may be abnormal, please confirm");
+    RetCode EMPETY_FILE_ERROR = new RetCode(305009, "the file is empty!");
+    RetCode NOT_A_ZIP_FILE = new RetCode(305010, "it is not a zip file");
+    RetCode FILE_FORMAT_ERROR = new RetCode(305011, "file format error");
+    RetCode DO_NOT_ALL_ZIP_FILE = new RetCode(305012, "zip file can't contain zipfile");
+    RetCode FOLDERS_ARE_NOT_ALLOWED = new RetCode(305013, "folders are not allowed");
+    RetCode CONTRACT_ALREADY_EXIST = new RetCode(305014, "folder is already exist");
+    RetCode NODE_ABNORMAL = new RetCode(305015, "node may be abnormal, please confirm");
+    RetCode NOT_HAVE_PERMISSION = new RetCode(305016, "do not have permission, please check configAuth");
 
     /* system error */
     RetCode SYSTEM_ERROR = RetCode.mark(105001, "system error");
