@@ -1,6 +1,7 @@
 package org.bcos.browser.controller;
 
 import javax.validation.Valid;
+import org.bcos.browser.auth.ConfigAuth;
 import org.bcos.browser.base.BaseController;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BaseResponse;
@@ -29,6 +30,7 @@ public class GroupController extends BaseController {
      * @param result checkResult
      * @return
      */
+    @ConfigAuth
     @PostMapping("/add")
     public BaseResponse addGroup(@Valid @RequestBody Group group, BindingResult result)
             throws BaseException {
@@ -54,6 +56,7 @@ public class GroupController extends BaseController {
      * @param groupId groupId
      * @return
      */
+    @ConfigAuth
     @DeleteMapping("/deleteById/{groupId}")
     public BaseResponse deleteGroup(@PathVariable("groupId") int groupId) {
         BaseResponse response = groupService.deleteGroup(groupId);

@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.bcos.browser.base.ConstantCode;
+import org.bcos.browser.base.Constants;
 import org.bcos.browser.entity.base.BaseResponse;
 import org.bcos.browser.entity.dto.BlockChainInfo;
 import org.bcos.browser.entity.dto.TransactionByDay;
@@ -20,6 +21,19 @@ public class BlockChainInfoService {
     BlockChainInfoMapper blockChainInfoMapper;
     @Autowired
     NodeMapper nodeMapper;
+    @Autowired
+    Constants constants;
+
+    /**
+     * ifShowConfig.
+     * 
+     * @return
+     */
+    public BaseResponse isConfigAuth() {
+        BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
+        response.setData(constants.isConfigAuth());
+        return response;
+    }
 
     /**
      * getBlockChainInfo.
@@ -42,8 +56,7 @@ public class BlockChainInfoService {
      * @param dateTimeEnd end time
      * @return
      */
-    public BaseResponse getTxnLatelyDays(int groupId, String dateTimeBegin,
-            String dateTimeEnd) {
+    public BaseResponse getTxnLatelyDays(int groupId, String dateTimeBegin, String dateTimeEnd) {
         List<TransactionByDay> list =
                 blockChainInfoMapper.getLastTbTxnByDay(groupId, dateTimeBegin, dateTimeEnd);
         List<RspGetTxnLatelyDays> listTxn = new ArrayList<>();
