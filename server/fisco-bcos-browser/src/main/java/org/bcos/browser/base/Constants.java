@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class Constants {
 
     public static final String CONSTANT_PREFIX = "constant";
+    private boolean configAuth = true;
     private String cronBlockChainInfo = "0/10 * * * * ?";
     private String cronBlockInfo = "0/10 * * * * ?";
     private String cronTxnByDay = "30 0/1 * * * ?";
