@@ -11,10 +11,12 @@ import org.bcos.browser.entity.dto.BlockChainInfo;
 import org.bcos.browser.entity.dto.BlockFromChain;
 import org.bcos.browser.entity.dto.BlockNumberAndTxn;
 import org.bcos.browser.entity.dto.Group;
+import org.bcos.browser.entity.dto.LatestTransCount;
 import org.bcos.browser.entity.dto.Node;
 import org.bcos.browser.entity.dto.Peer;
 import org.bcos.browser.entity.dto.SyncInfoFromChain;
 import org.bcos.browser.entity.dto.Transaction;
+import org.bcos.browser.entity.dto.TransactionByDay;
 import org.bcos.browser.entity.dto.TransactionFromChain;
 import org.bcos.browser.mapper.BlockChainInfoMapper;
 import org.bcos.browser.mapper.BlockMapper;
@@ -23,9 +25,11 @@ import org.bcos.browser.mapper.NodeMapper;
 import org.bcos.browser.mapper.TransactionMapper;
 import org.bcos.browser.util.CommonUtils;
 import org.bcos.browser.util.Web3jRpc;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 @Slf4j
 @Component
@@ -123,8 +127,8 @@ public class SchedulerService {
             timestamp = new Timestamp(Long.parseLong(blockInfo.getTimestamp().substring(2), 16));
         }
         if (number != 0) {
-            sealer = blockInfo.getSealerList().get(
-                    CommonUtils.parseHexStr2Int(blockInfo.getSealer()));
+            sealer = blockInfo.getSealerList()
+                    .get(CommonUtils.parseHexStr2Int(blockInfo.getSealer()));
         }
         // add transaction info
         List<TransactionFromChain> transList = blockInfo.getTransactions();
@@ -158,8 +162,33 @@ public class SchedulerService {
     public void handleTxnByDay() {
         List<Group> list = groupMapper.getGroupList();
         for (Group loop : list) {
-            blockChainInfoMapper.addTxnByDay(loop.getGroupId());
+            statisticByGroupId(loop.getGroupId());
         }
+    }
+
+    /**
+     * static transCount by groupId.
+     */
+    private void statisticByGroupId(Integer groupId) {
+        // statistic latest transactionCount
+        List<LatestTransCount> latestTransCountList =
+                transactionMapper.queryLatestTransCount(groupId);
+        if (CollectionUtils.isEmpty(latestTransCountList)) {
+            log.debug("updateTransDailyData jump over, latestTransCountList is null,groupId:{} ",
+                    groupId);
+            return;
+        }
+        latestTransCountList.stream().forEach(ltc -> saveLatestTransCount(ltc, groupId));
+    }
+
+    /**
+     * save latest transaction count.
+     */
+    private void saveLatestTransCount(LatestTransCount latestTransCount, Integer groupId) {
+        TransactionByDay transactionByDay = new TransactionByDay();
+        transactionByDay.setGroupId(groupId);
+        BeanUtils.copyProperties(latestTransCount, transactionByDay);
+        blockChainInfoMapper.addTxnByDay(transactionByDay);
     }
 
     /**
@@ -188,7 +217,7 @@ public class SchedulerService {
             // sync node
             SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groupId);
             if (syncInfo != null) {
-                for (Peer peer: syncInfo.getPeers()) {
+                for (Peer peer : syncInfo.getPeers()) {
                     Node syncNode = new Node();
                     syncNode.setNodeId(peer.getNodeId());
                     syncNode.setGroupId(groupId);
@@ -215,17 +244,17 @@ public class SchedulerService {
         for (Group group : list) {
             int groupId = group.getGroupId();
             List<Node> nodeList = nodeMapper.getAllNode(groupId);
-            
+
             SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groupId);
             log.debug("checkNodeActive syncInfo:{}", syncInfo);
             List<Peer> consensusInfo = web3jRpc.getConsensusInfo(groupId);
             log.debug("checkNodeActive consensusInfo:{}", consensusInfo);
-            
+
             for (Node loop : nodeList) {
                 int blockNumber = 0;
                 int pbftView = 0;
                 String nodeId = loop.getNodeId();
-                
+
                 if (syncInfo != null) {
                     if (nodeId.equals(syncInfo.getNodeId())) {
                         blockNumber = syncInfo.getBlockNumber();

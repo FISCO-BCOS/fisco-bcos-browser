@@ -48,6 +48,7 @@
             pk_date date NOT NULL COMMENT '时间',
             group_id int(11) NOT NULL COMMENT '所属群组ID',
             txn int(11) COMMENT '交易量',
+            block_number int(11) DEFAULT '0' COMMENT '当前统计到的块高',
             gmt_create datetime COMMENT '创建时间',
             gmt_modify datetime COMMENT '修改时间',
             PRIMARY KEY (pk_date)

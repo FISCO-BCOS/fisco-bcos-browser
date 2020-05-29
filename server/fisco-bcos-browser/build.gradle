@@ -51,10 +51,27 @@ List mysql = [
 	'mysql:mysql-connector-java:5.1.30',
 ]
 
+List io = [
+	'commons-io:commons-io:2.6',
+	'commons-fileupload:commons-fileupload:1.4'
+]
+
+List jackson = [
+    "com.fasterxml.jackson.core:jackson-databind:2.10.0",
+    "com.fasterxml.jackson.module:jackson-module-parameter-names:2.10.0",
+    "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.0",
+    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.0"
+]
+
+List swagger = [
+    'io.springfox:springfox-swagger2:2.8.0',
+    'io.springfox:springfox-swagger-ui:2.8.0'
+]
+
 dependencies {
-    compile spring,spring_boot,logger,mysql
+    compile spring,spring_boot,logger,mysql,io,jackson,swagger
     compile "com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.1"
-	  compile "org.apache.commons:commons-lang3:3.10"
+	compile "org.apache.commons:commons-lang3:3.10"
 
     compile 'com.alibaba:fastjson:1.2.67'
     annotationProcessor 'org.projectlombok:lombok:1.18.2'
