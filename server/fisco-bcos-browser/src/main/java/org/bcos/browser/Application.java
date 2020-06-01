@@ -8,12 +8,14 @@ import org.springframework.boot.autoconfigure.web.MultipartAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Startup class.
  *
  */
 @Slf4j
+@EnableSwagger2
 @EnableTransactionManagement
 @SpringBootApplication(exclude = {MultipartAutoConfiguration.class})
 @MapperScan("org.bcos.browser.mapper")
