@@ -665,8 +665,10 @@ export default {
             // this.loading = false;
             // this.loading = true
             this.contractData = val
+            console.log('solc未加载...')
             let wrapper = require("solc/wrapper");
             let solc = wrapper(window.Module);
+            console.log('solc加载成功')
             let content = "";
             let output;
             let input = {
