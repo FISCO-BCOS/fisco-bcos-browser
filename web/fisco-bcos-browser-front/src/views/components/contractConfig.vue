@@ -48,7 +48,7 @@ import '@/assets/css/public.css'
 import codeMenu from "@/components/codeMenu"
 let resData = require('@/contract.json');
 import ace from 'ace-builds'
-// import 'ace-builds/webpack-resolver' 
+// import 'ace-builds/webpack-resolver'
 import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/mode-javascript'
 import 'ace-builds/src-noconflict/ext-language_tools';
@@ -105,17 +105,7 @@ export default {
         Bus.$off("complite")
     },
     beforeMount() {
-        var head = document.head;
-        var script = document.createElement("script");
-        if (localStorage.getItem("encryptionId") == 1) {
-            script.src = "./static/js/soljson-v0.4.25-gm.js";
-        } else {
-            script.src = "./static/js/soljson-v0.4.25+commit.59dbf8f1.js";
-        }
-        script.setAttribute('id', 'soljson');
-        if (!document.getElementById('soljson')) {
-            head.append(script)
-        }
+
     },
     mounted: function () {
         this.groupId = localStorage.getItem("groupId")
@@ -284,7 +274,10 @@ export default {
                 if (res.data.code == 0) {
                     this.getContracts()
                 } else {
-                    message(errorcode[res.data.code].cn, 'error')
+                    this.$message({
+                        type: 'error',
+                        message: errorcode[res.data.code].cn
+                    })
                 }
             }).catch(err => {
                 this.$message({
@@ -365,15 +358,24 @@ export default {
                 this.fileList = [];
                 this.files = [];
                 if (res.data.code === 0) {
-                    message('合约保存成功！', 'success')
+                    this.$message({
+                        type: 'success',
+                        message: '合约保存成功！'
+                    });
                     this.getContracts();
                 } else {
-                    message(errorcode[res.data.code].cn, 'error')
+                    this.$message({
+                        type: 'error',
+                        message: errorcode[res.data.code].cn
+                    })
                 }
             }).catch(err => {
                 this.fileList = [];
                 this.files = [];
-                message(constant.ERROR, 'error');
+                this.$message({
+                    type: 'error',
+                    message: constant.ERROR
+                });
             })
         },
         getContracts: function (type) {
@@ -395,10 +397,16 @@ export default {
                     }
                     this.pagination.total = res.data.totalCount;
                 } else {
-                    message(errorcode[res.data.code].cn, 'error')
+                    this.$message({
+                        type: 'error',
+                        message: errorcode[res.data.code].cn
+                    })
                 }
             }).catch(err => {
-                message(constant.ERROR, 'error');
+                this.$message({
+                    type: 'error',
+                    message: constant.ERROR
+                });
             })
         },
         //Get all ABI methods
@@ -476,10 +484,16 @@ export default {
                 if (res.data.code === 0) {
                     console.log("method 保存成功！")
                 } else {
-                    message(errorcode[res.data.code].cn, 'error')
+                    this.$message({
+                        type: 'error',
+                        message: errorcode[res.data.code].cn
+                    })
                 }
             }).catch(err => {
-                message(constant.ERROR, 'error');
+                this.$message({
+                    type: 'error',
+                    message: constant.ERROR
+                });
             })
         },
         changeContractData: function (list) {
@@ -587,10 +601,16 @@ export default {
                     this.allContractList = res.data.data;
                     this.changeAllcontarctList(this.allContractList)
                 } else {
-                    message(errorcode[res.data.code].cn, 'error')
+                    this.$message({
+                        type: 'error',
+                        message: errorcode[res.data.code].cn
+                    })
                 }
             }).catch(err => {
-                message(constant.ERROR, 'error');
+                this.$message({
+                    type: 'error',
+                    message: constant.ERROR
+                });
             })
         },
         changeAllcontarctList: function (list) {
@@ -609,12 +629,22 @@ export default {
                     this.codeHight = '100%';
                     this.errorInfo = "";
                     this.aceEditor.setValue("")
-                    message('删除成功！', 'success')
+                    this.$message({
+                        type: 'success',
+                        message: "删除成功！"
+                    })
                 } else {
-                    message(errorcode[res.data.code].cn, 'error')
+                    this.$message({
+                        type: 'error',
+                        message: errorcode[res.data.code].cn
+                    })
                 }
             }).catch(err => {
-                message('系统错误', 'error')
+                this.$message({
+                    type: 'error',
+                    message: '系统错误'
+                })
+
             })
         },
         // lots of Compilation Contracts
@@ -634,7 +664,6 @@ export default {
         complieContract: function (val, callback) {
             // this.loading = false;
             // this.loading = true
-
             this.contractData = val
             let wrapper = require("solc/wrapper");
             let solc = wrapper(window.Module);
@@ -822,19 +851,31 @@ export default {
                     this.buttonShow = false;
                     if (res.data.code === 0) {
                         this.getContracts();
-                        message('合约编译完成！', 'success')
+                        this.$message({
+                            type: 'success',
+                            message: '合约编译完成！'
+                        })
                     } else {
-                        message(errorcode[res.data.code].cn, 'error')
+                        this.$message({
+                            type: 'error',
+                            message: errorcode[res.data.code].cn
+                        })
                     }
                 }).catch(err => {
                     this.loading = false;
                     this.buttonShow = false;
-                    message('系统错误', 'error')
+                    this.$message({
+                        type: 'error',
+                        message: '系统错误'
+                    })
                 })
             } else {
                 this.buttonShow = false;
                 this.loading = false;
-                message('合约以全部编译完成，没有可编译的合约', 'success')
+                this.$message({
+                    type: 'success',
+                    message: '合约以全部编译完成，没有可编译的合约'
+                })
             }
         },
         handleSizeChange(val) {
