@@ -1,6 +1,7 @@
 package org.bcos.browser.controller;
 
 import javax.validation.Valid;
+import org.bcos.browser.auth.ConfigAuth;
 import org.bcos.browser.base.BaseController;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BasePageResponse;
@@ -31,6 +32,7 @@ public class NodeController extends BaseController {
      * @param result checkResult
      * @return
      */
+    @ConfigAuth
     @PostMapping("/add")
     public BaseResponse addNode(@Valid @RequestBody ReqAddNode reqAddNode, BindingResult result)
             throws BaseException {
@@ -69,6 +71,7 @@ public class NodeController extends BaseController {
      * @param nodeId nodeId
      * @return
      */
+    @ConfigAuth
     @DeleteMapping("/deleteById/{groupId}/{nodeId}")
     public BaseResponse deleteNodeById(@PathVariable("groupId") int groupId,
             @PathVariable("nodeId") String nodeId) {
@@ -82,6 +85,7 @@ public class NodeController extends BaseController {
      * @param groupId groupId
      * @return
      */
+    @ConfigAuth
     @GetMapping("/getEncryptType/{groupId}")
     public BaseResponse getEncryptType(@PathVariable("groupId") int groupId) {
         BaseResponse response = nodeService.getEncryptType(groupId);

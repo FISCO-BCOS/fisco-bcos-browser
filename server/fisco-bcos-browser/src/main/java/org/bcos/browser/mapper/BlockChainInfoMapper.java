@@ -11,7 +11,7 @@ public interface BlockChainInfoMapper {
 
     void add(BlockChainInfo blockChainInfo);
 
-    void addTxnByDay(@Param(value = "groupId") int groupId);
+    void addTxnByDay(TransactionByDay transactionByDay);
 
     BlockChainInfo getBlockChainInfo(@Param(value = "groupId") int groupId);
 
