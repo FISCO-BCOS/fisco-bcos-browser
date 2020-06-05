@@ -27,6 +27,8 @@ Vue.use(JsonViewer)
 Vue.use(VueClipboard)  
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
+import { message } from '@/util/message.js';
+Vue.prototype.$message = message;
 // require('./mock')
 /* eslint-disable no-new */
 window.eventBus = new Vue();
