@@ -80,7 +80,7 @@ export default {
         }
     ],
 //    error info
-    ERROR: '服务器累了，请联系管理员',
+    ERROR: '服务器内部错误',
 
     DELETE_NODE_SUCCESS: '删除节点成功',
 
