@@ -95,6 +95,21 @@ public class Web3jRpc {
         }
         return object;
     }
+    
+    /**
+     * getBlockNumber.
+     * 
+     * @param groupId groupId
+     * @return
+     */
+    public int getBlockNumber(int groupId) {
+        Object[] params = new Object[] {groupId};
+        Object object = rpcRequest(groupId, Constants.GET_BLOCK_NUMBER, params);
+        if (object != null) {
+            return CommonUtils.parseHexStr2Int(object.toString());
+        }
+        return 0;
+    }
 
     /**
      * getTxn.
@@ -241,6 +256,23 @@ public class Web3jRpc {
         List<String> result = new ArrayList<>();
         Object[] params = new Object[] {groupId};
         Object object = rpcRequest(groupId, Constants.GET_GROUP_PEERS, params);
+        if (object != null) {
+            result = CommonUtils.object2JavaBean(object, List.class);
+        }
+        return result;
+    }
+    
+    /**
+     * getObserverList.
+     * 
+     * @param groupId groupId
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public List<String> getObserverList(int groupId) {
+        List<String> result = new ArrayList<>();
+        Object[] params = new Object[] {groupId};
+        Object object = rpcRequest(groupId, Constants.GET_OBSERVER_LIST, params);
         if (object != null) {
             result = CommonUtils.object2JavaBean(object, List.class);
         }

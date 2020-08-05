@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.bcos.browser.base.Constants;
+import org.bcos.browser.base.enums.NodeStatus;
+import org.bcos.browser.base.enums.NodeType;
 import org.bcos.browser.entity.dto.Block;
 import org.bcos.browser.entity.dto.BlockChainInfo;
 import org.bcos.browser.entity.dto.BlockFromChain;
@@ -249,6 +251,7 @@ public class SchedulerService {
             log.debug("checkNodeActive syncInfo:{}", syncInfo);
             List<Peer> consensusInfo = web3jRpc.getConsensusInfo(groupId);
             log.debug("checkNodeActive consensusInfo:{}", consensusInfo);
+            List<String> observerList = web3jRpc.getObserverList(groupId);
 
             for (Node loop : nodeList) {
                 int blockNumber = 0;
@@ -273,6 +276,13 @@ public class SchedulerService {
                         break;
                     }
                 }
+
+                int nodeType = NodeType.CONSENSUS.getValue(); // 0-consensus;1-observer
+                if (observerList != null) {
+                    nodeType = observerList.stream().filter(observer -> observer.equals(nodeId))
+                            .map(c -> NodeType.OBSERVER.getValue()).findFirst().orElse(0);
+                }
+
                 // update node status
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("nodeId", nodeId);
@@ -282,10 +292,18 @@ public class SchedulerService {
                     blockNumber = loop.getBlockNumber();
                 }
                 map.put("blockNumber", blockNumber);
-                if (blockNumber == loop.getBlockNumber() && pbftView == loop.getPbftView()) {
-                    map.put("status", 1);
+                if (nodeType == NodeType.CONSENSUS.getValue()) {
+                    if (blockNumber == loop.getBlockNumber() && pbftView == loop.getPbftView()) {
+                        map.put("status", NodeStatus.INVALID.getValue());
+                    } else {
+                        map.put("status", NodeStatus.NORMAL.getValue());
+                    }
                 } else {
-                    map.put("status", 0);
+                    if (blockNumber != web3jRpc.getBlockNumber(groupId)) {
+                        map.put("status", NodeStatus.INVALID.getValue());
+                    } else {
+                        map.put("status", NodeStatus.NORMAL.getValue());
+                    }
                 }
                 nodeMapper.updateStatus(map);
             }
