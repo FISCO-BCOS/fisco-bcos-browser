@@ -649,6 +649,7 @@ export default {
         },
         // lots of Compilation Contracts
         complie: function () {
+            if(!this.contractList.length) return
             this.buttonShow = true;
             this.loading = true;
             this.contractList.forEach((value, index) => {
