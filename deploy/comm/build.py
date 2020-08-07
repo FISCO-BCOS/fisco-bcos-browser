@@ -110,7 +110,7 @@ def startServer():
     doCmdIgnoreException("source /etc/profile")
     doCmdIgnoreException("chmod u+x *.sh")
     doCmdIgnoreException("dos2unix *.sh")
-    result = doCmd("sh start.sh")
+    result = doCmd("bash start.sh")
     if result["status"] == 0:
         if_started = 'started' in result["output"]
         if if_started:
@@ -120,8 +120,8 @@ def startServer():
             else:
                 info = input("server进程已经存在，是否kill进程强制重启？[y/n]:")
             if info == "y" or info == "Y":
-                doCmd("sh stop.sh")
-                result_start = doCmd("sh start.sh")
+                doCmd("bash stop.sh")
+                result_start = doCmd("bash start.sh")
                 if result_start["status"] == 0:
                     if_success = 'Success' in result_start["output"]
                     if if_success:
@@ -148,7 +148,7 @@ def stopServer():
     doCmdIgnoreException("source /etc/profile")
     doCmdIgnoreException("chmod u+x *.sh")
     doCmdIgnoreException("dos2unix *.sh")
-    result = doCmd("sh stop.sh")
+    result = doCmd("bash stop.sh")
     if result["status"] == 0:
         if_success = 'Success' in result["output"]
         if if_success:
