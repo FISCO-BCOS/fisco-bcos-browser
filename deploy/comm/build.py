@@ -41,7 +41,7 @@ def end():
     return
 
 def pullSource():
-    git_comm = "wget " + getCommProperties("package.url")
+    git_comm = "wget --no-check-certificate " + getCommProperties("package.url")
     if not os.path.exists("{}/fisco-bcos-browser.zip".format(currentDir)):
         print(git_comm)
         os.system(git_comm)
