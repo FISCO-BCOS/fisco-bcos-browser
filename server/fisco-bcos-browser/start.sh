@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 APP_MAIN=org.bcos.browser.Application
 CLASSPATH='conf/:apps/*:lib/*'
