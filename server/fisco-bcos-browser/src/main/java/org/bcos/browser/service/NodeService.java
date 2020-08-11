@@ -167,11 +167,13 @@ public class NodeService {
     public BaseResponse getEncryptType(int groupId) {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         Object object = web3jRpc.getClientVersion(groupId);
-        JSONObject result = JSONObject.parseObject(JSON.toJSONString(object));
-        String version = result.getString("FISCO-BCOS Version");
         int encryptType = 0;
-        if (version.contains("gm")) {
-            encryptType = 1;
+        if (object != null) {
+            JSONObject result = JSONObject.parseObject(JSON.toJSONString(object));
+            String version = result.getString("FISCO-BCOS Version");
+            if (version.contains("gm")) {
+                encryptType = 1;
+            }
         }
         response.setData(encryptType);
         return response;
