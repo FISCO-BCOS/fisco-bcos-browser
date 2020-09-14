@@ -86,7 +86,7 @@ def hasInstallServer(server):
         return False
 
 def installByYum(server):
-    if isCentos():
+    if isCentos() or isRedhat():
         result = doCmdIgnoreException("sudo yum -y install {}".format(server))
         if result["status"] != 0:
             os.system("sudo yum -y install epel-release")
