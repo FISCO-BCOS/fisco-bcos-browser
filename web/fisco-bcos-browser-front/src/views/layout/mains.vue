@@ -55,7 +55,7 @@ export default {
                             localStorage.setItem("groupId", this.groupId);
                         }
                         localStorage.setItem("groupList", JSON.stringify(this.groupList))
-                        this.getEncrypt(this.initSolc);
+                        // this.getEncrypt(this.initSolc);
                         this.change();
                         if (this.$route.query.pkHash) {
                             router.push({

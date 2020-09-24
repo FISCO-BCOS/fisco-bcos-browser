@@ -16,6 +16,12 @@
                         <i class="el-icon-info"></i>
                     </el-tooltip>
                 </div>
+                <div class="hashInput">
+                    <el-select v-model="version" placeholder="请选择" @change="onchangeLoadVersion" style="padding-left: 20px;" class="more-version">
+                        <el-option v-for="item in versionList" :key="item.versionId" :label="item.solcName" :value="item.solcName">
+                        </el-option>
+                    </el-select>
+                </div>
             </div>
             <div class="search-table" style="font-size: 0; box-sizing: border-box;height: calc(100% - 114px);">
                 <div class="contract-menu" style="height: 100%">
@@ -38,7 +44,7 @@
 <script>
 let Base64 = require("js-base64").Base64;
 import navs from '@/components/content-nav'
-import { addContract, getContractList, deleteContract, updateContract, uploadData, addAbiFunction } from "@/api/api"
+import { addContract, getContractList, deleteContract, updateContract, uploadData, addAbiFunction, getEncryptType } from "@/api/api"
 import { message } from '@/util/util'
 import constant from '@/util/constant'
 import errorcode from "@/util/errorCode"
@@ -95,6 +101,11 @@ export default {
             compliteData: null,
             contractAbi: "",
             contractData: null,
+            allVersion: [],
+            versionList: [],
+            version: localStorage.getItem('solcName') ? localStorage.getItem('solcName') : '',
+            baseURLWasm: '../../../static/js',
+            versionId: localStorage.getItem('versionId') ? localStorage.getItem('versionId') : '',
         }
     },
     beforeDestroy: function () {
@@ -105,9 +116,31 @@ export default {
         Bus.$off("complite")
     },
     beforeMount() {
-
+        this.getEncrypt(this.querySolcList);
     },
     mounted: function () {
+        this.allVersion = [
+            {
+                solcName: "v0.4.25",
+                versionId: 0,
+                encryptType: 0
+            },
+            {
+                solcName: "v0.4.25-gm",
+                versionId: 1,
+                encryptType: 1
+            },
+            {
+                solcName: "v0.5.1",
+                versionId: 2,
+                encryptType: 0
+            },
+            {
+                solcName: "v0.5.1-gm",
+                versionId: 3,
+                encryptType: 1
+            }
+        ]
         this.groupId = localStorage.getItem("groupId")
         this.initEditor();
         this.getContracts();
@@ -649,7 +682,7 @@ export default {
         },
         // lots of Compilation Contracts
         complie: function () {
-            if(!this.contractList.length) return
+            if (!this.contractList.length) return
             this.buttonShow = true;
             this.loading = true;
             this.contractList.forEach((value, index) => {
@@ -688,8 +721,7 @@ export default {
                 content: Base64.decode(val.contractSource)
             };
             try {
-                output = JSON.parse(solc.compileStandard(JSON.stringify(input), this.findImports))
-
+                output = JSON.parse(solc.compile(JSON.stringify(input), { import: this.findImports }));
             } catch (error) {
                 if (typeof error != 'string') {
                     val.errorInfo = JSON.stringify(error);
@@ -889,7 +921,61 @@ export default {
         handleCurrentChange(val) {
             this.pagination.currentPage = val;
             this.getContracts();
-        }
+        },
+        getEncrypt: function (callback) {
+            getEncryptType(localStorage.getItem("groupId")).then(res => {
+                if (res.data.code === 0) {
+                    localStorage.setItem("encryptionId", res.data.data)
+                    callback();
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: errorcode[res.data.code].cn
+                    })
+                }
+            }).catch(err => {
+                this.$message({
+                    type: 'error',
+                    message: constant.ERROR
+                })
+            })
+        },
+        querySolcList() {
+            for (let i = 0; i < this.allVersion.length; i++) {
+                if (localStorage.getItem("encryptionId") == this.allVersion[i].encryptType) {
+                    this.versionList.push(this.allVersion[i])
+                }
+            }
+            if (!localStorage.getItem('solcName')) {
+                this.version = this.versionList[0]['solcName'];
+                this.versionId = this.versionList[0]['id'];
+                localStorage.setItem("solcName", this.versionList[0]['solcName'])
+                localStorage.setItem("versionId", this.versionList[0]['versionId'])
+            }
+            this.initSolc()
+        },
+        initSolc() {
+            var head = document.head;
+            var script = document.createElement("script");
+            script.src = `${this.baseURLWasm}/${this.version}.js`;
+            script.setAttribute('id', 'soljson');
+            if (!document.getElementById('soljson')) {
+                head.append(script)
+            }
+        },
+        onchangeLoadVersion(version) {
+            localStorage.setItem('solcName', version)
+            var versionId = '';
+            this.versionList.forEach(item => {
+                if (item.solcName == version) {
+                    versionId = item.versionId
+                }
+            });
+            localStorage.setItem('versionId', versionId)
+            this.initSolc(version)
+            this.$router.go(0)
+            this.getContracts()
+        },
     },
     filters: {
         Status: function (value) {
@@ -953,6 +1039,9 @@ export default {
 }
 .contract-content >>> .ace_print-margin {
     width: 0;
+}
+.more-version >>> .el-input__inner {
+    width: 120px;
 }
 </style>
 
