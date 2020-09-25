@@ -1,39 +1,50 @@
 <template>
-    <div class="search-main" style="height: auto;">
-        <div class="container">
-           <v-nav :hrTitle="btitle" :hrcontent="btitle" :route="'block'"></v-nav>
+    <div class="search-main">
+        <div class="container" style="padding-top: 40px;">
+           <!-- <v-nav :hrTitle="btitle" :hrcontent="btitle" :route="'block'"></v-nav> -->
+           <div class="background-common-color block-data">
+               <div class="block-header-title">
+                   <svg-icon icon-class='block2' class="font-24"></svg-icon>
+                   <span class="block-text">区块</span>
+               </div>
             <div class="search-nav">
                 <div class="hashInput">
                     <el-input placeholder="请输入区块哈希或块高" v-model="searchKeyValue" class="input-with-select">
-                        <el-button slot="append" icon="el-icon-search" @click="search" :disabled="submitDisabled"></el-button>
+                        <svg-icon icon-class='search' slot='prefix' class="font-24 search-position" @click="search" :disabled="submitDisabled"></svg-icon>
+                        <!-- <el-button slot="append" icon="el-icon-search" @click="search" :disabled="submitDisabled"></el-button> -->
                     </el-input>
                 </div>
             </div>
             <div class="search-table">
-                <el-table :data="blockList"  v-loading="loading" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
-                    <el-table-column prop="number" label="块高" align="center" :class-name="'table-link'" :show-overflow-tooltip="true">
-                        <template slot-scope="scope">
-                            <span @click="linkPage('blockDetail','blockHash',scope.row.blockHash)">{{scope.row.number}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="dateTimeStr" label="生成时间" min-width="120px" align="center" :show-overflow-tooltip="true"></el-table-column>
-                    <el-table-column prop="txn" label="交易数量" align="center" :class-name="'table-link'" :show-overflow-tooltip="true">
-                        <template slot-scope="scope">
-                            <span @click="linkPage('transaction','blockHeight',scope.row.number)">{{scope.row.txn}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="sealer" label="出块者" min-width="100px" :show-overflow-tooltip="true" align="center"></el-table-column>
-                    <el-table-column prop="pkHash" label="哈希" min-width="350px" :show-overflow-tooltip="true" align="center" :class-name="'table-link'">
-                        <template slot-scope="scope">
-                            <span @click="linkPage('blockDetail','blockHash',scope.row.blockHash)">{{scope.row.blockHash}}</span>
-                        </template>
-                    </el-table-column>
-                </el-table>
+                <ul class="block-ul">
+                        <li class="block-title">
+                            <div class="block-tile-item block-th1">块高</div>
+                            <div class="block-tile-item block-th2">生成时间</div>
+                            <div class="block-tile-item block-th3">交易数量</div>
+                            <div class="block-tile-item block-th4">出块者</div>
+                            <div class="block-tile-item block-th5">哈希</div>
+                        </li>
+                        <li v-for='item in blockList' :key='item.blockHash' class="block-content">
+                            <div class="block-item-data">
+                                <div class="block-tile-item block-th1">
+                                    <span class="cursor" @click="linkPage('blockDetail','blockHash',item.blockHash)">{{item.number}}</span>
+                                </div>
+                                <div class="block-tile-item block-th2">{{item.dateTimeStr}}</div>
+                                <div class="block-tile-item block-th3">
+                                    <span class="cursor" @click="linkPage('transaction','blockHeight',item.number)">{{item.txn}}</span>
+                                </div>
+                                <div class="block-tile-item block-th4">
+                                    <span class="font-overflow1">{{item.sealer}}</span>
+                                </div>
+                                <div class="block-tile-item block-th5">
+                                    <span class="cursor" @click="linkPage('blockDetail','blockHash',item.blockHash)">{{item.blockHash}}</span>
+                                </div>
+                            </div>
+                            <div style="height: 8px"></div>
+                        </li>
+                    </ul>
                 <div class="search-pagation">
-                    <div style="line-height: 40px;">
-                    <span>查询结果 : </span>
-                    <span>共计{{pagination.total}}条数据</span>
-                    </div>
+                    <span class="search-pagation-total">共计{{pagination.total}}条数据</span>
                     <el-pagination style="display: inline-block"
                         layout="sizes,prev, pager, next"
                         :total="pagination.total"
@@ -45,10 +56,87 @@
                     </el-pagination>
                 </div>
             </div>
+            </div>
         </div>
     </div>
 </template>
-<style>
+<style scoped>
+.block-data{
+    padding: 20px 30px;
+    border-radius: 16px 4px 16px 4px;
+}
+.block-header-title{
+    padding-bottom: 10px;
+}
+.block-text{
+    color: #fff;
+    font-size: 16px;
+}
+.block-ul{
+    list-style: none;
+    width: 100%;
+    padding: 0;
+    padding-top: 10px;
+    font-size: 0;
+    color: #fff;
+}
+.block-title{
+    color: #9B9B9B;
+}
+.block-content{
+    font-size: 0;
+}
+.block-tile-item{
+    display: inline-block;
+    padding-left: 20px;
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+    box-sizing: border-box;
+}
+.block-th1{
+    width: 10%;
+}
+.block-th2{
+    width: 20%;
+}
+.block-th3{
+    width: 10%;
+}
+.block-th4{
+    width: 20%;
+}
+.block-th5{
+    width: 40%;
+}
+.block-item-data{
+    background-image: linear-gradient(49deg, rgba(22, 167, 252,0.2) 0%, rgba(200, 109, 215,0.2) 100%);
+    border-radius: 8px;
+    border-radius: 8px;
+}
+.font-overflow1{
+    display: inline-block;
+    width: 100%;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    -o-text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
+    -moz-text-overflow: ellipsis;
+    vertical-align: middle;
+}
+.search-pagation-total{
+    display: inline-block;
+    padding-right: 20px;
+    vertical-align: -6px;
+    color: #9B9B9B;
+}
+.input-with-select >>>.el-input__inner{
+    padding-left: 50px;
+    color: #fff
+}
+
 </style>
 <script type="es6">
     import nav from '@/components/content-nav'

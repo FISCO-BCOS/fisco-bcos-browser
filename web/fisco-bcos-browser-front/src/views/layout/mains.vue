@@ -1,8 +1,8 @@
 <template>
-    <div style="height:100%;">
-        <div v-loading="loading" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)" style="height: 100%;">
+    <div style="height:100%;" class="mains">
+        <div v-loading="loading" style="height: 100%;">
             <v-head ref="head"></v-head>
-            <div style="padding-top: 20px"></div>
+            <!-- <div style="padding-top: 20px"></div> -->
             <router-view v-if='routerShow' class="main" @addGroup='change'></router-view>
         </div>
         <add-group @close="addGroups" v-if="addGroupShow" @success='addSuccess' :show='addGroupShow'></add-group>
@@ -132,7 +132,10 @@ export default {
 <style>
 .main {
     width: 100%;
-    background-color: #2a2c3b;
+    /* background-image: url(../../assets/images/bg.jpg);
+    background-repeat: no-repeat;
+    background-attachment:fixed */
+    /* background-position: ; */
 }
 .el-message__content {
     display: inline-block;
@@ -141,5 +144,9 @@ export default {
     display: inline-block !important;
     vertical-align: middle !important;
     line-height: 0 !important;
+}
+.mains{
+    /* background-image: url(../../assets/images/bg.jpg); */
+    
 }
 </style>

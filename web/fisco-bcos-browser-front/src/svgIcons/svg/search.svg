@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>search</title>
+    <g id="search" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" transform="translate(13.000000, 13.000000) rotate(-45.000000) translate(-13.000000, -13.000000) translate(5.000000, 1.000000)">
+            <circle id="Oval" stroke="#2BD8FF" stroke-width="2" cx="8" cy="8" r="7"></circle>
+            <rect id="Rectangle" fill="#25CEFE" x="6.66666667" y="18.6666667" width="2.5" height="5" rx="1.25"></rect>
+        </g>
+    </g>
+</svg>

@@ -1,5 +1,6 @@
 <template>
-    <div :id="chartId" style="min-width: 255px; height: 230px; margin: 0 auto;color: #fff!important;"></div>
+    <div :id="chartId" style="min-width: 255px; height: 280px; margin: 0 auto;
+    margin-top: 5px;color: #fff!important;"></div>
 </template>
 <script>
     let echarts = require('echarts/lib/echarts');
@@ -56,15 +57,15 @@
                 let months = 0
 
                 let option = {
-                    title: {
-                        text: '最近15天的交易量',
-                        textStyle: {
-                            fontSize: 13,
-                            fontWeight:'bold',
-                            color: '#fff'
-                        },
-                        left:'center'
-                    },
+                    // title: {
+                    //     text: '最近15天的交易量',
+                    //     textStyle: {
+                    //         fontSize: 13,
+                    //         fontWeight:'bold',
+                    //         color: '#fff'
+                    //     },
+                    //     left:'left'
+                    // },
                     legend: {
                         height: this.chartSize.height,
                         width: this.chartSize.width
@@ -72,9 +73,12 @@
                     tooltip:{
                         show:true,
                         trigger: 'axis',
+                        backgroundColor: 'none',
                         formatter: function(data){
-                            return '<span style="font-size:10px">' + data[0].name + '</span><br><table ><tr><td style="padding:0">' +
-                                '<span style="font-size:10px;color:white">交易量：' + data[0].value + '</a></span><br></td></tr></table>';
+                            return `<div class="formatter-bg">
+                            <div class="formatter-value">${data[0].value}</div>
+                            <div class="formatter-name">2020/${data[0].name}</div>
+                            </div>`;
                         }
                     },
                     grid:{
@@ -86,14 +90,17 @@
                     series: [{
                         //  name: '销量',
                         type: this.chartType,
-                        symbolSize:10,
+                        // symbolSize:10,
                         itemStyle : {
                             normal : {
-                                color:'#fff',
+                                color:'#25CEFE',
                                 lineStyle:{
-                                    color:'#da99db'
+                                    color:'#23CDFE'
                                 }
                             }
+                        },
+                        areaStyle: {
+                            color: 'rgba(13, 177, 193,0.3)'
                         },
                         data: this.chartTransactionDataArr
                     }],
@@ -101,13 +108,21 @@
                         data: this.chartData,
                         axisLine: {
                             lineStyle: {
-                                color: '#fff',//left line color
+                                color: '#25CEFE',//left line color
                             }
                         },
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                width: 1,
+                                type: "dotted",
+                                color: "#096DD9"
+                            }
+                            },
                         axisLabel: {
                             interval: 3,
                             textStyle: {
-                                color: '#fff',
+                                color: '#9B9B9B',
 
                             }
                         }
@@ -116,10 +131,16 @@
                         axisLine: {
                             show: false, 
                             lineStyle: {
-                                color: '#fff',
+                                color: '#25CEFE',
                             }
                         },
-                        splitLine: {show: true},
+                        splitLine: {
+                            show: true,
+                            lineStyle: {
+                                type: "dotted",
+                                color: "#096DD9"
+                            }
+                            },
                         axisTick: {show: false},
                         axisLabel: {
                             formatter: function (value, index) {
@@ -132,7 +153,7 @@
                                 }
                             },
                             textStyle: {
-                                color: '#fff',
+                                color: '#9B9B9B',
 
                             }
                         }
