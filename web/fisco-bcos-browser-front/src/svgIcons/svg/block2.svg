@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>区块</title>
+    <g id="区块" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-7">
+            <path d="M2.877,10.8184256 L7.09858118,21.2474256 L16.475,21.2474256 L17.6842105,24 L5.11307551,24 L2.48689958e-14,10.819222 L2.877,10.8184256 Z" id="Combined-Shape" fill="#FFFFFF"></path>
+            <path d="M10.3908026,3.95423341 L12.9938541,9.95423341 L19.3708026,9.95423341 L23.3659539,18.5406178 L8.63240132,18.5406178 L2.63980263,3.95423341 L10.3908026,3.95423341 Z" id="Combined-Shape" fill="#25CEFE"></path>
+            <polygon id="Rectangle" fill="#DE24FF" points="11.1052632 9.32587341e-15 18.7509695 9.32587341e-15 22.4736842 7.90846682 14.3922403 7.90846682"></polygon>
+        </g>
+    </g>
+</svg>
