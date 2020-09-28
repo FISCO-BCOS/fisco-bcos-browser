@@ -90,6 +90,10 @@
                                             </div>
                                         </div>
                                     </template>
+                                    <template v-else-if="item.label =='status'">
+                                        <span class="label-title">{{item.label}}:</span>
+                                        <span class="receit-content" :style="{'color': txStatusColor(item.value)}">{{item.value}}</span>
+                                    </template>
                                     <template v-else>
                                         <span class="label-title">{{item.label}}:</span>
                                         <span class="receit-content">{{item.value}}</span>
@@ -779,6 +783,13 @@ export default {
                 this.showOutputDecode = true;
             }
         },
+        txStatusColor(val) {
+            if(val =='0x0'){
+                return '#67C23A'
+            }else {
+                return '#F56C6C'
+            }
+        }
     }
 }
 </script>
