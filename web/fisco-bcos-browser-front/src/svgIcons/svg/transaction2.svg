@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>交易</title>
+    <g id="交易" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-5">
+            <path d="M8.00052481,7.01443136 L8,16 L16.9855666,15.9995105 C16.7269999,20.461431 13.0267385,24 8.5,24 C3.80557963,24 1.77635684e-14,20.1944204 1.77635684e-14,15.5 C1.77635684e-14,10.9732495 3.53858773,7.27298054 8.00052481,7.01443136 Z" id="Combined-Shape" fill="#FFFFFF"></path>
+            <path d="M24,0 L24,14 L18.8936475,13.9998657 C18.2358503,9.40155703 14.5987523,5.76435637 10.0004937,5.10640392 L10,0 L24,0 Z" id="Combined-Shape" fill="#25CEFE"></path>
+            <path d="M16.8679181,13.9991648 L10,14 L10.0008352,7.13208191 C13.4922631,7.75409386 16.2459061,10.5077369 16.8679181,13.9991648 Z" id="Combined-Shape" fill="#DE24FF"></path>
+        </g>
+    </g>
+</svg>

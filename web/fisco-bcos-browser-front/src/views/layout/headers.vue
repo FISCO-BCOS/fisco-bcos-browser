@@ -1,11 +1,20 @@
 <template>
     <div>
-        <div class="nav-header">
-            <div class="container">
+        <div class="nav-header container">
+            <!-- <div class="container"> -->
                 <div class="logo">
-                    <img style="width: 170px;" @click='link' src="../../assets/images/fisco-bcos-logo.png" class="image">
+                    <svg-icon icon-class='logo' style="width: 153px;font-size: 40px;padding-top: 20px;"></svg-icon>
                 </div>
-                <div class="nav-menu" style="float: left;">
+                <div class="header-menu" style="margin-left: 30px" :class="{'header-menu-bg': isActive1}" @click="routerLink('home')">
+                    <span class="cursor" >总览</span>
+                </div>
+                <div class="header-menu" :class="{'header-menu-bg': isActive2}" @click="routerLink('block')">
+                    <span class="cursor" >区块</span>
+                </div>
+                <div class="header-menu" :class="{'header-menu-bg': isActive3}" @click="routerLink('transaction')">
+                    <span class="cursor" >交易</span>
+                </div>
+                <!-- <div class="nav-menu" style="float: left;">
                     <div class="nav-menu-item nav-item" style="display: inline-block;width: 160px;text-align:right">
                         <span>{{groupName}}</span>
                         <div class="nav-chainType"></div>
@@ -17,8 +26,8 @@
                         <i v-if="groupList.length" class="el-icon-caret-bottom icon-up icon"></i>
                         <i v-if="groupList.length" class="el-icon-caret-top icon-down icon"></i>
                     </div>
-                </div>
-                <div class="nav-menu">
+                </div> -->
+                <!-- <div class="nav-menu">
                     <div class="nav-menu-item nav-item" v-for="item in menu" :key='item.title'>{{item.title}}
                         <i class="el-icon-caret-bottom icon-up"></i>
                         <i class="el-icon-caret-top icon-down"></i>
@@ -27,8 +36,8 @@
                         </ul>
                     </div>
                     <div class="nav-menu-item nav-item" @click="routerLink('help')">帮助</div>
-                </div>
-            </div>
+                </div> -->
+            <!-- </div> -->
         </div>
     </div>
 </template>
@@ -48,7 +57,10 @@ export default {
             groupList: [],
             groupName: "",
             chainNone: false,
-            groupId: ""
+            groupId: "",
+            isActive1: false,
+            isActive2: false,
+            isActive3: false
         };
     },
       mounted: function () {
@@ -58,6 +70,22 @@ export default {
           Bus.$on("change",data => {
               this.getGroupData();
           })
+          if(this.$route.path == '/home'){
+              this.isActive1 = true;
+              this.isActive2 = false;
+              this.isActive3 = false
+          }
+          if(this.$route.path == '/block'){
+              this.isActive1 = false;
+              this.isActive2 = true;
+              this.isActive3 = false
+          }
+          if(this.$route.path == '/transaction'){
+              this.isActive1 = false;
+              this.isActive2 = false;
+              this.isActive3 = true
+          }
+        //   console.log(this.$route.path,this)
       },
     methods: {
         // get groups
@@ -84,7 +112,25 @@ export default {
                 }
             });
         },
+        changeBg (name) {
+            if((name && name == 'home') || (this.$route.path == '/home' && !name)){
+                this.isActive1 = true;
+                this.isActive2 = false;
+                this.isActive3 = false
+            }
+            if((name && name == 'block') || (this.$route.path == '/block' && !name)){
+                this.isActive1 = false;
+                this.isActive2 = true;
+                this.isActive3 = false
+            }
+            if((name && name == 'transaction') || (this.$route.path == '/transaction' && !name)){
+                this.isActive1 = false;
+                this.isActive2 = false;
+                this.isActive3 = true
+            }
+        },
         routerLink: function(name) {
+            this.changeBg(name)
             router.push({
                 name: name
             });
@@ -102,17 +148,22 @@ export default {
     width: 100%;
     height: 80px;
     line-height: 80px;
-    background-image: url("../../assets/images/header-ng.png");
+    background: linear-gradient(to right, rgba(48, 35, 174,0.6) 0%, rgb(200, 109, 215,0.6) 100%);
+    /* background-image: url("../../assets/images/header-ng.png");
     background-size: 100%;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat; */
     font-size: 0;
     color: #fff;
-    text-align: center;
+    border-radius: 16px 4px 16px 4px;
+    border-radius: 16px 4px 16px 4px;
+    box-sizing: border-box;
 }
 .nav-header .logo {
     display: inline-block;
-    float: left;
+    /* float: left; */
+    padding-left: 24px;
     cursor: pointer;
+    vertical-align: middle;
 }
 .nav-header .image {
     display: inline;
@@ -278,5 +329,22 @@ export default {
     position: absolute;
     left: 101%;
     top: 42%;
+}
+.header-menu{
+    display: inline-block;
+    /* margin-left: 10px; */
+    color: #25CEFE;
+    /* line-height:  26px; */
+    font-size: 16px;
+    padding: 0 15px;
+    margin: 0 5px;
+    vertical-align: top;
+    cursor: pointer;
+}
+.header-menu:hover{
+    background-image: linear-gradient(180deg, rgba(222, 34, 254,0.2) 30,rgba(124, 23, 247,0.2) 0);
+}
+.header-menu-bg{
+    background-image: linear-gradient(180deg, rgba(222, 34, 254,0.2) 30,rgba(124, 23, 247,0.2) 0);
 }
 </style>

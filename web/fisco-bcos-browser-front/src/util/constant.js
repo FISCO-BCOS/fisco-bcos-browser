@@ -4,25 +4,25 @@ export default {
         {
             label: '当前块高',
             route: 'block',
-            class: 'bg-8693f3 margin-right-15 margin-bottom-15',
+            icon: 'block1',
             value: 0
         },
         {
             label: '交易总量',
             route: 'transaction',
-            class: 'bg-bc8dee margin-left-15 margin-bottom-15',
+            icon: 'transaction',
             value: 0
         },
         {
             label: '正在处理的交易数',
             route: '',
-            class: 'bg-ffa897 margin-top-15 margin-right-15',
+            icon: 'pendding',
             value: 0
         },
         {
             label: 'PBFT 当前视图',
             route: '',
-            class: 'bg-89c3f8 margin-top-15  margin-left-15',
+            icon: 'pbft',
             value: 0
         }
     ],

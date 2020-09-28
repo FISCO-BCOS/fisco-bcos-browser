@@ -41,12 +41,12 @@
  }
 
 .table-link{
-    color: #3498db;
+    color: #25cefe;
     cursor: pointer;
 }
 .table-link:hover{
-    color: #3498db;
-    text-decoration: #3498db;
+    color: #25cefe;
+    text-decoration: #25cefe;
 }
 .iconInfo{
     display: inline-block;

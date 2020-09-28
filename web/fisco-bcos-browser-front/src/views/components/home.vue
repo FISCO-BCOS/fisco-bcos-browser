@@ -3,100 +3,168 @@
         <div class="container">
             <div class="home-head">
                 <!--blockChain Statistics-->
-                <div class="home-head-data margin-right-10" v-loading="loading1" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
+                <div class="home-head-data" >
                     <ul>
-                        <li v-for="item in totalStatisticsList" :class="item.class" @click="linkPage(item.route,chainType)" :key="item.label" class="lg-width">
-                            <span class="home-head-data-label">{{item.label}}</span>
-                            <span class="home-head-data-content"> {{item.value}}</span>
+                        <li v-for="item in totalStatisticsList"  @click="linkPage(item.route,chainType)" :key="item.label" class="lg-width background-common-color">
+                            <div class="bg-filter"></div>
+                            <div class="home-head-content header-content-pad">
+                                <span class="home-head-data-label">
+                                    <svg-icon :icon-class='item.icon' class="font-32"></svg-icon>
+                                    {{item.label}}</span>
+                                <span class="home-head-data-content"> {{item.value}}</span>
+                            </div>
                         </li>
                     </ul>
                 </div>
-
+            </div>
+            <div class="home-part2">
+                <div class="home-foot-box home-block background-common-color">
+                    <div class="bg-filter"></div>
+                    <div class="home-head-content">
+                        <div class="home-foot-box-nav">
+                            <div class="left">
+                                <svg-icon icon-class='block2' class="font-24"></svg-icon>
+                                <span class="text">区块</span>
+                            </div>
+                            
+                        </div>
+                        <div class="home-foot-box-content" >
+                            <ul>
+                                <li class="item bg-block" v-for="item in blockList" :key='item.number'>
+                                    <div class="item-bg">
+                                        <div class="left">
+                                            <div class="block-table-link" @click="linkPage('blockDetail','blockHash',item.blockHash)">区块 {{item.number}}</div>
+                                            <div class="block-table-data">{{item.dateTimeStr}}</div>
+                                        </div>
+                                        <div class="right">
+                                            <div>出块节点&nbsp&nbsp&nbsp
+                                                <span class="block-number" :title="item.sealer">{{item.sealer}}</span>
+                                            </div>
+                                            <div class="txn" @click="linkPage('transaction','blockHeight',item.number)">{{item.txn}} txns</div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="right">
+                            <span @click="linkPage('block')" class="table-link" style="padding-right: 30px;"> 更多 ...</span>
+                        </div>
+                    </div>
+                </div>
                 <!--Chart statistics-->
-                <div class="home-head-chart home-head-data margin-left-10" ref="chart" v-loading="loading2" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
-                    <v-chart ref="linechart" :type="'line'" :id="'homeId'" :data="chartStatistics.date" :transactionDataArr="chartStatistics.dataArr" :size="chartStatistics.chartSize" :title="'home'"></v-chart>
+                <div class="home-head-chart background-common-color" ref="chart">
+                    <div class="bg-filter"></div>
+                    <div class="home-head-content">
+                        <div class="home-foot-box-nav">
+                            <div class="left">
+                                <svg-icon icon-class='transaction15' class="font-24"></svg-icon>
+                                <span class="text">近15日交易量</span>
+                            </div>
+                            
+                        </div>
+                        <v-chart ref="linechart" :type="'line'" :id="'homeId'" :data="chartStatistics.date" :transactionDataArr="chartStatistics.dataArr" :size="chartStatistics.chartSize" :title="'home'"></v-chart>
+                    </div>
                 </div>
             </div>
             <!--Node statistics-->
-            <div class="home-center">
-                <el-table :data="TbNodesList" :header-cell-style="bgTable" :row-class-name="tableRowClassName" :cell-style="tableCellStyle" v-loading="loading3" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
-                    <el-table-column label="节点Id" :show-overflow-tooltip="true" prop="nodeId" align="center">
-                        <template slot-scope="scope">
-                            <i class="wbs-icon-baocun copy-public-key" style="font-size: 15px;cursor:pointer" @click="copyPubilcKey(scope.row.nodeId)" title="复制"></i>
-                            <span>{{scope.row.nodeId}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="当前块高" :show-overflow-tooltip="true" prop="blockNumber" align="center"></el-table-column>
-                    <el-table-column label="pbftView" :show-overflow-tooltip="true" prop="pbftView" align="center"></el-table-column>
-                    <el-table-column label="节点状态" :show-overflow-tooltip="true" prop="active" align="center">
-                        <template slot-scope="scope">
-                            <span v-if="scope.row.status == 0" style="color: #0F0">正常</span>
-                            <span v-if="scope.row.status == 1" style="color: #FF0">异常</span>
-                            <span v-if="scope.row.status == 2" style="color: #F00">弃用</span>
-                        </template>
-                    </el-table-column>
-                </el-table>
+            <div class="home-part2" style="margin-top: 50px">
+                 <div class="home-foot-box transaction-data background-common-color">
+                    <div class="bg-filter"></div>
+                    <div class="home-head-content">
+                        <div class="home-foot-box-nav">
+                            <div class="left">
+                                <svg-icon icon-class='transaction2' class="font-24"></svg-icon>
+                                <span class="text">交易</span>
+                            </div>
+                            
+                        </div>
+                        <div class="home-foot-box-content" >
+                            <ul>
+                                <li class="item bg-tran" v-for="itemlist in transactionList" :key='itemlist.transHash'>
+                                    <div class="item-bg">
+                                        <div class="left">
+                                            <div class="transaction" @click="linkPage( 'transactionDetail','pkHash',itemlist.transHash)">交易 <span class="table-link" :title="itemlist.transHash | toUpperCase">{{itemlist.transHash | toUpperCase}}</span></div>
+                                            <div class="block-table-data">
+                                                <div>{{itemlist.blockTimesStr}}</div>
+                                                <!-- <div>{{itemlist.funcName || ""}}</div> -->
+                                            </div>
+                                        </div>
+
+                                        <div class="right" style="margin-top: 12px;">
+                                            <div class="number" :title="itemlist.from" >{{itemlist.from}}</div>
+                                            <svg-icon icon-class='transactionTo' class="font-24"></svg-icon>
+                                            <div class="number" :title="itemlist.to">{{itemlist.to}}</div>
+                                            
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="right" style="padding-bottom: 14px;">
+                            <span @click="linkPage('transaction')" class="table-link" style="padding-right: 30px;"> 更多 ...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="home-foot-box node-data background-common-color">
+                    <div class="bg-filter"></div>
+                    <div class="home-head-content">
+                    <div class="home-foot-box-nav">
+                        <div class="left">
+                            <svg-icon icon-class='node' class="font-24"></svg-icon>
+                            <span class="text">节点</span>
+                        </div>
+                        
+                    </div>
+                    <ul class="node-ul">
+                        <li class="node-title">
+                            <div class="node-tile-item node-th1">节点Id</div>
+                            <div class="node-tile-item node-th2">当前块高</div>
+                            <div class="node-tile-item node-th3">pbftView</div>
+                            <div class="node-tile-item node-th4">节点状态</div>
+                        </li>
+                        <li v-for='item in TbNodesList' :key='item.nodeId'>
+                            <div class="node-item-data">
+                                <div class="node-tile-item node-th1">
+                                    <svg-icon icon-class='nodeName' class="font-16" style="cursor:pointer" @click="copyPubilcKey(scope.row.nodeId)" title="复制"></svg-icon>
+                                    <!-- <i class="wbs-icon-baocun copy-public-key" style="font-size: 15px;cursor:pointer"  title="复制"></i> -->
+                                    <span class="font-overflow">{{item.nodeId}}</span>
+                                </div>
+                                <div class="node-tile-item node-th2">{{item.blockNumber}}</div>
+                                <div class="node-tile-item node-th3">{{item.pbftView}}</div>
+                                <div class="node-tile-item node-th4">
+                                    <span v-if="item.status == 0" class="node-button" style="background-image: linear-gradient(46deg, #B4EC51 0%, #429321 100%);">正常</span>
+                                    <span v-if="item.status == 1" class="node-button" style="background-image: linear-gradient(65deg, #F16912 0%, #E43B58 100%);">异常</span>
+                                    <span v-if="item.status == 2" class="node-button" style="background-image: linear-gradient(65deg, #F16912 0%, #E43B58 100%);">弃用</span>
+                                </div>
+                            </div>
+                            <div style="height: 8px"></div>
+                        </li>
+                    </ul>
+                    <!-- <el-table :data="TbNodesList" :header-cell-style="bgTable" :row-class-name="tableRowClassName"  v-loading="loading3" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
+                        <el-table-column label="节点Id" :show-overflow-tooltip="true" prop="nodeId" align="center">
+                            <template slot-scope="scope">
+                                <i class="wbs-icon-baocun copy-public-key" style="font-size: 15px;cursor:pointer" @click="copyPubilcKey(scope.row.nodeId)" title="复制"></i>
+                                <span>{{scope.row.nodeId}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="当前块高" :show-overflow-tooltip="true" prop="blockNumber" align="center"></el-table-column>
+                        <el-table-column label="pbftView" :show-overflow-tooltip="true" prop="pbftView" align="center"></el-table-column>
+                        <el-table-column label="节点状态" :show-overflow-tooltip="true" prop="active" align="center">
+                            <template slot-scope="scope">
+                                <span v-if="scope.row.status == 0" style="color: #0F0">正常</span>
+                                <span v-if="scope.row.status == 1" style="color: #FF0">异常</span>
+                                <span v-if="scope.row.status == 2" style="color: #F00">弃用</span>
+                            </template>
+                        </el-table-column>
+                    </el-table> -->
+                    </div>
+                </div>
             </div>
             <div class="home-foot">
                 <!--Block list-->
-                <div class="home-foot-box margin-right-10">
-                    <div class="home-foot-box-nav">
-                        <div class="left">
-                            <span class="line"></span>
-                            <span class="text">区块</span>
-                        </div>
-                        <div class="right">
-                            <span @click="linkPage('block')" class="table-link" style="padding-right: 30px"> 更多 ></span>
-                        </div>
-                    </div>
-                    <div class="home-foot-box-content" v-loading="loading4" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
-                        <ul>
-                            <li class="item" v-for="item in blockList" :key='item.number'>
-                                <div class="left">
-                                    <div @click="linkPage('blockDetail','blockHash',item.blockHash)" class="table-link">区块 {{item.number}}</div>
-                                    <div>{{item.dateTimeStr}}</div>
-                                </div>
-                                <div class="right">
-                                    <div>出块节点&nbsp&nbsp&nbsp
-                                        <span class="block-number" :title="item.sealer">{{item.sealer}}</span>
-                                    </div>
-                                    <div class="txn" @click="linkPage('transaction','blockHeight',item.number)">{{item.txn}} txns</div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                
                 <!--transaction list-->
-                <div class="home-foot-box margin-left-10">
-                    <div class="home-foot-box-nav">
-                        <div class="left">
-                            <span class="line"></span>
-                            <span class="text">交易</span>
-                        </div>
-                        <div class="right">
-                            <span @click="linkPage('transaction')" class="table-link" style="padding-right: 30px"> 更多 ></span>
-                        </div>
-                    </div>
-                    <div class="home-foot-box-content" v-loading="loading5" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
-                        <ul>
-                            <li class="item" v-for="itemlist in transactionList" :key='itemlist.blockTimesStr'>
-                                <div class="left">
-                                    <div class="transaction" @click="linkPage( 'transactionDetail','pkHash',itemlist.transHash)">交易 <span class="table-link" :title="itemlist.transHash | toUpperCase">{{itemlist.transHash | toUpperCase}}</span></div>
-                                    <div>
-                                        <div class="number" :title="itemlist.from">{{itemlist.from}}</div>
-                                        <img src="../../assets/images/s-right.png" class="image">
-                                        <div class="number" :title="itemlist.to">{{itemlist.to}}</div>
-                                    </div>
-                                </div>
-
-                                <div class="right">
-                                    <div>{{itemlist.blockTimesStr}}</div>
-                                    <div>{{itemlist.funcName || ""}}</div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+               
             </div>
         </div>
     </div>
@@ -104,41 +172,81 @@
 <style>
 .home {
     width: 100%;
-    background-color: #2a2c3b;
+    min-height: calc(100% - 90px);
+    /* background-color: #2a2c3b; */
+    /* overflow: hidden; */
+    box-sizing: border-box;
 }
 .home-head {
     font-size: 0;
 }
 .home-head-data {
-    display: inline-block;
-    width: calc(41% - 10px);
+    /* display: inline-block; */
+    width: 100%;
     box-sizing: border-box;
-    padding: 30px;
-    background-color: #3b3e54;
+    /* padding: 30px; */
+    /* background-color: #3b3e54; */
     vertical-align: middle;
+    margin: 0 0 40px 0;
+    padding-top: 40px;
 }
 .lg-width {
+    position: relative;
     width: 47%;
 }
 .home-head-data ul {
     list-style: none;
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: space-between;
 }
 .home-head-data ul li {
-    display: inline-block;
-    height: 110px;
-    padding: 25px 15px;
-    font-size: 14px;
+    
+    width: 23.2%;
+    min-width: 400px;
+    height: 140px;
+    /* padding: 20px 15px 40px 30px; */
     cursor: pointer;
     color: #fff;
+    border-radius: 16px 4px 16px 4px;
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+.home-head-content{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top:0px;
+    padding: 20px 32px 32px 32px;
+    font-size: 14px;
+    z-index: 2;
     box-sizing: border-box;
 }
-
+.header-content-pad{
+    padding: 20px 40px 40px 15px;
+}
+.home-part2{
+    display: flex;
+    justify-content: space-between;
+}
+.home-block{
+    position: relative;
+    width: 37.2%;
+    min-width: 640px;
+}
 .home-head-chart {
-    width: calc(59% - 10px) !important;
-    height: 310px;
+    position: relative;
+    width: 60.5%;
+    min-width: 1040px;
+    height: 340px;
+    border-radius: 16px 4px 16px 4px;
     vertical-align: middle;
+}
+.home-head-chart .home-foot-box-nav{
+    /* padding: 20px 0 0 30px; */
+    color: #fff
 }
 
 .home-head-chart .el-input__inner {
@@ -155,23 +263,95 @@
 }
 
 .home-head-data-label {
+    font-size: 16px;
     color: white;
 }
 .home-head-data-content {
     display: block;
     color: white;
-    font-size: 38px;
+    padding-top: 20px;
+    font-family: 'futura';
+    font-size: 36px;
+    /* font-style: italic;
+    font-weight: 500; */
     text-align: right;
 }
 
+
+.node-ul{
+    list-style: none;
+    width: 100%;
+    padding: 0;
+    padding-top: 10px;
+    font-size: 0;
+}
+.node-title{
+    color: #9B9B9B;
+}
+.node-tile-item{
+    display: inline-block;
+    padding-left: 20px;
+    font-size: 14px;
+    height: 40px;
+    line-height: 40px;
+    box-sizing: border-box;
+}
+.node-th1{
+    width: 50%;
+}
+.node-th2{
+    width: 15%;
+}
+.node-th3{
+    width: 15%;
+}
+.node-th4{
+    width: 20%;
+}
+.node-item-data{
+    background-image: url("../../assets/images/node-bg-1.svg");
+    background-size: 100% 100%;
+    /* background-image: linear-gradient(49deg, rgba(22, 167, 252,0.2) 0%, rgba(200, 109, 215,0.2) 100%); */
+    border-radius: 8px;
+    border-radius: 8px;
+}
+.node-item-data:hover{
+    background-image: url("../../assets/images/node-bg-2.svg");
+}
+.node-button{
+    display: inline-block;
+    width: 80px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    border-radius: 10px;
+    color:  #121212
+}
+
+
+
+
 .home-center {
     margin-top: 20px;
+    display: flex;
+}
+.transaction-data{
+    position: relative;
+    width: 60.5%;
+    min-width: 1040px;
+}
+.node-data{
+    position: relative;
+    width: 37.2%;
+    min-width: 640px;
 }
 .home-center-table {
-    background-color: #3b3e54;
+    background-color: rgba(69, 54, 187,0.7) !important;
+    filter: blur(4);
 }
 .home-center .el-table .table-style {
-    background-color: #3b3e54;
+    background-color: rgba(69, 54, 187,0.7) !important;
+    filter: blur(4);
     color: #fff;
     text-align: center;
     overflow: hidden;
@@ -221,34 +401,47 @@
     white-space: nowrap !important;
 }
 .home-center .el-table .el-table__empty-block {
-    background-color: #3b3e54;
+    background-color: rgba(69, 54, 187,0.7);
+    filter: blur(4);
+}
+.el-table th, .el-table tr{
+    background-color: rgba(69, 54, 187,0.7) !important;
+    background-image: linear-gradient(49deg, rgba(22, 167, 252,0.2) 0%, rgba(200, 109, 215,0.2) 100%) !important;
+    color: #fff
 }
 .home-foot {
     margin-top: 20px;
     font-size: 0;
 }
 .home-foot-box {
-    display: inline-block;
-    width: calc(50% - 10px);
-    padding-bottom: 20px;
-    background-color: #3b3e54;
+    padding: 20px 30px 20px 30px;
+    /* background-color: #3b3e54; */
+    height: 340px;
     font-size: 14px;
     color: #fff;
     vertical-align: top;
+    border-radius: 16px 4px 16px 4px;
+    border-radius: 16px 4px 16px 4px;
     box-sizing: border-box;
+}
+.home-foot-box .right{
+    float: right;
 }
 .home-foot-box-nav {
     width: 100%;
-    height: 50px;
-    line-height: 50px;
-    margin-left: 15px;
-    padding-right: 15px;
+    /* height: 50px;
+    line-height: 50px; */
+    /* margin-left: 15px;
+    padding-right: 15px; */
     overflow: hidden;
     box-sizing: border-box;
 }
 .home-foot-box-nav .left {
     float: left;
     width: 50%;
+}
+.home-foot-box-nav .left .text{
+    font-size: 16px;
 }
 .home-foot-box-nav .left .line {
     display: inline-block;
@@ -261,22 +454,58 @@
 .home-foot-box-nav .right {
     float: right;
     width: 50%;
+    font-size: 14px;
     text-align: right;
     cursor: pointer;
 }
 .home-foot-box-content ul {
-    padding: 0;
+    padding: 30px 0 0 0;
     margin: 0;
     list-style: none;
 }
 .home-foot-box-content .item {
-    border-bottom: 1px solid #999;
+    display: block;
+    height: 64px;
+    
+    /* background-image: linear-gradient(49deg, rgba(22, 167, 25,0.2) 0%, rgba(200, 109, 215,0.2) 100%); */
     overflow: hidden;
-    line-height: 28px;
-    padding: 12px 30px;
+    border-radius: 8px;
+    /* line-height: 28px; */
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+}
+.home-foot-box-content .bg-block{
+    background-image: url("../../assets/images/block-bg-1.svg");
+    background-size: 100% 100%;
+}
+.home-foot-box-content .bg-block:hover{
+    background-image: url("../../assets/images/block-bg-2.svg");
+    background-size: 100% 100%;
+}
+.home-foot-box-content .bg-tran{
+    background-image: url("../../assets/images/transaction-bg-1.svg");
+    background-size: 100% 100%;
+}
+.home-foot-box-content .bg-tran:hover{
+    background-image: url("../../assets/images/transaction-bg-2.svg");
+    background-size: 100% 100%;
 }
 .home-foot-box-content .item .left {
     float: left;
+    font-size: 12px;
+    opacity: 1;
+}
+.block-table-link{
+    font-size: 16px;
+    color: #25CEFE;
+    letter-spacing: 0.44px;
+    text-align: justify;
+    line-height: 16px;
+}
+.block-table-data{
+    padding-top: 15px;
+    color: #9B9B9B
 }
 .home-foot-box-content .item .right {
     float: right;
@@ -292,29 +521,36 @@
     vertical-align: middle;
 }
 .home-foot-box-content .item .txn {
+    margin-top: 5px;
     float: right;
-    width: 70px;
-    height: 28px;
-    line-height: 28px;
-    background-color: #2196f3;
-    color: #fff;
+    width: 80px;
+    height: 20px;
+    line-height: 20px;
+    background-image: linear-gradient(132deg, #DE22FE 0%, #7C17F7 100%);
+    border-radius: 10px;
+    color: #121212;
     text-align: center;
     cursor: pointer;
 }
 .home-foot-box-content .item .transaction {
     width: 320px;
     overflow: hidden;
+    font-size: 16px;
+    color: #25CEFE;
+    letter-spacing: 0.44px;
+    text-align: justify;
+    line-height: 16px;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
     vertical-align: middle;
 }
 .home-foot-box-content .number {
     display: inline-block;
-    width: 148px;
+    width: 200px;
     overflow: hidden;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
-    vertical-align: middle;
+    vertical-align: 2px;
 }
 .home-foot-box-content .image {
     vertical-align: middle;
@@ -325,111 +561,6 @@ table {
 }
 .node-false {
     color: #f00 !important;
-}
-@media screen and (max-width: 1200px) {
-    .home-head-data {
-        display: inline-block;
-        width: calc(41% - 10px);
-        box-sizing: border-box;
-        padding: 20px 20px;
-        background-color: #3b3e54;
-        vertical-align: middle;
-    }
-    .home-head-data-content {
-        display: block;
-        color: white;
-        padding-top: 10px;
-        font-size: 28px;
-        text-align: right;
-    }
-    .home-head-chart {
-        width: calc(59% - 10px) !important;
-        height: 290px;
-        vertical-align: middle;
-    }
-    .home-foot-box-content .item {
-        border-bottom: 1px solid #999;
-        overflow: hidden;
-        line-height: 28px;
-        padding: 12px 20px;
-    }
-    .home-foot-box-content .item .transaction {
-        width: 280px;
-        overflow: hidden;
-        text-overflow: ellipsis !important;
-        white-space: nowrap !important;
-        vertical-align: middle;
-    }
-    .home-foot-box-content .number {
-        display: inline-block;
-        width: 130px;
-        overflow: hidden;
-        text-overflow: ellipsis !important;
-        white-space: nowrap !important;
-        vertical-align: middle;
-    }
-}
-@media screen and (max-width: 1000px) {
-    .home-head-data {
-        display: inline-block;
-        width: calc(41% - 10px);
-        box-sizing: border-box;
-        padding: 10px 10px;
-        background-color: #3b3e54;
-        vertical-align: middle;
-    }
-    .home-head-chart {
-        width: calc(59% - 10px) !important;
-        height: 270px;
-        vertical-align: middle;
-    }
-    .home-head-data-content {
-        display: block;
-        color: white;
-        padding-top: 10px;
-        font-size: 24px;
-        text-align: right;
-    }
-    .home-head-data ul li {
-        display: inline-block;
-        height: 110px;
-        padding: 25px 10px;
-        font-size: 14px;
-        cursor: pointer;
-        color: #fff;
-        box-sizing: border-box;
-    }
-    .home-foot-box-content .item {
-        border-bottom: 1px solid #999;
-        overflow: hidden;
-        line-height: 28px;
-        padding: 12px 20px;
-    }
-    .home-foot-box-content .item .transaction {
-        width: 200px;
-        overflow: hidden;
-        text-overflow: ellipsis !important;
-        white-space: nowrap !important;
-        vertical-align: middle;
-    }
-    .home-foot-box-content .number {
-        display: inline-block;
-        width: 85px;
-        overflow: hidden;
-        text-overflow: ellipsis !important;
-        white-space: nowrap !important;
-        vertical-align: middle;
-    }
-    .home-foot-box-content .item .txn {
-        float: right;
-        width: 70px;
-        height: 28px;
-        line-height: 28px;
-        background-color: #2196f3;
-        color: #fff;
-        text-align: center;
-        cursor: pointer;
-    }
 }
 </style>
 <script type="text/babel">
@@ -460,10 +591,11 @@ export default {
     data: function () {
         return {
             bgTable: {
-                backgroundColor: '#3b3e54',
+                backgroundColor: 'rgba(69, 54, 187,1)',
+                filter: 'blur(4)',
                 color: '#999',
                 textAlign: 'center',
-                borderColor: '#666'
+                // borderColor: '#666'
             },
             tableCellStyle: {
                 width: '450px',
@@ -735,8 +867,8 @@ export default {
                     if (res.data.data && res.data.data.length) {
                         this.blockList = [];
                         this.blockList = res.data.data;
-                        if (this.blockList.length > 4) {
-                            this.blockList.length = 4
+                        if (this.blockList.length > 3) {
+                            this.blockList.length = 3
                         }
                     }
                 } else {
@@ -756,7 +888,7 @@ export default {
         //transaction list, showing only four
         searchTbTransactionInfo: function () {
             this.loading5 = true;
-            this.transactionList = [];
+            // this.transactionList = [];
             let list = [];
             let data = {
                 groupId: this.groupId,
@@ -775,8 +907,8 @@ export default {
                             list.push(item)
                         }
                         this.transactionList = res.data.data;
-                        if (this.transactionList.length > 4) {
-                            this.transactionList.length = 4
+                        if (this.transactionList.length > 3) {
+                            this.transactionList.length = 3
                         }
                         this.transactionList.forEach((value, index) => {
                             if (value.to) {
