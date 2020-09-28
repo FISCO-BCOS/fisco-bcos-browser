@@ -3,6 +3,8 @@
         <div class="container" style="padding-top: 40px;">
            <!-- <v-nav :hrTitle="btitle" :hrcontent="btitle" :route="'block'"></v-nav> -->
            <div class="background-common-color block-data">
+               <!-- <div class="bg-filter"></div>
+                <div class="home-head-content"> -->
                <div class="block-header-title">
                    <svg-icon icon-class='block2' class="font-24"></svg-icon>
                    <span class="block-text">区块</span>
@@ -56,14 +58,19 @@
                     </el-pagination>
                 </div>
             </div>
+                </div>
             </div>
-        </div>
+        <!-- </div> -->
     </div>
 </template>
 <style scoped>
 .block-data{
+    position: relative;
+    height: 100%;
     padding: 20px 30px;
+    background-color: rgba(69, 54, 187,0.5);
     border-radius: 16px 4px 16px 4px;
+    overflow: auto;
 }
 .block-header-title{
     padding-bottom: 10px;
@@ -136,6 +143,18 @@
     padding-left: 50px;
     color: #fff
 }
+.home-head-content{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top:0px;
+    /* padding: 20px 15px 40px 30px; */
+    font-size: 14px;
+    z-index: 2;
+    box-sizing: border-box;
+    overflow: auto;
+}
 
 </style>
 <script type="es6">
@@ -178,6 +197,7 @@
             }
         },
         mounted: function () {
+            this.$emit("nav")
             this.groupId = localStorage.getItem("groupId")
             this.searchTbBlockInfo();
             this.pagination.currentPage = this.$route.query.pageNumber || 1;

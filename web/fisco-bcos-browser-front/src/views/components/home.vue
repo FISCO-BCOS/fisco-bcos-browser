@@ -6,94 +6,108 @@
                 <div class="home-head-data" >
                     <ul>
                         <li v-for="item in totalStatisticsList"  @click="linkPage(item.route,chainType)" :key="item.label" class="lg-width background-common-color">
-                            <span class="home-head-data-label">
-                                <svg-icon :icon-class='item.icon' class="font-32"></svg-icon>
-                                {{item.label}}</span>
-                            <span class="home-head-data-content"> {{item.value}}</span>
+                            <div class="bg-filter"></div>
+                            <div class="home-head-content header-content-pad">
+                                <span class="home-head-data-label">
+                                    <svg-icon :icon-class='item.icon' class="font-32"></svg-icon>
+                                    {{item.label}}</span>
+                                <span class="home-head-data-content"> {{item.value}}</span>
+                            </div>
                         </li>
                     </ul>
                 </div>
             </div>
             <div class="home-part2">
                 <div class="home-foot-box home-block background-common-color">
-                    <div class="home-foot-box-nav">
-                        <div class="left">
-                            <svg-icon icon-class='block2' class="font-24"></svg-icon>
-                            <span class="text">区块</span>
+                    <div class="bg-filter"></div>
+                    <div class="home-head-content">
+                        <div class="home-foot-box-nav">
+                            <div class="left">
+                                <svg-icon icon-class='block2' class="font-24"></svg-icon>
+                                <span class="text">区块</span>
+                            </div>
+                            
                         </div>
-                        
-                    </div>
-                    <div class="home-foot-box-content" >
-                        <ul>
-                            <li class="item" v-for="item in blockList" :key='item.number'>
-                                <div class="item-bg">
-                                    <div class="left">
-                                        <div @click="linkPage('blockDetail','blockHash',item.blockHash)" class="block-table-link">区块 {{item.number}}</div>
-                                        <div class="block-table-data">{{item.dateTimeStr}}</div>
-                                    </div>
-                                    <div class="right">
-                                        <div>出块节点&nbsp&nbsp&nbsp
-                                            <span class="block-number" :title="item.sealer">{{item.sealer}}</span>
+                        <div class="home-foot-box-content" >
+                            <ul>
+                                <li class="item" v-for="item in blockList" :key='item.number'>
+                                    <div class="item-bg">
+                                        <div class="left">
+                                            <div class="block-table-link" @click="linkPage('blockDetail','blockHash',item.blockHash)">区块 {{item.number}}</div>
+                                            <div class="block-table-data">{{item.dateTimeStr}}</div>
                                         </div>
-                                        <div class="txn" @click="linkPage('transaction','blockHeight',item.number)">{{item.txn}} txns</div>
+                                        <div class="right">
+                                            <div>出块节点&nbsp&nbsp&nbsp
+                                                <span class="block-number" :title="item.sealer">{{item.sealer}}</span>
+                                            </div>
+                                            <div class="txn" @click="linkPage('transaction','blockHeight',item.number)">{{item.txn}} txns</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="right">
-                        <span @click="linkPage('block')" class="table-link" style="padding-right: 30px;"> 更多 ...</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="right">
+                            <span @click="linkPage('block')" class="table-link" style="padding-right: 30px;"> 更多 ...</span>
+                        </div>
                     </div>
                 </div>
                 <!--Chart statistics-->
                 <div class="home-head-chart background-common-color" ref="chart">
-                    <div class="home-foot-box-nav">
-                        <div class="left">
-                            <svg-icon icon-class='transaction15' class="font-24"></svg-icon>
-                            <span class="text">近15日交易量</span>
+                    <div class="bg-filter"></div>
+                    <div class="home-head-content">
+                        <div class="home-foot-box-nav">
+                            <div class="left">
+                                <svg-icon icon-class='transaction15' class="font-24"></svg-icon>
+                                <span class="text">近15日交易量</span>
+                            </div>
+                            
                         </div>
-                        
+                        <v-chart ref="linechart" :type="'line'" :id="'homeId'" :data="chartStatistics.date" :transactionDataArr="chartStatistics.dataArr" :size="chartStatistics.chartSize" :title="'home'"></v-chart>
                     </div>
-                    <v-chart ref="linechart" :type="'line'" :id="'homeId'" :data="chartStatistics.date" :transactionDataArr="chartStatistics.dataArr" :size="chartStatistics.chartSize" :title="'home'"></v-chart>
                 </div>
             </div>
             <!--Node statistics-->
             <div class="home-part2" style="margin-top: 50px">
                  <div class="home-foot-box transaction-data background-common-color">
-                    <div class="home-foot-box-nav">
-                        <div class="left">
-                            <svg-icon icon-class='transaction2' class="font-24"></svg-icon>
-                            <span class="text">交易</span>
+                    <div class="bg-filter"></div>
+                    <div class="home-head-content">
+                        <div class="home-foot-box-nav">
+                            <div class="left">
+                                <svg-icon icon-class='transaction2' class="font-24"></svg-icon>
+                                <span class="text">交易</span>
+                            </div>
+                            
                         </div>
-                        
-                    </div>
-                    <div class="home-foot-box-content" >
-                        <ul>
-                            <li class="item" v-for="itemlist in transactionList" :key='itemlist.transHash'>
-                                <div class="item-bg">
-                                    <div class="left">
-                                        <div class="transaction" @click="linkPage( 'transactionDetail','pkHash',itemlist.transHash)">交易 <span class="table-link" :title="itemlist.transHash | toUpperCase">{{itemlist.transHash | toUpperCase}}</span></div>
-                                        <div class="block-table-data">
-                                            <div>{{itemlist.blockTimesStr}}</div>
-                                            <!-- <div>{{itemlist.funcName || ""}}</div> -->
+                        <div class="home-foot-box-content" >
+                            <ul>
+                                <li class="item" v-for="itemlist in transactionList" :key='itemlist.transHash'>
+                                    <div class="item-bg">
+                                        <div class="left">
+                                            <div class="transaction" @click="linkPage( 'transactionDetail','pkHash',itemlist.transHash)">交易 <span class="table-link" :title="itemlist.transHash | toUpperCase">{{itemlist.transHash | toUpperCase}}</span></div>
+                                            <div class="block-table-data">
+                                                <div>{{itemlist.blockTimesStr}}</div>
+                                                <!-- <div>{{itemlist.funcName || ""}}</div> -->
+                                            </div>
+                                        </div>
+
+                                        <div class="right" style="margin-top: 15px;">
+                                            <div class="number" :title="itemlist.from" >{{itemlist.from}}</div>
+                                            <svg-icon icon-class='transactionTo' class="font-24"></svg-icon>
+                                            <div class="number" :title="itemlist.to">{{itemlist.to}}</div>
+                                            
                                         </div>
                                     </div>
-
-                                    <div class="right" style="margin-top: 15px;">
-                                        <div class="number" :title="itemlist.from" >{{itemlist.from}}</div>
-                                        <svg-icon icon-class='transactionTo' class="font-24"></svg-icon>
-                                        <div class="number" :title="itemlist.to">{{itemlist.to}}</div>
-                                        
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="right" style="padding-bottom: 14px;">
-                        <span @click="linkPage('transaction')" class="table-link" style="padding-right: 30px;"> 更多 ...</span>
+                                </li>
+                            </ul>
                         </div>
+                        <div class="right" style="padding-bottom: 14px;">
+                            <span @click="linkPage('transaction')" class="table-link" style="padding-right: 30px;"> 更多 ...</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="home-foot-box node-data background-common-color">
+                    <div class="bg-filter"></div>
+                    <div class="home-head-content">
                     <div class="home-foot-box-nav">
                         <div class="left">
                             <svg-icon icon-class='node' class="font-24"></svg-icon>
@@ -111,7 +125,8 @@
                         <li v-for='item in TbNodesList' :key='item.nodeId'>
                             <div class="node-item-data">
                                 <div class="node-tile-item node-th1">
-                                    <i class="wbs-icon-baocun copy-public-key" style="font-size: 15px;cursor:pointer" @click="copyPubilcKey(scope.row.nodeId)" title="复制"></i>
+                                    <svg-icon icon-class='nodeName' class="font-16" style="cursor:pointer" @click="copyPubilcKey(scope.row.nodeId)" title="复制"></svg-icon>
+                                    <!-- <i class="wbs-icon-baocun copy-public-key" style="font-size: 15px;cursor:pointer"  title="复制"></i> -->
                                     <span class="font-overflow">{{item.nodeId}}</span>
                                 </div>
                                 <div class="node-tile-item node-th2">{{item.blockNumber}}</div>
@@ -142,6 +157,7 @@
                             </template>
                         </el-table-column>
                     </el-table> -->
+                    </div>
                 </div>
             </div>
             <div class="home-foot">
@@ -175,6 +191,7 @@
     padding-top: 40px;
 }
 .lg-width {
+    position: relative;
     width: 47%;
 }
 .home-head-data ul {
@@ -189,23 +206,38 @@
     width: 23.2%;
     min-width: 400px;
     height: 140px;
-    padding: 20px 15px 40px 30px;
-    font-size: 14px;
+    /* padding: 20px 15px 40px 30px; */
     cursor: pointer;
     color: #fff;
     border-radius: 16px 4px 16px 4px;
     box-sizing: border-box;
     vertical-align: middle;
 }
+.home-head-content{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top:0px;
+    padding: 20px 32px 32px 32px;
+    font-size: 14px;
+    z-index: 2;
+    box-sizing: border-box;
+}
+.header-content-pad{
+    padding: 20px 40px 40px 15px;
+}
 .home-part2{
     display: flex;
     justify-content: space-between;
 }
 .home-block{
+    position: relative;
     width: 37.2%;
     min-width: 640px;
 }
 .home-head-chart {
+    position: relative;
     width: 60.5%;
     min-width: 1040px;
     height: 340px;
@@ -213,7 +245,7 @@
     vertical-align: middle;
 }
 .home-head-chart .home-foot-box-nav{
-    padding: 20px 0 0 30px;
+    /* padding: 20px 0 0 30px; */
     color: #fff
 }
 
@@ -237,12 +269,14 @@
 .home-head-data-content {
     display: block;
     color: white;
-    padding-top: 30px;
+    padding-top: 20px;
     font-family: 'futura';
     font-size: 36px;
-    font-weight: 700;
+    /* font-style: italic;
+    font-weight: 500; */
     text-align: right;
 }
+
 
 .node-ul{
     list-style: none;
@@ -297,10 +331,12 @@
     display: flex;
 }
 .transaction-data{
+    position: relative;
     width: 60.5%;
     min-width: 1040px;
 }
 .node-data{
+    position: relative;
     width: 37.2%;
     min-width: 640px;
 }
@@ -830,7 +866,7 @@ export default {
         //transaction list, showing only four
         searchTbTransactionInfo: function () {
             this.loading5 = true;
-            this.transactionList = [];
+            // this.transactionList = [];
             let list = [];
             let data = {
                 groupId: this.groupId,

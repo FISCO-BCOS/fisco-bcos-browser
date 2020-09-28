@@ -3,7 +3,7 @@
         <div v-loading="loading" style="height: 100%;">
             <v-head ref="head"></v-head>
             <!-- <div style="padding-top: 20px"></div> -->
-            <router-view v-if='routerShow' class="main" @addGroup='change'></router-view>
+            <router-view v-if='routerShow' class="main" @addGroup='change' @nav='changeNav'></router-view>
         </div>
         <add-group @close="addGroups" v-if="addGroupShow" @success='addSuccess' :show='addGroupShow'></add-group>
     </div>
@@ -40,6 +40,9 @@ export default {
         })
     },
     methods: {
+        changeNav: function () {
+            this.$refs.head.changeBg()
+        },
         change: function () {
             this.$refs.head.getGroupData();
         },

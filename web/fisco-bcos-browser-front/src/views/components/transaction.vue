@@ -28,10 +28,10 @@
                             <li v-for='item in transactionList' :key='item.transHash' class="block-content">
                                 <div class="block-item-data">
                                     <div class="block-tile-item block-th1">
-                                        <span  class="table-link" >{{item.transHash}}</span>
+                                        <span  class="table-link" @click="linkPage('transactionDetail','pkHash',item.transHash)">{{item.transHash}}</span>
                                     </div>
                                     <div class="block-tile-item block-th2">
-                                        <span  class="table-link" >{{item.blockNumber}}</span>
+                                        <span  class="table-link" @click="linkPage('blockDetail','blockHash',item.blockHash)">{{item.blockNumber}}</span>
                                     </div>
                                     <div class="block-tile-item block-th3">
                                         <span>{{item.transIndex}}</span>
@@ -98,6 +98,7 @@
 .block-data{
     padding: 20px 30px;
     border-radius: 16px 4px 16px 4px;
+    background-color: rgba(69, 54, 187,0.5);
 }
 .block-header-title{
     padding-bottom: 10px;
@@ -238,6 +239,7 @@
             }
         },
         mounted: function () {
+            this.$emit("nav")
             this.searchTbTransactionInfo();
             this.pagination.currentPage = this.$route.query.pageNumber || 1;
             this.pagination.pageSize = this.$route.query.pageSize || 10;

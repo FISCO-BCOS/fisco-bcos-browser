@@ -5,14 +5,14 @@
                 <div class="logo">
                     <svg-icon icon-class='logo' style="width: 153px;font-size: 40px;padding-top: 20px;"></svg-icon>
                 </div>
-                <div class="header-menu" style="margin-left: 30px" :class="{'header-menu-bg': isActive1}">
-                    <span class="cursor" @click="routerLink('home')">总览</span>
+                <div class="header-menu" style="margin-left: 30px" :class="{'header-menu-bg': isActive1}" @click="routerLink('home')">
+                    <span class="cursor" >总览</span>
                 </div>
-                <div class="header-menu" :class="{'header-menu-bg': isActive2}">
-                    <span class="cursor" @click="routerLink('block')">区块</span>
+                <div class="header-menu" :class="{'header-menu-bg': isActive2}" @click="routerLink('block')">
+                    <span class="cursor" >区块</span>
                 </div>
-                <div class="header-menu" :class="{'header-menu-bg': isActive3}">
-                    <span class="cursor" @click="routerLink('transaction')">交易</span>
+                <div class="header-menu" :class="{'header-menu-bg': isActive3}" @click="routerLink('transaction')">
+                    <span class="cursor" >交易</span>
                 </div>
                 <!-- <div class="nav-menu" style="float: left;">
                     <div class="nav-menu-item nav-item" style="display: inline-block;width: 160px;text-align:right">
@@ -112,22 +112,25 @@ export default {
                 }
             });
         },
-        routerLink: function(name) {
-            if(name == 'home'){
+        changeBg (name) {
+            if((name && name == 'home') || (this.$route.path == '/home' && !name)){
                 this.isActive1 = true;
                 this.isActive2 = false;
                 this.isActive3 = false
             }
-            if(name == 'block'){
+            if((name && name == 'block') || (this.$route.path == '/block' && !name)){
                 this.isActive1 = false;
                 this.isActive2 = true;
                 this.isActive3 = false
             }
-            if(name == 'transaction'){
+            if((name && name == 'transaction') || (this.$route.path == '/transaction' && !name)){
                 this.isActive1 = false;
                 this.isActive2 = false;
                 this.isActive3 = true
             }
+        },
+        routerLink: function(name) {
+            this.changeBg(name)
             router.push({
                 name: name
             });
@@ -145,7 +148,7 @@ export default {
     width: 100%;
     height: 80px;
     line-height: 80px;
-    background: linear-gradient(to right, #3023AE 0%, #C86DD7 100%,#3023AE 0%);
+    background: linear-gradient(to right, rgba(48, 35, 174,0.6) 0%, rgb(200, 109, 215,0.6) 100%);
     /* background-image: url("../../assets/images/header-ng.png");
     background-size: 100%;
     background-repeat: no-repeat; */
@@ -158,7 +161,7 @@ export default {
 .nav-header .logo {
     display: inline-block;
     /* float: left; */
-    padding-left: 20px;
+    padding-left: 24px;
     cursor: pointer;
     vertical-align: middle;
 }
@@ -333,9 +336,13 @@ export default {
     color: #25CEFE;
     /* line-height:  26px; */
     font-size: 16px;
-    padding: 0 12px;
+    padding: 0 15px;
     margin: 0 5px;
     vertical-align: top;
+    cursor: pointer;
+}
+.header-menu:hover{
+    background-image: linear-gradient(180deg, rgba(222, 34, 254,0.2) 30,rgba(124, 23, 247,0.2) 0);
 }
 .header-menu-bg{
     background-image: linear-gradient(180deg, rgba(222, 34, 254,0.2) 30,rgba(124, 23, 247,0.2) 0);

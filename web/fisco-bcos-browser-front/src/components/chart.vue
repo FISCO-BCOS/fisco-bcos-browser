@@ -87,6 +87,8 @@
                         top:30,
                         bottom:30
                     },
+                    animationDuration: 100,
+                    animationEasing: "cubicInOut",
                     series: [{
                         //  name: '销量',
                         type: this.chartType,

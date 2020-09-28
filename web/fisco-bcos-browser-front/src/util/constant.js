@@ -94,7 +94,7 @@ export default {
 
     ADD_GROUP_SUCCESS: '新增群组成功',
 
-    INTERVALTIME: 20000,
+    INTERVALTIME: 10000,
 
     CHAIN_OPTION: [
         {

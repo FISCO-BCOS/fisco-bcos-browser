@@ -1,12 +1,15 @@
 <template>
     <div>
-        <div class="search-main padding-bottom-0">
-            <div class="container padding-bottom-0">
-                <v-nav :page='page' :hrTitle="'交易'" :navContent="PkHash" :navSubtitle="'交易'" :hrcontent="'交易信息'" :route="'transaction'"></v-nav>
-            </div>
-        </div>
+        <div class="container">
+        <div class="padding-bottom-0" style="padding-top: 40px">
+                    <!-- <v-nav :page='page' :hrTitle="'区块'" :navContent="blockName" :navSubtitle="'区块'" :hrcontent="'区块信息'" :route="'block'"></v-nav> -->
+                    <div class="detail-content">
+                    <div class="c-title">
+                        <span>交易 {{PkHash}}</span>
+                    </div>
+                    </div>
+                </div>
         <div class="hash-content-info-tran">
-            <div class="container">
                 <div class="content">
                     <el-tabs v-model="activeName" @tab-click="handleClick">
                         <el-tab-pane label="交易信息" name="first">
@@ -107,10 +110,10 @@
 </template>
 <style scoped>
     .hash-content-info-tran{
-        background-color: #2a2c3b;
+        background-color: rgba(69, 54, 187,0.5);
         color: #fff;
         font-size: 14px;
-
+        border-radius: 16px 4px 16px 4px;
     }
     .hash-content-info-tran .box{
         width: 100%;
@@ -118,9 +121,9 @@
     }
     .hash-content-info-tran .content{
         width: 100%;
-        border-top: 1px solid #999;
+        /* border-top: 1px solid #999; */
         box-sizing: border-box;
-        background-color: #3b3e54;
+        /* background-color: #3b3e54; */
     }
     .hash-content-info-tran .content .title{
         border-bottom: 1px solid #999;
@@ -145,7 +148,7 @@
         padding-right: 10px;
         box-sizing: border-box;
         vertical-align: top;
-        color: #111;
+        color: #fff;
     }
     .hash-content-label>.receit-content{
         display: inline-block;
@@ -181,7 +184,7 @@
     }
     .input-data> .item> .label{
         display: inline-block;
-        color:#111;
+        color:#fff;
         font-weight: bold;
         width: 80px;
         vertical-align: top;
@@ -207,7 +210,7 @@
     }
     .tranbox{
         margin: 20px 30px;
-        background-color: #fff;
+        background: none;
         color: #42b983;
     }
     .content>>>.is-top{

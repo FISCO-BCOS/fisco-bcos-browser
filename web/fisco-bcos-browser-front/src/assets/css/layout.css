@@ -14,7 +14,6 @@
 .search-main{
     position: relative;
     min-height: calc(100% - 80px);
-    background-color: #2a2c3b;
     padding-bottom: 20px;
     box-sizing: border-box;
 }
@@ -129,19 +128,20 @@
 /*详情页样式*/
 .detail-content{
     width: 100%;
-    background-color: #3b3e54;
+    /* background-color: #3b3e54; */
 }
 .detail-content .c-title {
-    height: 80px;
-    line-height: 80px;
-    text-align: center;
+    height: 32px;
+    line-height: 32px;
+    /* text-align: center; */
     width: 100%;
     font-size: 16px;
     color: #fff;
 }
 
 .hash-content-info{
-    background-color: #2a2c3b;
+    background-color: rgba(69, 54, 187,0.5);
+    border-radius: 16px 4px 16px 4px;
 }
 .hash-content-info .box{
     width: 100%;
@@ -149,8 +149,8 @@
 .hash-content-info .content{
     width: 100%;
     box-sizing: border-box;
-    background-color: #3b3e54;
-    border-top: 1px solid #4c4f66;
+    /* background-color: #3b3e54; */
+    /* border-top: 1px solid #4c4f66; */
     padding: 30px 40px;
     color: #fff;
 }
@@ -337,14 +337,26 @@
     background-color: #666 !important;
 }
 .background-common-color{
-    background-color: rgba(69, 54, 187,0.5);
+    /* background-color: rgba(69, 54, 187,0.5); */
     /* z-index: -1; */
     /* filter: blur(1px); */
+    /* border: 1px solid rgba(69, 54, 187,0.5); */
 }
-.background-common-color:before{
-    background-color: rgba(69, 54, 187,0.7);
-    filter: blur(4px);
-    /* z-index: -2; */
+.bg-filter{
+    background-color: rgba(69, 54, 187,0.5);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top:0px;
+    border-radius: 16px 4px 16px 4px;
+    -webkit-filter: blur(0.4px);
+    -moz-filter: blur(0.4px);
+    -o-filter: blur(0.4px);
+    -ms-filter: blur(0.4px);
+    filter: blur(0.4px);
+    z-index: 0;
+    overflow: auto;
 }
 
 .font-overflow{
@@ -394,7 +406,9 @@
 .formatter-value{
     font-family: 'futura';
     font-size: 18px;
-    font-weight: bold;
+    /* font-style: italic;
+    font-weight: 500; */
+    /* font-weight: bold; */
 }
 .formatter-name{
     padding-top: 2px;
