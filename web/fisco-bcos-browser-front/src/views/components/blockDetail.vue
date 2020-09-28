@@ -1,25 +1,25 @@
 <template>
     <div>
         <div class="search-main padding-bottom-0">
-            <div class="container padding-bottom-0">
-                <v-nav :page='page' :hrTitle="'区块'" :navContent="blockName" :navSubtitle="'区块'" :hrcontent="'区块信息'" :route="'block'"></v-nav>
-                <div class="detail-content">
-                   <div class="c-title">
-                       <div>区块信息</div>
-                   </div>
-                </div>
-            </div>
-        </div>
-        <div class="hash-content-info">
             <div class="container">
-                <div class="content">
-                    <div >
-                        <json-viewer
-                        :value="blcokContent"
-                        :expand-depth='5'
-                        copyable
-                        sort></json-viewer>
-                        <div style="text-align: center" v-if="noData">暂无数据</div>
+                <div class="padding-bottom-0" style="padding-top: 40px">
+                    <!-- <v-nav :page='page' :hrTitle="'区块'" :navContent="blockName" :navSubtitle="'区块'" :hrcontent="'区块信息'" :route="'block'"></v-nav> -->
+                    <div class="detail-content">
+                    <div class="c-title">
+                        <span>区块 {{blockName}}</span>
+                    </div>
+                    </div>
+                </div>
+                <div class="hash-content-info">
+                    <div class="content">
+                        <div >
+                            <json-viewer
+                            :value="blcokContent"
+                            :expand-depth='5'
+                            copyable
+                            sort></json-viewer>
+                            <div style="text-align: center" v-if="noData">暂无数据</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -29,6 +29,18 @@
 <style scoped>
     .content>>>.jv-code{
         max-height: none;
+    }
+    .hash-content-info>>> .jv-container{
+        background: none;
+    }
+    .hash-content-info>>> .jv-key{
+        color: #fff
+    }
+    .hash-content-info>>> .jv-array{
+        color: #fff !important
+    }
+    .hash-content-info>>> .jv-object{
+        color: #fff !important
     }
 </style>
 <script>

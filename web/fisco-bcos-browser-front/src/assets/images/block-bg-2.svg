@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="576px" height="64px" viewBox="0 0 576 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>4</title>
+    <defs>
+        <linearGradient x1="0%" y1="50.617284%" x2="100%" y2="49.5102117%" id="linearGradient-1">
+            <stop stop-color="#16A7FC" offset="0%"></stop>
+            <stop stop-color="#C86DD7" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.498651414">
+        <g id="1.0-概览" transform="translate(-132.000000, -520.000000)" fill="url(#linearGradient-1)">
+            <rect id="4" x="132" y="520" width="576" height="64" rx="8"></rect>
+        </g>
+    </g>
+</svg>

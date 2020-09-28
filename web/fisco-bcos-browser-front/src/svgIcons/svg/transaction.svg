@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>总交易量</title>
+    <g id="总交易量" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-2-Copy-2" transform="translate(16.000000, 16.000000) scale(-1, 1) translate(-16.000000, -16.000000) ">
+            <path d="M24,0 C28.418278,-8.11624501e-16 32,3.581722 32,8 C32,12.418278 28.418278,16 24,16 L16,16 L16,16 L16,8 C16,3.581722 19.581722,8.11624501e-16 24,0 Z" id="Rectangle" fill="#25CEFE"></path>
+            <rect id="Rectangle" fill="#DE24FF" x="4" y="17" width="4" height="4"></rect>
+            <line x1="6" y1="19" x2="12" y2="25" id="Line" stroke="#DE24FF" stroke-linecap="square"></line>
+            <line x1="12" y1="25" x2="17.5" y2="15.5" id="Line-2" stroke="#DE24FF" stroke-linecap="square"></line>
+            <rect id="Rectangle-Copy-12" fill="#DE24FF" x="10" y="23" width="4" height="4"></rect>
+            <rect id="Rectangle-Copy-13" fill="#DE24FF" x="16" y="13" width="4" height="4"></rect>
+            <path d="M16,9 C17.9329966,9 19.6829966,9.78350169 20.9497475,11.0502525 C22.2164983,12.3170034 23,14.0670034 23,16 L23,16 L23,31 L1,31 L1,9 Z" id="Rectangle" stroke="#FFFFFF" stroke-width="2"></path>
+        </g>
+    </g>
+</svg>

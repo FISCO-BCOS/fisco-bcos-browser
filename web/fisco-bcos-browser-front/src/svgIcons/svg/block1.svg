@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>当前块高</title>
+    <g id="当前块高" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-4-Copy" transform="translate(16.000000, 16.000000) scale(-1, 1) translate(-16.000000, -16.000000) ">
+            <path d="M24,0 C28.418278,-8.11624501e-16 32,3.581722 32,8 C32,12.418278 28.418278,16 24,16 L16,16 L16,16 L16,8 C16,3.581722 19.581722,8.11624501e-16 24,0 Z" id="Rectangle" fill="#25CEFE"></path>
+            <rect id="Rectangle" fill="#DE24FF" transform="translate(9.000000, 22.000000) rotate(-270.000000) translate(-9.000000, -22.000000) " x="7" y="18" width="4" height="8"></rect>
+            <rect id="Rectangle" fill="#DE24FF" transform="translate(11.000000, 26.500000) scale(1, -1) rotate(-270.000000) translate(-11.000000, -26.500000) " x="10.5" y="20.5" width="1" height="12"></rect>
+            <rect id="Rectangle-Copy-13" fill="#DE24FF" transform="translate(7.000000, 16.000000) scale(1, -1) rotate(-270.000000) translate(-7.000000, -16.000000) " x="5" y="14" width="4" height="4"></rect>
+            <path d="M16,9 C17.9329966,9 19.6829966,9.78350169 20.9497475,11.0502525 C22.2164983,12.3170034 23,14.0670034 23,16 L23,16 L23,31 L1,31 L1,9 Z" id="Rectangle" stroke="#FFFFFF" stroke-width="2"></path>
+        </g>
+    </g>
+</svg>

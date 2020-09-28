@@ -13,6 +13,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/icon/iconfont.css'
 import '@/assets/icon/iconfont.js'
 import '@/assets/icon/iconfont_webaas.css'
+import "@/assets/css/futura.css"
+import "./svgIcons"
 
 promise.polyfill();
 

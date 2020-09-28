@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>交易流向</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="90.7571232%" id="linearGradient-1">
+            <stop stop-color="#DE22FE" offset="0%"></stop>
+            <stop stop-color="#7C17F7" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="交易流向" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle-Copy-22" fill="url(#linearGradient-1)" x="0" y="0" width="20" height="20" rx="10"></rect>
+        <path d="M10.9497475,5.29289322 L15.1923882,9.53553391 C15.5829124,9.9260582 15.5829124,10.5592232 15.1923882,10.9497475 C14.8018639,11.3402718 14.1686989,11.3402718 13.7781746,10.9497475 L11.242,8.414 L11.2426407,13.2426407 C11.2426407,13.7949254 10.7949254,14.2426407 10.2426407,14.2426407 C9.69035594,14.2426407 9.24264069,13.7949254 9.24264069,13.2426407 L9.242,8.414 L6.70710678,10.9497475 C6.31658249,11.3402718 5.68341751,11.3402718 5.29289322,10.9497475 C4.90236893,10.5592232 4.90236893,9.9260582 5.29289322,9.53553391 L9.53553391,5.29289322 C9.9260582,4.90236893 10.5592232,4.90236893 10.9497475,5.29289322 Z" id="Combined-Shape" fill="#121212" transform="translate(10.242641, 9.621320) rotate(-270.000000) translate(-10.242641, -9.621320) "></path>
+    </g>
+</svg>
