@@ -196,7 +196,7 @@
     }
     .input-label>.label {
         display: inline-block;
-        color:#111;
+        color:#fff;
         font-weight: bold;
         width: 80px;
         font-size: 12px;
