@@ -108,6 +108,12 @@ export default {
             versionId: localStorage.getItem('versionId') ? localStorage.getItem('versionId') : '',
         }
     },
+    beforeCreate(){
+        localStorage.removeItem('solcName')
+        localStorage.removeItem('versionId')
+        console.log('编译', localStorage.getItem('encryptionId'))
+
+    },
     beforeDestroy: function () {
         Bus.$off("check")
         Bus.$off("deleteFile")
