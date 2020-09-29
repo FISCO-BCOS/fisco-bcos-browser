@@ -63,7 +63,7 @@
                                             <div v-if="!showOutputDecode  && showOutDecode" class="input-data">
                                                 <div class="item">
                                                     <span class="label">function</span>
-                                                    <span>{{funcOutData + "(" + abiType + outputType + ")"}}</span>
+                                                    <span>{{funcOutData + "(" + abiType  +")" +' ' +outputType}}</span>
                                                 </div>
                                                 <div class="item">
                                                     <span class="label">methodId</span>
@@ -728,7 +728,6 @@ export default {
         //解析uotput
         decodeOutPutfun: function (output, abiData) {
             let web3 = new Web3(Web3.givenProvider);
-            console.log('++++output++++++:', output)
             if (abiData) {
                 abiData.abiInfo.outputs.forEach((val, index) => {
                     if (val && index < abiData.abiInfo.outputs.length - 1) {
@@ -742,7 +741,6 @@ export default {
                     this.showOutputDecode = false
                     this.showOutDecode = true;
                     this.decodeOutData = web3.eth.abi.decodeParameters(abiData.abiInfo.outputs, output);
-                    console.log(this.decodeOutData)
                     if (JSON.stringify(this.decodeOutData) != "{}") {
                         for (const key in this.decodeOutData) {
                             for (let index = 0; index < abiData.abiInfo.outputs.length; index++) {
@@ -757,7 +755,6 @@ export default {
                             }
                         }
                     }
-                    console.log(this.outputData)
                 } else {
                     this.showOutDecode = false;
                     this.showOutputDecode = true;
@@ -770,6 +767,23 @@ export default {
                     }
 
                     // console.log(this.decodeOutData)
+                }
+                if(abiData.abiInfo.outputs.length){
+                    let outputType = []
+                    abiData.abiInfo.outputs.forEach((val, index) => {
+                        if (val && val.type && val.name) {
+                            outputType[index] = val.type + " " + val.name;
+                        } else if (val && val.name) {
+                            outputType[index] = val.name;
+                        } else if (val && val.type) {
+                            outputType[index] = val.type;
+                        } else if (val) {
+                            outputType[index] = val;
+                        }
+                    });
+                    this.outputType = `returns(${outputType.join(', ')})`;
+                }else {
+                    this.outputType = ""
                 }
                 this.buttonOutTitle = '还原';
             }
