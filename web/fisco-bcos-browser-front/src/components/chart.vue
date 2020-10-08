@@ -19,7 +19,7 @@
                 chartType: this.type,
                 chartId: this.id,
                 chartData: this.data,
-                chartTransactionDataArr: this.transactionDataArr,
+                chartTransactionDataArr: this.transactionDataArr ? this.transactionDataArr: [],
                 chartSize: this.size,
                 titleType: this.title,
                 titleContent: this.titleData,
@@ -32,7 +32,7 @@
                 this.chartType = this.type;
                 this.chartId =  this.id;
                 this.chartData = this.data;
-                this.chartTransactionDataArr = this.transactionDataArr;
+                this.chartTransactionDataArr = this.transactionDataArr ? this.transactionDataArr: [];
                 this.chartSize= this.size;
                 this.titleType= this.title;
                 this.titleContent = this.titleData;

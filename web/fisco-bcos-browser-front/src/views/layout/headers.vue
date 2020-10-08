@@ -149,6 +149,12 @@ export default {
     height: 80px;
     line-height: 80px;
     background: linear-gradient(to right, rgba(48, 35, 174,0.6) 0%, rgb(200, 109, 215,0.6) 100%);
+    /* background: -ms-linear-gradient(to right, rgba(48, 35, 174,0.6) 0%, rgb(200, 109, 215,0.6) 100%); */
+    /* background: -webkit-linear-gradient(to right, rgba(48, 35, 174,0.6) 0%, rgb(200, 109, 215,0.6) 100%); */
+    /* filter:progid:DXImageTransform.Microsoft.gradient(startcolorstr=#993023AE,endcolorstr=#99C86DD7);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startcolorstr=#993023AE,endcolorstr=#99C86DD7)"; */
+    /* background: linear-gradient(to bottom, blue 0%, white 80%); */
+    /* filter: progid:DXImageTransform.Microsoft.gradient (GradientType=0, startColorstr=#80000000, endColorstr=#80000000); */
     /* background-image: url("../../assets/images/header-ng.png");
     background-size: 100%;
     background-repeat: no-repeat; */
