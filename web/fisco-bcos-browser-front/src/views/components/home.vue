@@ -729,10 +729,22 @@ export default {
                 }
             }
         },
-        //get blockChain overview ，  start the timer after receiving the correct response
+
+        //
+        renovate () {
+            let hour = (new Date()).getHours()
+            if(localStorage.getItem("hour") != hour){
+                localStorage.setItem("hour",hour)
+                if(hour == 3){
+                    router.go(0)
+                }
+            }
+        },
+        //get blockChain overview ， tart the timer after receiving the correct response
         searchTbBlcokChainInfo: function () {
             this.loading1 = true;
             getTbBlcokChainInfo(this.groupId).then((res) => {
+                this.renovate()
                 this.setSetIntervaling = true;
                 this.loading1 = false;
                 if (res.data.code === 0) {
@@ -760,7 +772,7 @@ export default {
                     }
                 }
             }).catch(err => {
-                this.clear();
+                // this.clear();
                 this.loading1 = false;
                 for (let i = 0; i < this.totalStatisticsList.length; i++) {
                     this.totalStatisticsList[i].value = 0;
@@ -786,12 +798,16 @@ export default {
                 if (res.data.code === 0) {
                     if (res.data.data && res.data.data.length) {
                         res.data.data = intiDate(res.data.data);
+                        this.chartStatistics.date = [];
+                        this.chartStatistics.dataArr = []
                         for (let i = 0; i < res.data.data.length; i++) {
                             this.chartStatistics.date.push(res.data.data[i].dateStr);
                             this.chartStatistics.dataArr.push(res.data.data[i].txn);
                         }
                     } else {
                         res.data.data = intiDate(res.data.data);
+                        this.chartStatistics.date = [];
+                        this.chartStatistics.dataArr = []
                         for (let i = 0; i < res.data.data.length; i++) {
                             this.chartStatistics.date.push(res.data.data[i].dateStr);
                             this.chartStatistics.dataArr.push(res.data.data[i].txn);
@@ -806,7 +822,7 @@ export default {
                     });
                 }
             }).catch(err => {
-                this.clear();
+                // this.clear();
                 this.loading2 = false;
                 if (err.response && err.response.status !== 200) {
                     message(constant.ERROR, 'error');
@@ -846,7 +862,7 @@ export default {
                     });
                 }
             }).catch(err => {
-                this.clear();
+                // this.clear();
                 this.loading3 = false;
                 if (err.response && err.response.status !== 200) {
                     message(constant.ERROR, 'error');
@@ -878,7 +894,7 @@ export default {
                     })
                 }
             }).catch(err => {
-                this.clear();
+                // this.clear();
                 this.loading4 = false;
                 if (err.response && err.response.code !== 200) {
                     message(constant.ERROR, 'error');
@@ -913,13 +929,13 @@ export default {
                         this.transactionList.forEach((value, index) => {
                             if (value.to) {
                                 this.newData[index] = null
-                                this.getTransationDetail(value.transHash, 'to', index)
+                                // this.getTransationDetail(value.transHash, 'to', index)
                                 // setTimeout(() => {
                                 //     this.$set(value,'funcName',this.newData[index])
                                 // },400)
                             } else {
                                 this.newData[index] = null;
-                                this.getTransationDetail(value.transHash, "", index)
+                                // this.getTransationDetail(value.transHash, "", index)
                                 // setTimeout(() => {
                                 //     this.$set(value,'funcName',this.newData[index])
                                 // },400)
@@ -934,86 +950,86 @@ export default {
                     })
                 }
             }).catch(err => {
-                this.clear();
+                // this.clear();
                 this.loading5 = false;
                 if (err.response && err.response.code !== 200) {
                     message(constant.ERROR, 'error');
                 }
             })
         },
-        getTransationDetail: function (val, type, index) {
-            let data = {
-                groupId: localStorage.getItem("groupId"),
-                transHash: val,
-            };
-            getTbTransactionByPkHash(data).then(res => {
-                if (res.data.code === 0) {
-                    if (res.data.data.input && type) {
-                        this.getMethod(res.data.data.input, index)
+        // getTransationDetail: function (val, type, index) {
+        //     let data = {
+        //         groupId: localStorage.getItem("groupId"),
+        //         transHash: val,
+        //     };
+        //     getTbTransactionByPkHash(data).then(res => {
+        //         if (res.data.code === 0) {
+        //             if (res.data.data.input && type) {
+        //                 this.getMethod(res.data.data.input, index)
 
-                    } else if (res.data.data.input) {
-                        this.getCodeabi(res.data.data.input, index)
-                    }
-                } else {
-                    this.$message({
-                        type: 'error',
-                        message: errorcode[res.data.code].cn
-                    })
-                }
-            }).catch(err => {
-                message(constant.ERROR, 'error');
-            })
-        },
-        getMethod: function (val, index) {
-            let funcName = ""
-            let data = val.substring(0, 10);
-            getAbiFunction(data).then(res => {
-                if (res.data.code === 0) {
-                    if (res.data.data) {
-                        let inputData = JSON.parse(res.data.data.abiInfo)
-                        funcName = inputData.name + "("
-                        inputData.inputs.forEach((item, indexs) => {
-                            if (indexs == inputData.inputs.length - 1) {
-                                funcName = funcName + item.type + " " + item.name;
-                            } else {
-                                funcName = funcName + item.type + " " + item.name + ",";
-                            }
-                        })
-                        funcName = funcName + ")"
-                        this.newData[index] = funcName;
-                        this.$set(this.transactionList[index], 'funcName', this.newData[index])
-                    }
-                } else {
-                    this.$message({
-                        type: 'error',
-                        message: errorcode[res.data.code].cn
-                    })
-                }
-            }).catch(err => {
-                message(constant.ERROR, 'error');
-            })
-        },
-        getCodeabi: function (val, index) {
-            if (val && val != "0x") {
-                let data = {
-                    input: val.substring(2)
-                }
-                getAbi(data).then(res => {
-                    if (res.data.code == 0) {
-                        if (res.data.data) {
-                            this.decodeDeloy(res.data.data, index)
-                        }
-                    } else {
-                        this.$message({
-                            type: 'error',
-                            message: errorcode[res.data.code].cn
-                        })
-                    }
-                }).catch(err => {
-                    message(constant.ERROR, 'error');
-                })
-            }
-        },
+        //             } else if (res.data.data.input) {
+        //                 this.getCodeabi(res.data.data.input, index)
+        //             }
+        //         } else {
+        //             this.$message({
+        //                 type: 'error',
+        //                 message: errorcode[res.data.code].cn
+        //             })
+        //         }
+        //     }).catch(err => {
+        //         message(constant.ERROR, 'error');
+        //     })
+        // },
+        // getMethod: function (val, index) {
+        //     let funcName = ""
+        //     let data = val.substring(0, 10);
+        //     getAbiFunction(data).then(res => {
+        //         if (res.data.code === 0) {
+        //             if (res.data.data) {
+        //                 let inputData = JSON.parse(res.data.data.abiInfo)
+        //                 funcName = inputData.name + "("
+        //                 inputData.inputs.forEach((item, indexs) => {
+        //                     if (indexs == inputData.inputs.length - 1) {
+        //                         funcName = funcName + item.type + " " + item.name;
+        //                     } else {
+        //                         funcName = funcName + item.type + " " + item.name + ",";
+        //                     }
+        //                 })
+        //                 funcName = funcName + ")"
+        //                 this.newData[index] = funcName;
+        //                 this.$set(this.transactionList[index], 'funcName', this.newData[index])
+        //             }
+        //         } else {
+        //             this.$message({
+        //                 type: 'error',
+        //                 message: errorcode[res.data.code].cn
+        //             })
+        //         }
+        //     }).catch(err => {
+        //         message(constant.ERROR, 'error');
+        //     })
+        // },
+        // getCodeabi: function (val, index) {
+        //     if (val && val != "0x") {
+        //         let data = {
+        //             input: val.substring(2)
+        //         }
+        //         getAbi(data).then(res => {
+        //             if (res.data.code == 0) {
+        //                 if (res.data.data) {
+        //                     this.decodeDeloy(res.data.data, index)
+        //                 }
+        //             } else {
+        //                 this.$message({
+        //                     type: 'error',
+        //                     message: errorcode[res.data.code].cn
+        //                 })
+        //             }
+        //         }).catch(err => {
+        //             message(constant.ERROR, 'error');
+        //         })
+        //     }
+        // },
         decodeDeloy: function (items, index) {
             if (items) {
                 let input = JSON.parse(items.contractAbi);
