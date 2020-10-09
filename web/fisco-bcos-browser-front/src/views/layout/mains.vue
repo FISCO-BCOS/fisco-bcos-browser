@@ -1,5 +1,5 @@
 <template>
-    <div style="height:100%;" class="mains">
+    <div style="height:100%;" class="mains" @dblclick="screenFull">
         <div v-loading="loading" style="height: 100%;">
             <v-head ref="head"></v-head>
             <!-- <div style="padding-top: 20px"></div> -->
@@ -18,6 +18,7 @@ import url from '@/api/url'
 import router from '@/router'
 import constant from '@/util/constant'
 import { message } from '@/util/util'
+import screenfull from "screenfull"
 
 export default {
     name: 'mains',
@@ -32,14 +33,57 @@ export default {
             groupList: [],
             groupId: null,
             routerShow: false,
+            isFullscreen: false,
+            screenFullShow: true,
         }
     },
     mounted: function () {
         this.$nextTick(function () {
             this.GetgroupList();
-        })
+        });
+        window.onresize = () => {
+            // 全屏下监控是否按键了ESC
+            if (!this.checkFull()) {
+            // 全屏下按键esc后要执行的动作
+            this.isFullscreen = false
+            }
+            this.screenFullShow = true
+        }
     },
     methods: {
+        screenFull () {
+            if(!screenfull.isEnabled){
+                this.$message({
+                    type: "error",
+                    message: "你的浏览器不支持此操作！"
+                })
+                return false
+            }
+            screenfull.toggle();
+            this.isFullscreen = true;
+            this.screenFullShow = false;
+            if(this.icon == 'fullScreen'){
+                this.icon = 'narrow'
+            }else{
+                this.icon = 'fullScreen'
+            }
+            
+        },
+        checkFull() {
+            var isFull = document.fullscreenEnabled || window.fullScreen || document.webkitIsFullScreen || document.msFullscreenEnabled
+            // to fix : false || undefined == undefined
+            if (isFull === undefined) {
+                isFull = false
+            }
+            return isFull
+        },
+        narrowFull () {
+            if (!this.checkFull()) {
+            // 全屏下按键esc后要执行的动作
+            this.isFullscreen = false
+            }
+            this.screenFullShow = true
+        },
         changeNav: function () {
             this.$refs.head.changeBg()
         },
