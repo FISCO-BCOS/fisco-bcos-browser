@@ -43,6 +43,7 @@ public class Constants {
     public static final String TB_GROUP = "tb_group";
     public static final String TB_CONTRACT = "tb_contract";
     public static final String TB_FUNCTION = "tb_function";
+    public static final String TB_USER = "tb_user";
     public static final String PREFIX_TB_NODE = "tb_node_";
     public static final String PREFIX_TB_BLOCKCHAININFO = "tb_blockChainInfo_";
     public static final String PREFIX_TB_TXNBYDAY = "tb_txnByDay_";

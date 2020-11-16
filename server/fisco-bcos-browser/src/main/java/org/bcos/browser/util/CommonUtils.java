@@ -1,15 +1,16 @@
 package org.bcos.browser.util;
 
-import com.alibaba.fastjson.JSON;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bcos.browser.base.ConstantCode;
@@ -90,8 +91,8 @@ public class CommonUtils {
             log.warn("Object2JavaBean. obj or clazz null");
             return null;
         }
-        String jsonStr = JSON.toJSONString(obj);
-        return JSON.parseObject(jsonStr, clazz);
+        String jsonStr = JsonTools.toJSONString(obj);
+        return JsonTools.toJavaObject(jsonStr, clazz);
     }
 
     /**

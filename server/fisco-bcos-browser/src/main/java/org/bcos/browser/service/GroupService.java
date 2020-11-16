@@ -1,18 +1,23 @@
 package org.bcos.browser.service;
 
 import java.util.List;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.Constants;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BaseResponse;
-import org.bcos.browser.entity.dto.*;
+import org.bcos.browser.entity.dto.Group;
+import org.bcos.browser.entity.dto.Node;
+import org.bcos.browser.entity.dto.Peer;
+import org.bcos.browser.entity.dto.SyncInfoFromChain;
 import org.bcos.browser.mapper.BlockChainInfoMapper;
 import org.bcos.browser.mapper.BlockMapper;
 import org.bcos.browser.mapper.ContractMapper;
 import org.bcos.browser.mapper.GroupMapper;
 import org.bcos.browser.mapper.NodeMapper;
 import org.bcos.browser.mapper.TransactionMapper;
+import org.bcos.browser.mapper.UserMapper;
 import org.bcos.browser.util.Web3jRpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 public class GroupService {
+    @Autowired
+    GroupService groupService;
     @Autowired
     GroupMapper groupMapper;
     @Autowired
@@ -33,6 +40,8 @@ public class GroupService {
     TransactionMapper transactionMapper;
     @Autowired
     ContractMapper contractMapper;
+    @Autowired
+    UserMapper userMapper;
 
     /**
      * addGroup.
@@ -115,7 +124,9 @@ public class GroupService {
      * @return
      */
     @Transactional
-    public BaseResponse deleteGroup(int groupId) {
+    public BaseResponse deleteGroup(int groupId) throws BaseException {
+        // check group id
+        groupService.checkGroupId(groupId);
         // drop table
         String tableName = Constants.PREFIX_TB_NODE + groupId;
         groupMapper.dropTableByName(tableName);
@@ -130,7 +141,21 @@ public class GroupService {
 
         // delete group info
         groupMapper.deleteGroup(groupId);
+        // delete user info
+        userMapper.deleteByGroupId(groupId);
         
         return new BaseResponse(ConstantCode.SUCCESS);
+    }
+    
+    public void checkGroupId(int groupId) throws BaseException {
+        Group group = groupMapper.getGroupById(groupId);
+        if (Objects.isNull(group)) {
+            throw new BaseException(ConstantCode.GROUP_ID_NOT_EXISTS); 
+        }
+    }
+    
+    public Group getGroupById(int groupId) {
+        Group group = groupMapper.getGroupById(groupId);
+        return group;
     }
 }
