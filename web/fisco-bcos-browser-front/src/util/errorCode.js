@@ -92,5 +92,21 @@ export default {
     "305015": {
         cn: "节点异常",
         en: "node may be abnormal, please confirm"
-    }
+    },
+    "305016": {
+        cn: "没权限，请检查配置",
+        en: "Do not have permission, please check configAuth"
+    },
+    "305101": {
+        cn: "用户已存在",
+        en: "User already exists"
+    },
+    "305102": {
+        cn: "用户不存在",
+        en: "User id not exists"
+    },
+    "305103": {
+        cn: "用户公钥地址错误",
+        en: "Publickey address is invalid"
+    },
 }

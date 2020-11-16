@@ -211,3 +211,42 @@ export function getEncryptType(data){
         method: 'get'
     })
 }
+
+//getEncryptType 
+export function isConfigAuth() {
+    return get({
+        url: `${url.GET_IS_CONFIG_AUTH}`,
+        method: 'get'
+    })
+}
+export function  userAdd(data) {
+    return post({
+        url: `${url.GET_USER_ADD}`,
+        method: 'post',
+        data: data
+    })
+}
+
+export function userList(data, list) { 
+    const params = reviseParam(data, list);
+    return get({
+        url: `${url.GET_USER_LIST}/${params.str}`,
+        method: 'get',
+        params: list
+    })
+}
+
+export function userUpdate(data) {
+    return put({
+        url: url.GET_USER_UPDATE,
+        method: 'put',
+        data: data
+    })
+}
+
+export function userDelete(data) {
+    return deleted({
+        url: `${url.GET_USER_DELETE}/${data}`,
+        method: 'delete'
+    })
+}

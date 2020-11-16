@@ -12,8 +12,15 @@
                         <el-tab-pane label="交易信息" name="first">
                             <div class="tranbox">
                                 <div v-for="item in transactionData" class="hash-content-label" :key='item.label'>
-                                    <span class="label-title">{{item.label}}:</span>
-                                    <span>{{item.value}}</span>
+                                    <template v-if="item.label=='from'">
+                                        <span class="label-title">{{item.label}}:</span>
+                                        <span>{{item.value}}</span>
+                                        <span style="cursor: pointer;" @click="link(item.value)">=> {{queryUserList(item.value)}} {{userName}}</span>
+                                    </template>
+                                    <template v-else>
+                                        <span class="label-title">{{item.label}}:</span>
+                                        <span>{{item.value}}</span>
+                                    </template>
                                 </div>
                                 <div class="hash-content-label">
                                     <span class="label-title">input:</span>
@@ -93,6 +100,11 @@
                                     <template v-else-if="item.label =='status'">
                                         <span class="label-title">{{item.label}}:</span>
                                         <span class="receit-content" :style="{'color': txStatusColor(item.value)}">{{item.value}}</span>
+                                    </template>
+                                    <template v-else-if="item.label=='from'">
+                                        <span class="label-title">{{item.label}}:</span>
+                                        <span>{{item.value}}</span>
+                                        <span v-show="userName" style="cursor: pointer;" @click="link(item.value)">=> {{queryUserList(item.value)}} {{userName}}</span>
                                     </template>
                                     <template v-else>
                                         <span class="label-title">{{item.label}}:</span>
@@ -314,7 +326,7 @@
 </style>
 <script>
 import nav from '@/components/content-nav'
-import { getTbTransactionByPkHash, getTbTransactionReceiptByPkHash, getContractList, getBytecode, getAbiFunction, getAbi } from '@/api/api'
+import { getTbTransactionByPkHash, getTbTransactionReceiptByPkHash, getContractList, getBytecode, getAbiFunction, getAbi, userList } from '@/api/api'
 // import {getTbTransactionReceiptByPkHash} from '@/api/api'
 import url from '@/api/url'
 import { message } from '@/util/util'
@@ -367,10 +379,12 @@ export default {
             outputShow: false,
             showOutputDecode: false,
             transOutputData: "",
-            outputType: null
+            outputType: null,
+            userName: ''
         }
     },
     mounted: function () {
+
         this.$nextTick(function () {
             this.searchTbTransactionByPkHash();
         });
@@ -768,7 +782,7 @@ export default {
 
                     // console.log(this.decodeOutData)
                 }
-                if(abiData.abiInfo.outputs.length){
+                if (abiData.abiInfo.outputs.length) {
                     let outputType = []
                     abiData.abiInfo.outputs.forEach((val, index) => {
                         if (val && val.type && val.name) {
@@ -782,7 +796,7 @@ export default {
                         }
                     });
                     this.outputType = `returns(${outputType.join(', ')})`;
-                }else {
+                } else {
                     this.outputType = ""
                 }
                 this.buttonOutTitle = '还原';
@@ -798,12 +812,45 @@ export default {
             }
         },
         txStatusColor(val) {
-            if(val =='0x0'){
+            if (val == '0x0') {
                 return '#67C23A'
-            }else {
+            } else {
                 return '#F56C6C'
             }
-        }
+        },
+        queryUserList(address) {
+            let data = {
+                groupId: localStorage.getItem('groupId'),
+                pageNumber: 1,
+                pageSize: 10,
+            }
+            let reqParam = {
+                userParam: address
+            }
+            userList(data, reqParam)
+                .then(res => {
+                    this.loading = false
+                    if (res.data.code === 0) {
+                        if(res.data.data.length == 0) {
+                            this.userName = ''
+                        }else {
+                            this.userName =  res.data.data[0]['userName']
+                        }
+                    } else {
+                        message(errorcode[res.data.code].cn, 'error')
+                    }
+                }).catch(err => {
+                    message(constant.ERROR, 'error');
+                })
+        },
+        link(val) {
+            this.$router.push({
+                path: "/userConfig",
+                query: {
+                    userName: val
+                }
+            });
+        },
     }
 }
 </script>
