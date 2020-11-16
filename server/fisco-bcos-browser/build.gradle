@@ -64,11 +64,12 @@ List io = [
 	'commons-fileupload:commons-fileupload:1.4'
 ]
 
+def jackson_version="2.11.0"
 List jackson = [
-    "com.fasterxml.jackson.core:jackson-databind:2.10.0",
-    "com.fasterxml.jackson.module:jackson-module-parameter-names:2.10.0",
-    "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.0",
-    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.0"
+    "com.fasterxml.jackson.core:jackson-databind:$jackson_version",
+    "com.fasterxml.jackson.module:jackson-module-parameter-names:$jackson_version",
+    "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jackson_version",
+    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
 ]
 
 List swagger = [
@@ -81,7 +82,6 @@ dependencies {
     compile "com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.1"
 	compile "org.apache.commons:commons-lang3:3.10"
 
-    compile 'com.alibaba:fastjson:1.2.70'
     annotationProcessor 'org.projectlombok:lombok:1.18.2'
     compileOnly 'org.projectlombok:lombok:1.18.2'
 }

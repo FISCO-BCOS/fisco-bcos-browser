@@ -38,19 +38,19 @@ public class TransactionController extends BaseController {
      */
     @GetMapping("/transactionList/{groupId}/{pageNumber}/{pageSize}")
     public BasePageResponse getTransInfoByPage(@PathVariable("groupId") int groupId,
-            @PathVariable("pageNumber") int pageNumber,
-            @PathVariable("pageSize") int pageSize,
+            @PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize,
             @RequestParam(value = "transHash", required = false) String transHash,
-            @RequestParam(value = "blockNumber", required = false) String blockNumber) {
+            @RequestParam(value = "blockNumber", required = false) String blockNumber)
+            throws BaseException {
         BasePageResponse response = transactionService.getTransInfoByPage(groupId, pageNumber,
                 pageSize, transHash, blockNumber);
         return response;
     }
-    
+
     /**
      * analyzeData.
      * 
-     * @param reqTransaction info 
+     * @param reqTransaction info
      * @param result checkResult
      * @return
      */
@@ -61,11 +61,11 @@ public class TransactionController extends BaseController {
         BaseResponse response = transactionService.analyzeData(reqTransaction);
         return response;
     }
-    
+
     /**
      * updateMethod.
      * 
-     * @param reqTransaction info 
+     * @param reqTransaction info
      * @param result checkResult
      * @return
      */
@@ -83,7 +83,7 @@ public class TransactionController extends BaseController {
      * @param groupId groupId
      * @param transHash transHash
      * @return
-     * @throws BaseException 
+     * @throws BaseException
      */
     @GetMapping("/transactionByHash/{groupId}/{transHash}")
     public BaseResponse getTransactionByHash(@PathVariable("groupId") int groupId,
@@ -98,7 +98,7 @@ public class TransactionController extends BaseController {
      * @param groupId groupId
      * @param transHash transHash
      * @return
-     * @throws BaseException 
+     * @throws BaseException
      */
     @GetMapping("/receiptByHash/{groupId}/{transHash}")
     public BaseResponse getReceiptByHash(@PathVariable("groupId") int groupId,
@@ -106,7 +106,7 @@ public class TransactionController extends BaseController {
         BaseResponse response = transactionService.getReceiptByHash(groupId, transHash);
         return response;
     }
-    
+
     /**
      * getCode.
      * 
@@ -115,8 +115,8 @@ public class TransactionController extends BaseController {
      * @return
      */
     @PostMapping("/code")
-    public BaseResponse getCode(@Valid @RequestBody ReqGetCode reqGetCode,
-            BindingResult result) throws BaseException {
+    public BaseResponse getCode(@Valid @RequestBody ReqGetCode reqGetCode, BindingResult result)
+            throws BaseException {
         BaseResponse response = transactionService.getCode(reqGetCode);
         return response;
     }

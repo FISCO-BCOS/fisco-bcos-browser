@@ -207,6 +207,7 @@ d)、返回格式：json
 | 3.3      | txn          | int      | 否         | 总交易量              |
 | 3.4      | pendingTxn   | int      | 否         | 待处理交易数          |
 | 3.5      | pbftView     | int      | 否         | 视图                  |
+| 3.6      | nodeCount    | int      | 否         | 节点个数              |
 
 ### 入参事例
 
@@ -225,7 +226,8 @@ http://localhost:5101/fisco-bcos-browser/home/blockChainInfo/1
     "latestNumber": 2,
     "txn": 2,
     "pendingTxn": 0,
-    "pbftView": 73807
+    "pbftView": 73807,
+    "nodeCount": 2
   }
 }
 ```
@@ -1595,36 +1597,299 @@ http://localhost:5101/fisco-bcos-browser/contract/abi/xxxxx
 }
 ```
 
+# 7、用户接口
+
+## 7.1 新增用户
+
+### 传输协议规范
+
+a)、网络传输协议：使用HTTP协议
+
+b)、请求地址：`/fisco-bcos-browser/user/add`
+
+c)、请求方式：POST
+
+d)、返回格式：json
+
+### 参数信息详情
+
+| 序号     | 输入参数     | 类型     | 可为空     | 备注                  |
+| -------- | ------------ | -------- | ---------- | --------------------- |
+| 1        | groupId      | int      | 否         | 所属群组编号          |
+| 2        | userName     | String   | 否         | 用户名                |
+| 3        | address      | String   | 否         | 用户公钥地址          |
+| 4        | description  | String   | 是         | 描述                  |
+| **序号** | **输出参数** | **类型** | **可为空** | **备注**              |
+| 1        | code         | int      | 否         | 返回码信息请参看附录1 |
+| 2        | message      | String   | 否         | 描述                  |
+| 3        | data         | object   | 是         | 返回信息实体          |
+
+### 入参事例
+
+http://localhost:5101/fisco-bcos-browser/user/add
+
+```
+{
+  "address": "0xd93ca98d540b5ed09ef49e9e035ada3d5236ecb0",
+  "description": "test",
+  "groupId": 1,
+  "userName": "alice"
+}
+```
+
+### 出参示例
+
+**a)、成功：**
+
+```
+{
+  "code": 0,
+  "message": "success",
+  "data": {
+    "userId": 700001,
+    "userName": "alice",
+    "groupId": 1,
+    "address": "0xd93ca98d540b5ed09ef49e9e035ada3d5236ecb0",
+    "description": "test",
+    "createTime": "2020-11-13 11:38:19",
+    "modifyTime": "2020-11-13 11:38:19"
+  }
+}
+```
+
+**b)、失败：**
+
+```.
+{
+  "code": 105001,
+  "message": "system error",
+  "data": null
+}
+```
+
+## 7.2 用户列表
+
+### 传输协议规范
+
+a)、网络传输协议：使用HTTP协议
+
+b)、请求地址：`/fisco-bcos-browser/user/userList/{groupId}/{pageNumber}/{pageSize}?userParam={userParam}`
+
+c)、请求方式：GET
+
+d)、返回格式：json
+
+### 参数信息详情
+
+| 序号     | 输入参数     | 类型     | 可为空     | 备注                  |
+| -------- | ------------ | -------- | ---------- | --------------------- |
+| 1        | groupId      | int      | 否         | 所属群组编号          |
+| 2        | pageNumber   | int      | 否         | 当前页码              |
+| 3        | pageSize     | int      | 否         | 每页记录数            |
+| 4        | userParam    | String   | 是         | 用户名或用户公钥地址  |
+| **序号** | **输出参数** | **类型** | **可为空** | **备注**              |
+| 1        | code         | int      | 否         | 返回码信息请参看附录1 |
+| 2        | message      | String   | 否         | 描述                  |
+| 3        | data         | object   | 是         | 返回信息实体          |
+| 3.1      |              | List     |            | 信息列表              |
+| 3.1.1    | userId       | int      | 否         | 用户编号              |
+| 3.1.2    | groupId      | int      | 否         | 所属群组编号          |
+| 3.1.3    | userName     | String   | 否         | 用户名                |
+| 3.1.4    | address      | String   | 否         | 用户公钥地址          |
+| 3.1.5    | description  | String   | 是         | 描述                  |
+| 4        | totalCount   | int      | 否         | 总条数                |
+
+### 入参事例
+
+http://localhost:5101/fisco-bcos-browser/user/userList/1/1/1
+
+### 出参示例
+
+**a)、成功：**
+
+```
+{
+  "code": 0,
+  "message": "success",
+  "data": [
+    {
+      "userId": 700001,
+      "userName": "alice",
+      "groupId": 1,
+      "address": "0xd93ca98d540b5ed09ef49e9e035ada3d5236ecb0",
+      "description": "test",
+      "createTime": "2020-11-13 11:38:19",
+      "modifyTime": "2020-11-13 11:38:19"
+    }
+  ],
+  "totalCount": 1
+}
+```
+
+**b)、失败：**
+
+```.
+{
+  "code": 105001,
+  "message": "system error",
+  "data": null
+}
+```
+
+## 7.3 用户更新
+
+### 传输协议规范
+
+a)、网络传输协议：使用HTTP协议
+
+b)、请求地址：`/fisco-bcos-browser/user/update`
+
+c)、请求方式：PUT
+
+d)、返回格式：json
+
+### 参数信息详情
+
+| 序号     | 输入参数     | 类型     | 可为空     | 备注                  |
+| -------- | ------------ | -------- | ---------- | --------------------- |
+| 1        | userId       | int      | 否         | 用户编号              |
+| 2        | userName     | String   | 否         | 用户名                |
+| 3        | address      | String   | 否         | 用户公钥地址          |
+| 4        | description  | String   | 是         | 描述                  |
+| **序号** | **输出参数** | **类型** | **可为空** | **备注**              |
+| 1        | code         | int      | 否         | 返回码信息请参看附录1 |
+| 2        | message      | String   | 否         | 描述                  |
+| 3        | data         | object   | 是         | 返回信息实体          |
+
+### 入参事例
+
+http://localhost:5101/fisco-bcos-browser/user/update
+
+```
+{
+  "address": "0xd93ca98d540b5ed09ef49e9e035ada3d5236ecb0",
+  "description": "update",
+  "userId": 700001,
+  "userName": "alice"
+}
+```
+
+### 出参示例
+
+**a)、成功：**
+
+```
+{
+  "code": 0,
+  "message": "success",
+  "data": {
+    "userId": 700001,
+    "userName": "alice",
+    "groupId": 1,
+    "address": "0xd93ca98d540b5ed09ef49e9e035ada3d5236ecb0",
+    "description": "update",
+    "createTime": "2020-11-13 11:38:19",
+    "modifyTime": "2020-11-13 11:52:58"
+  }
+}
+```
+
+**b)、失败：**
+
+```.
+{
+  "code": 105001,
+  "message": "system error",
+  "data": null
+}
+```
+
+## 7.4 用户删除
+
+根据用户id删除
+
+### 传输协议规范
+
+a)、网络传输协议：使用HTTP协议
+
+b)、请求地址：`/fisco-bcos-browser/user/deleteById/{userId}`
+
+c)、请求方式：DELETE
+
+d)、返回格式：json
+
+### 参数信息详情
+
+| 序号     | 输入参数     | 类型     | 可为空     | 备注                  |
+| -------- | ------------ | -------- | ---------- | --------------------- |
+| 1        | userId       | int      | 否         | 用户编号              |
+| **序号** | **输出参数** | **类型** | **可为空** | **备注**              |
+| 1        | code         | int      | 否         | 返回码信息请参看附录1 |
+| 2        | message      | String   | 否         | 描述                  |
+| 3        | data         | object   | 是         | 返回信息实体          |
+
+### 入参事例
+
+http://localhost:5101/fisco-bcos-browser/user/deleteById/700001
+
+### 出参示例
+
+**a)、成功：**
+
+```
+{
+  "code": 0,
+  "message": "success",
+  "data": null
+}
+```
+
+**b)、失败：**
+
+```.
+{
+  "code": 105001,
+  "message": "system error",
+  "data": null
+}
+```
+
 # 附录
 
 ## 1. 返回码信息列表
 
-| code   | message                                           | 描述                            |
-| ------ | ------------------------------------------------- | ------------------------------- |
-| 0      | success                                           | 成功                            |
-| 105001 | system error                                      | 系统异常                        |
-| 105002 | param valid fail                                  | 参数校验异常                    |
-| 205001 | group name cannot be empty                        | 群组名称不能为空                |
-| 205002 | group id cannot be empty                          | 群组编号不能为空                |
-| 205003 | node id cannot be empty                           | 节点编号不能为空                |
-| 205004 | node ip cannot be empty                           | 节点ip不能为空                  |
-| 205005 | node rpcPort cannot be empty                      | 节点rpc端口不能为空             |
-| 205006 | node p2pPort cannot be empty                      | 节点p2p端口不能为空             |
-| 305001 | group id is existed                               | 群组编号已经存在                |
-| 305002 | group name is existed                             | 群组名称已经存在                |
-| 305003 | rpcPort and p2pPort cannot be same                | 节点rpc端口和p2p端口不能相同    |
-| 305004 | ip and rpcPort is existed in this group           | 当前群组已配置该节点ip和rpc端口 |
-| 305005 | ip and p2pPort is existed in this group           | 当前群组已配置该节点ip和p2p端口 |
-| 305006 | ip format error                                   | ip格式错误                      |
-| 305007 | node error or not alive                           | 节点信息错误或未存活            |
-| 305008 | node do not belong to this group                  | 节点信息不属于当前群组          |
-| 305009 | the file is empty!                                | 文件为空                        |
-| 305010 | it is not a zip file                              | 非压缩文件                      |
-| 305011 | file format error                                 | 文件格式错误                    |
-| 305012 | zip file can't contain zipfile                    | 压缩包不能包含压缩包            |
-| 305013 | folders are not allowed                           | 文件夹错误                      |
-| 305014 | folder is already exist                           | 文件夹已存在                    |
-| 305015 | node may be abnormal, please confirm              | 节点异常，请确认                |
-| 305016 | do not have permission, please check   configAuth | 没权限，请检查配置              |
+| code   | message                                         | 描述                            |
+| ------ | ----------------------------------------------- | ------------------------------- |
+| 0      | success                                         | 成功                            |
+| 105001 | system error                                    | 系统异常                        |
+| 105002 | param valid fail                                | 参数校验异常                    |
+| 205001 | group name cannot be empty                      | 群组名称不能为空                |
+| 205002 | group id cannot be empty                        | 群组编号不能为空                |
+| 205003 | node id cannot be empty                         | 节点编号不能为空                |
+| 205004 | node ip cannot be empty                         | 节点ip不能为空                  |
+| 205005 | node rpcPort cannot be empty                    | 节点rpc端口不能为空             |
+| 205006 | node p2pPort cannot be empty                    | 节点p2p端口不能为空             |
+| 205007 | user id cannot be empty                         | 用户编号不能为空                |
+| 205008 | user name cannot be empty                       | 用户名不能为空                  |
+| 205009 | address cannot be empty                         | 用户公钥地址不能为空            |
+| 305001 | group id is existed                             | 群组编号已经存在                |
+| 305002 | group name is existed                           | 群组名称已经存在                |
+| 305003 | rpcPort and p2pPort cannot be same              | 节点rpc端口和p2p端口不能相同    |
+| 305004 | ip and rpcPort is existed in this group         | 当前群组已配置该节点ip和rpc端口 |
+| 305005 | ip and p2pPort is existed in this group         | 当前群组已配置该节点ip和p2p端口 |
+| 305006 | ip format error                                 | ip格式错误                      |
+| 305007 | node error or not alive                         | 节点信息错误或未存活            |
+| 305008 | node do not belong to this group                | 节点信息不属于当前群组          |
+| 305009 | the file is empty!                              | 文件为空                        |
+| 305010 | it is not a zip file                            | 非压缩文件                      |
+| 305011 | file format error                               | 文件格式错误                    |
+| 305012 | zip file can't contain zipfile                  | 压缩包不能包含压缩包            |
+| 305013 | folders are not allowed                         | 文件夹错误                      |
+| 305014 | folder is already exist                         | 文件夹已存在                    |
+| 305015 | node may be abnormal, please confirm            | 节点异常，请确认                |
+| 305016 | do not have permission, please check configAuth | 没权限，请检查配置              |
+| 305101 | user already exists                             | 用户已存在                      |
+| 305102 | user id not exists                              | 用户不存在                      |
+| 305103 | publickey address is invalid                    | 用户公钥地址错误                |
 
  

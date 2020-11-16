@@ -9,4 +9,5 @@ public class BlockChainInfo {
     private int txn;
     private int pendingTxn;
     private int pbftView;
+    private int nodeCount;
 }

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--对应mapper接口 -->
+<mapper namespace="org.bcos.browser.mapper.UserMapper">
+	<resultMap id="userMap" type="org.bcos.browser.entity.dto.User">
+		<id column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER"
+			property="userId" />
+		<result column="user_name" javaType="java.lang.String"
+			jdbcType="VARCHAR" property="userName" />
+		<result column="group_id" javaType="java.lang.Integer"
+			jdbcType="INTEGER" property="groupId" />
+		<result column="address" javaType="java.lang.String" jdbcType="VARCHAR"
+			property="address" />
+		<result column="description" javaType="java.lang.String"
+			jdbcType="VARCHAR" property="description" />
+		<result column="create_time" javaType="java.time.LocalDateTime"
+			jdbcType="TIMESTAMP" property="createTime" />
+		<result column="modify_time" javaType="java.time.LocalDateTime"
+			jdbcType="TIMESTAMP" property="modifyTime" />
+	</resultMap>
+
+	<insert id="addUserRow" parameterType="org.bcos.browser.entity.dto.User">
+		insert into
+		tb_user(user_name,group_id,address,description,create_time,modify_time)
+		values(#{userName},#{groupId},#{address},#{description},NOW(),NOW())
+		<selectKey keyProperty="userId" order="AFTER" resultType="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<select id="countOfUser" parameterType="org.bcos.browser.entity.dto.UserQueryParam"
+		resultType="java.lang.Integer">
+		select count(1) from tb_user where 1=1
+		<if test="userId != null and userId != ''">
+			and user_id = #{userId}
+		</if>
+		<if test="groupId != null and groupId != ''">
+			and group_id = #{groupId}
+		</if>
+		<if test="userName != null and userName != ''">
+			and user_name like CONCAT(#{userName},'%')
+		</if>
+		<if test="userParam != null and userParam != ''">
+			and user_name like CONCAT(#{userParam},'%')
+			or address = #{userParam}
+		</if>
+	</select>
+
+
+	<select id="listOfUser" parameterType="org.bcos.browser.entity.dto.UserQueryParam"
+		resultMap="userMap">
+		select * from tb_user where 1=1
+		<if test="userId != null and userId != ''">
+			and user_id = #{userId}
+		</if>
+		<if test="groupId != null and groupId != ''">
+			and group_id = #{groupId}
+		</if>
+		<if test="userName != null and userName != ''">
+			and user_name like CONCAT(#{userName},'%')
+		</if>
+		<if test="userParam != null and userParam != ''">
+			and user_name like CONCAT(#{userParam},'%')
+			or address = #{userParam}
+		</if>
+		order by user_id desc
+		<if test="start != null and pageSize != null">
+			limit #{start},#{pageSize}
+		</if>
+	</select>
+
+	<select id="queryUser" resultMap="userMap">
+		select * from tb_user where 1=1
+		<if test="userId != null">
+			and user_id = #{userId}
+		</if>
+		<if test="groupId != null">
+			and group_id = #{groupId}
+		</if>
+		<if test="userName != null and userName != ''">
+			and user_name = #{userName}
+		</if>
+		<if test="address != null and address != ''">
+			and address = #{address}
+		</if>
+		limit 1
+	</select>
+
+	<update id="updateUser" parameterType="org.bcos.browser.entity.dto.User">
+		update tb_user 
+		set modify_time = now(),
+		    user_name = #{userName},
+		    address = #{address},
+		    description = #{description}
+		where user_id = #{userId}
+	</update>
+
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from tb_user
+		where user_id = #{userId}
+	</delete>
+	
+	<delete id="deleteByGroupId" parameterType="java.lang.Integer">
+		delete from tb_user where
+		group_id = #{groupId}
+	</delete>
+</mapper>
