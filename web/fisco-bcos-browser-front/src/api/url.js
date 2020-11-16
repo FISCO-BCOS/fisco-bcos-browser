@@ -52,5 +52,16 @@ export default {
 
     GET_ABI: `${api}/contract/abi`,
 
-    GET_ENCRYPTT_TYPE: `${api}/node/getEncryptType`
+    GET_ENCRYPTT_TYPE: `${api}/node/getEncryptType`,
+
+    GET_IS_CONFIG_AUTH: `${api}/home/isConfigAuth`,
+
+    GET_USER_ADD: `${api}/user/add`,
+
+    GET_USER_LIST: `${api}/user/userList`,
+
+    GET_USER_UPDATE: `${api}/user/update`,
+
+    GET_USER_DELETE: `${api}/user/deleteById`,
+    
 }

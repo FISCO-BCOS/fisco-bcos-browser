@@ -608,7 +608,7 @@ export default {
                         this.totalStatisticsList[0].value = res.data.data.latestNumber;
                         this.totalStatisticsList[1].value = res.data.data.txn;
                         this.totalStatisticsList[2].value = res.data.data.pendingTxn;
-                        this.totalStatisticsList[3].value = res.data.data.pbftView
+                        this.totalStatisticsList[3].value = res.data.data.nodeCount
                     } else {
                         for (let i = 0; i < this.totalStatisticsList.length; i++) {
                             this.totalStatisticsList[i].value = 0;

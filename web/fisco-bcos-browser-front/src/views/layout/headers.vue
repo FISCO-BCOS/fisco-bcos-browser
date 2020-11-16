@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="nav-menu">
-                    <div class="nav-menu-item nav-item" v-for="item in menu" :key='item.title'>{{item.title}}
+                    <div class="nav-menu-item nav-item" v-for="item in menu" :key='item.title' v-if="item.isConfig">{{item.title}}
                         <i class="el-icon-caret-bottom icon-up"></i>
                         <i class="el-icon-caret-top icon-down"></i>
                         <ul class="nav-menu-item-option">
@@ -39,29 +39,30 @@ import router from "@/router";
 import constant from "@/util/constant";
 import { message } from "@/util/util";
 import Bus from "@/bus"
-
+import { isConfigAuth } from '@/api/api'
 export default {
     name: "headers",
-    data: function() {
+    data: function () {
         return {
-            menu: constant.MENU_LIST,
+            menu: [],
             groupList: [],
             groupName: "",
             chainNone: false,
             groupId: ""
         };
     },
-      mounted: function () {
-          this.$nextTick(function () {
-                this.getGroupData();
-          })
-          Bus.$on("change",data => {
-              this.getGroupData();
-          })
-      },
+    mounted: function () {
+        this.$nextTick(function () {
+            this.getGroupData();
+        })
+        Bus.$on("change", data => {
+            this.getGroupData();
+        })
+        this.queryIsConfigAuth()
+    },
     methods: {
         // get groups
-        getGroupData: function() {
+        getGroupData: function () {
             this.groupList = JSON.parse(localStorage.getItem("groupList"));
             if (this.groupList.length) {
                 this.groupId = JSON.parse(localStorage.getItem("groupId"));
@@ -73,7 +74,7 @@ export default {
             }
         },
         //Switching group
-        checkGroup: function(val) {
+        checkGroup: function (val) {
             this.groupName = val.groupName;
             this.groupId = val.groupId;
             localStorage.setItem("groupId", this.groupId);
@@ -84,15 +85,38 @@ export default {
                 }
             });
         },
-        routerLink: function(name) {
+        routerLink: function (name) {
             router.push({
                 name: name
             });
         },
-        link: function() {
+        link: function () {
             router.push({
                 name: 'home'
             });
+        },
+        queryIsConfigAuth() {
+            isConfigAuth()
+                .then(res => {
+                    if (res.data.code === 0) {
+                        var list = constant.MENU_LIST
+                        list.forEach(item => {
+                            if (item.title == "配置") {
+                                item.isConfig = res.data.data
+                            }
+                            if (item.title == "区块链信息") {
+                                item.isConfig = true
+                            }
+                        })
+                        this.menu = list
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: errorcode[res.data.code].cn
+                        })
+                    }
+
+                })
         }
     }
 };
