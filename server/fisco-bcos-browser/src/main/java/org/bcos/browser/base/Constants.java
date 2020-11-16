@@ -48,4 +48,42 @@ public class Constants {
     public static final String PREFIX_TB_TXNBYDAY = "tb_txnByDay_";
     public static final String PREFIX_TB_BLOCK = "tb_block_";
     public static final String PREFIX_TB_TRANSACTION = "tb_transaction_";
+
+    public static final String WEB_CONFIG_EXAM = "{\n" +
+            "    \"webName\":\"Example\"\n" +
+            "}";
+    public static final String GROUP_CONFIG_EXAM = "[\n" +
+            "  {\n" +
+            "    \"groupId\": 1,\n" +
+            "    \"groupName\": \"groupName\",\n" +
+            "    \"groupDesc\": \"desc\"\n" +
+            "  }\n" +
+            "]";
+    public static final String NODE_CONFIG_EXAM = "[\n" +
+            "    {\n" +
+            "        \"groupId\":1,\n" +
+            "        \"data\":[\n" +
+            "            {\n" +
+            "                \"ip\":\"127.0.0.1\",\n" +
+            "                \"rpcPort\":\"\",\n" +
+            "                \"p2pPort\":\"\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"ip\":\"127.0.0.1\",\n" +
+            "                \"rpcPort\":\"\",\n" +
+            "                \"p2pPort\":\"\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"ip\":\"127.0.0.1\",\n" +
+            "                \"rpcPort\":\"\",\n" +
+            "                \"p2pPort\":\"\"\n" +
+            "            },\n" +
+            "            {\n" +
+            "                \"ip\":\"127.0.0.1\",\n" +
+            "                \"rpcPort\":\"\",\n" +
+            "                \"p2pPort\":\"\"\n" +
+            "            }\n" +
+            "        ]\n" +
+            "    }\n" +
+            "]";
 }
