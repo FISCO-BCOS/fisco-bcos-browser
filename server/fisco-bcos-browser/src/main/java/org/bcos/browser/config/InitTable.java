@@ -18,5 +18,6 @@ public class InitTable implements InitializingBean {
         groupMapper.createTbGroup(Constants.TB_GROUP);
         groupMapper.createTbContract(Constants.TB_CONTRACT);
         groupMapper.createTbFunction(Constants.TB_FUNCTION);
+        groupMapper.createTbUser(Constants.TB_USER);
     }
 }

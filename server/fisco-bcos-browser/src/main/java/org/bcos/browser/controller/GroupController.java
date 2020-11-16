@@ -58,7 +58,7 @@ public class GroupController extends BaseController {
      */
     @ConfigAuth
     @DeleteMapping("/deleteById/{groupId}")
-    public BaseResponse deleteGroup(@PathVariable("groupId") int groupId) {
+    public BaseResponse deleteGroup(@PathVariable("groupId") int groupId) throws BaseException {
         BaseResponse response = groupService.deleteGroup(groupId);
         return response;
     }

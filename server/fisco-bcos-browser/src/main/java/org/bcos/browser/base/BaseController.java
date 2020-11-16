@@ -1,12 +1,11 @@
 package org.bcos.browser.base;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BaseResponse;
+import org.bcos.browser.util.JsonTools;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
@@ -34,8 +33,7 @@ public abstract class BaseController {
 
         RetCode retCode = null;
         try {
-            JSONObject jsonObject = JSON.parseObject(errorMsg);
-            retCode = JSONObject.toJavaObject(jsonObject, RetCode.class);
+            retCode = JsonTools.stringToObj(errorMsg, RetCode.class);
         } catch (Exception ex) {
             log.warn("OnWarning:retCodeJson convert error:" + ex.getMessage());
             throw new BaseException(ConstantCode.PARAM_VAILD_FAIL);
@@ -46,7 +44,6 @@ public abstract class BaseController {
 
     private String getParamValidFaildMessage(BindingResult bindingResult) {
         List<ObjectError> errorList = bindingResult.getAllErrors();
-        log.info("errorList:{}", JSON.toJSONString(errorList));
         if (errorList == null) {
             log.warn("onWarning:errorList is empty!");
             return null;

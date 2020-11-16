@@ -85,7 +85,6 @@ public class NodeController extends BaseController {
      * @param groupId groupId
      * @return
      */
-    @ConfigAuth
     @GetMapping("/getEncryptType/{groupId}")
     public BaseResponse getEncryptType(@PathVariable("groupId") int groupId) {
         BaseResponse response = nodeService.getEncryptType(groupId);

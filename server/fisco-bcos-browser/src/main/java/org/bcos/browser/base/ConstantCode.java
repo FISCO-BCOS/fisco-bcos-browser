@@ -11,6 +11,9 @@ public interface ConstantCode {
     String NODE_IP_IS_EMPTY = "{\"code\":205004,\"msg\":\"node ip cannot be empty\"}";
     String NODE_RPCPORT_IS_EMPTY = "{\"code\":205005,\"msg\":\"node rpcPort cannot be empty\"}";
     String NODE_P2PPORT_IS_EMPTY = "{\"code\":205006,\"msg\":\"node p2pPort cannot be empty\"}";
+    String USER_ID_IS_EMPTY = "{\"code\":205007,\"msg\":\"user id cannot be empty\"}";
+    String USERNAME_IS_EMPTY = "{\"code\":205008,\"msg\":\"user name cannot be empty\"}";
+    String ADDRESSS_IS_EMPTY = "{\"code\":205009,\"msg\":\"address cannot be empty\"}";
 
     /* general error */
     RetCode GROUP_ID_IS_EXISTED = RetCode.mark(305001, "group id is existed");
@@ -29,8 +32,15 @@ public interface ConstantCode {
     RetCode CONTRACT_ALREADY_EXIST = new RetCode(305014, "folder is already exist");
     RetCode NODE_ABNORMAL = new RetCode(305015, "node may be abnormal, please confirm");
     RetCode NOT_HAVE_PERMISSION = new RetCode(305016, "do not have permission, please check configAuth");
-
+    RetCode GROUP_ID_NOT_EXISTS = RetCode.mark(305017, "group id not exists");
+    
+    /* user code */
+    RetCode USER_EXISTS = new RetCode(305101, "user already exists");
+    RetCode USER_NOT_EXISTS = new RetCode(305102, "user id not exists");
+    RetCode ADDRESS_INVALID = new RetCode(305103, "publickey address is invalid");
+    
     /* system error */
     RetCode SYSTEM_ERROR = RetCode.mark(105001, "system error");
     RetCode PARAM_VAILD_FAIL = RetCode.mark(105002, "param valid fail");
+    RetCode DB_EXCEPTION = RetCode.mark(105003, "database exception");
 }

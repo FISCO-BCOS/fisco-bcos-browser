@@ -1,7 +1,6 @@
 package org.bcos.browser.service;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,10 +17,10 @@ import org.bcos.browser.entity.dto.Peer;
 import org.bcos.browser.entity.dto.SyncInfoFromChain;
 import org.bcos.browser.entity.req.ReqAddNode;
 import org.bcos.browser.entity.req.ReqAddNodeInfo;
-import org.bcos.browser.mapper.GroupMapper;
 import org.bcos.browser.mapper.NodeMapper;
 import org.bcos.browser.schedule.SchedulerService;
 import org.bcos.browser.util.CommonUtils;
+import org.bcos.browser.util.JsonTools;
 import org.bcos.browser.util.Web3jRpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +36,7 @@ public class NodeService {
     @Autowired
     SchedulerService schedulerService;
     @Autowired
-    GroupMapper groupMapper;
+    GroupService groupService;
 
     /**
      * addNode.
@@ -51,6 +50,9 @@ public class NodeService {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         List<ReqAddNodeInfo> data = reqAddNode.getData();
         int groupId = reqAddNode.getGroupId();
+
+        // check group id
+        groupService.checkGroupId(groupId);
 
         for (int i = 0; i < data.size(); i++) {
             if (!CommonUtils.isIp(data.get(i).getIp())) {
@@ -87,7 +89,7 @@ public class NodeService {
                 throw new BaseException(ConstantCode.NODE_NO_NOT_BELONG);
             }
             for (int k = 0; k < groupIds.size(); k++) {
-                Group group = groupMapper.getGroupById(groupIds.get(k));
+                Group group = groupService.getGroupById(groupIds.get(k));
                 if (group != null) {
                     SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groupIds.get(k), node);
                     node.setNodeId(syncInfo.getNodeId());
@@ -95,7 +97,7 @@ public class NodeService {
                     node.setType(0);
                     nodeMapper.add(node);
                     // sync node info
-                    for (Peer peer: syncInfo.getPeers()) {
+                    for (Peer peer : syncInfo.getPeers()) {
                         Node syncNode = new Node();
                         syncNode.setNodeId(peer.getNodeId());
                         syncNode.setGroupId(groupIds.get(k));
@@ -121,8 +123,8 @@ public class NodeService {
      * @param p2pPort node p2pPort
      * @return
      */
-    public BasePageResponse getNodeList(int groupId, int pageNumber, int pageSize, 
-            int type, String ip, String rpcPort, String p2pPort) {
+    public BasePageResponse getNodeList(int groupId, int pageNumber, int pageSize, int type,
+            String ip, String rpcPort, String p2pPort) {
         int start = Optional.ofNullable(pageNumber).map(page -> (page - 1) * pageSize).orElse(null);
 
         Map<String, Object> map = new HashMap<String, Object>();
@@ -157,7 +159,7 @@ public class NodeService {
         nodeMapper.updateToSync(groupId, nodeId);
         return response;
     }
-    
+
     /**
      * getEncryptType.
      * 
@@ -167,11 +169,13 @@ public class NodeService {
     public BaseResponse getEncryptType(int groupId) {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         Object object = web3jRpc.getClientVersion(groupId);
-        JSONObject result = JSONObject.parseObject(JSON.toJSONString(object));
-        String version = result.getString("FISCO-BCOS Version");
         int encryptType = 0;
-        if (version.contains("gm")) {
-            encryptType = 1;
+        if (object != null) {
+            JsonNode jsonNode = JsonTools.stringToJsonNode(JsonTools.toJSONString(object));
+            String version = jsonNode.get("FISCO-BCOS Version").asText();
+            if (version.contains("gm")) {
+                encryptType = 1;
+            }
         }
         response.setData(encryptType);
         return response;

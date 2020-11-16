@@ -1,6 +1,7 @@
 package org.bcos.browser.controller;
 
 import org.bcos.browser.base.BaseController;
+import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BaseResponse;
 import org.bcos.browser.service.BlockChainInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,8 @@ public class BlockChainInfoController extends BaseController {
      * @return
      */
     @GetMapping("/blockChainInfo/{groupId}")
-    public BaseResponse getBlockChainInfo(@PathVariable("groupId") int groupId) {
+    public BaseResponse getBlockChainInfo(@PathVariable("groupId") int groupId)
+            throws BaseException {
         BaseResponse response = blockChainInfoService.getBlockChainInfo(groupId);
         return response;
     }
@@ -50,7 +52,7 @@ public class BlockChainInfoController extends BaseController {
     @GetMapping("/txnLately/{groupId}/{dateTimeBegin}/{dateTimeEnd}")
     public BaseResponse getTxnLatelyDays(@PathVariable("groupId") int groupId,
             @PathVariable("dateTimeBegin") String dateTimeBegin,
-            @PathVariable("dateTimeEnd") String dateTimeEnd) {
+            @PathVariable("dateTimeEnd") String dateTimeEnd) throws BaseException {
         BaseResponse response =
                 blockChainInfoService.getTxnLatelyDays(groupId, dateTimeBegin, dateTimeEnd);
         return response;

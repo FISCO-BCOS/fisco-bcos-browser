@@ -121,6 +121,21 @@
             PRIMARY KEY (method_id)
         ) COMMENT='方法解析信息表' ENGINE=InnoDB DEFAULT CHARSET=utf8
     </update>
+    
+    <update id="createTbUser">
+		CREATE TABLE IF NOT EXISTS ${tableName} (
+		  user_id int(11) NOT NULL AUTO_INCREMENT COMMENT '用户编号',
+		  user_name varchar(64) binary NOT NULL COMMENT '用户名',
+		  group_id int(11) DEFAULT NULL COMMENT '所属群组编号',
+		  address varchar(64) DEFAULT NULL COMMENT '公钥地址',
+		  description varchar(250) DEFAULT NULL COMMENT '备注',
+		  create_time datetime DEFAULT NULL COMMENT '创建时间',
+		  modify_time datetime DEFAULT NULL COMMENT '修改时间',
+		  PRIMARY KEY (user_id),
+		  UNIQUE KEY unique_name (group_id,user_name),
+		  KEY index_address (address)
+		) ENGINE=InnoDB AUTO_INCREMENT=700001 DEFAULT CHARSET=utf8 COMMENT='用户信息表';
+    </update>
 
     <update id="dropTableByName">
         DROP TABLE IF EXISTS ${tableName}
