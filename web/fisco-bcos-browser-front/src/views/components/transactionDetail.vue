@@ -712,9 +712,17 @@ export default {
             list.eventName = eventData.abiInfo.name + "(";
             for (let i = 0; i < eventData.abiInfo.inputs.length; i++) {
                 if (i == eventData.abiInfo.inputs.length - 1) {
-                    list.eventName = list.eventName + eventData.abiInfo.inputs[i].type + " " + eventData.abiInfo.inputs[i].name;
+                    if(eventData.abiInfo.inputs[i]['indexed']){
+                        list.eventName = list.eventName + eventData.abiInfo.inputs[i].type + " " + "indexed" +" "+ eventData.abiInfo.inputs[i].name;
+                    }else {
+                        list.eventName = list.eventName + eventData.abiInfo.inputs[i].type + " " + eventData.abiInfo.inputs[i].name;
+                    }
                 } else {
-                    list.eventName = list.eventName + eventData.abiInfo.inputs[i].type + " " + eventData.abiInfo.inputs[i].name + ",";
+                    if(eventData.abiInfo.inputs[i]['indexed']){
+                        list.eventName = list.eventName + eventData.abiInfo.inputs[i].type + " " + "indexed" +" "+ eventData.abiInfo.inputs[i].name;
+                    }else {
+                        list.eventName = list.eventName + eventData.abiInfo.inputs[i].type + " " + eventData.abiInfo.inputs[i].name;
+                    }
                 }
             }
             list.eventName = list.eventName + ")";
