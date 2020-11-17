@@ -19,11 +19,6 @@ public class CommConfigController extends BaseController {
     @Autowired
     CommConfigService commConfigService;
 
-    @GetMapping("/test")
-    public BaseResponse test() {
-        return new BaseResponse(ConstantCode.SUCCESS);
-    }
-
     /**
      * getWebConfig
      */
