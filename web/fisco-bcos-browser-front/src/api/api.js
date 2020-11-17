@@ -211,3 +211,11 @@ export function getEncryptType(data){
         method: 'get'
     })
 }
+
+//getWebConfig
+export function getWebConfig(){
+    return get({
+        url: `${url.GET_WEBCONFIG}`,
+        method: 'get'
+    })
+}

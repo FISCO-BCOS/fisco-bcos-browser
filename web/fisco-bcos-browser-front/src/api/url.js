@@ -52,5 +52,7 @@ export default {
 
     GET_ABI: `${api}/contract/abi`,
 
-    GET_ENCRYPTT_TYPE: `${api}/node/getEncryptType`
+    GET_ENCRYPTT_TYPE: `${api}/node/getEncryptType`,
+
+    GET_WEBCONFIG: `${api}/getWebConfig`
 }

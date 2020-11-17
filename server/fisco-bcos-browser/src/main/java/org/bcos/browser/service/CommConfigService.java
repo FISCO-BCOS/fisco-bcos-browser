@@ -61,9 +61,9 @@ public class CommConfigService {
             throw new BaseException(ConstantCode.SYSTEM_ERROR);
         }
         List<Group> groupList = readGroupConfig(groupFile);
-        updateGroup(groupList);
-        //无群组 就不用更新节点
+        //第一次部署或无群组 就不用更新群组、节点
         if (!groupList.isEmpty()) {
+            updateGroup(groupList);
             updateNode(readNodeConfig(nodeFile));
         }
         return new BaseResponse(ConstantCode.SUCCESS);
@@ -97,7 +97,9 @@ public class CommConfigService {
                 int groupId = node.path("groupId").asInt();
                 String groupName = node.path("groupName").asText();
                 String groupDesc = node.path("groupDesc").asText();
-                groupList.add(new Group(groupId, groupName, groupDesc));
+                if (groupId != 0 && !groupName.isEmpty()) {
+                    groupList.add(new Group(groupId, groupName, groupDesc));
+                }
             }
         } catch (IOException e) {
             log.warn("readGroupConfig", e);
