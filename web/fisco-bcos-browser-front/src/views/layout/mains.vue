@@ -123,7 +123,7 @@ export default {
             }
             script.setAttribute('id', 'soljson');
             if (!document.getElementById('soljson')) {
-                head.append(script)
+                head.appendChild(script)
             }
         },
     }

@@ -57,7 +57,7 @@
                                     <div>{{item.dateTimeStr}}</div>
                                 </div>
                                 <div class="right">
-                                    <div>出块节点&nbsp&nbsp&nbsp
+                                    <div>出块节点&nbsp;&nbsp;&nbsp;
                                         <span class="block-number" :title="item.sealer">{{item.sealer}}</span>
                                     </div>
                                     <div class="txn" @click="linkPage('transaction','blockHeight',item.number)">{{item.txn}} txns</div>
@@ -433,7 +433,7 @@ table {
 }
 </style>
 <script type="text/babel">
-import { getTbBlcokChainInfo, getTxnByLastFourteenDay, getTbBlockInfo, getTbTransactionInfo, getTbNodeConnection, getAbiFunction, getTbTransactionByPkHash, getAbi } from '@/api/api'
+import { getTbBlcokChainInfo, getTxnByLastFourteenDay, getTbBlockInfo, getTbTransactionInfo, getTbNodeConnection, getAbiFunction, getTbTransactionByPkHash, getAbi, getWebConfig } from '@/api/api'
 import { Message } from 'element-ui';
 import { message } from '@/util/util'
 import { timeState, MonthState, MonthNumber, intiDate } from '@/util/util'
@@ -518,6 +518,9 @@ export default {
                 this.searchTbTransactionInfo();
             }
         });
+    },
+    created: function () {
+      this.GetWebConfig();
     },
     //Clear all timers before component destruction
     beforeDestroy: function () {
@@ -901,6 +904,19 @@ export default {
                 this.newData[index] = funcName;
                 this.$set(this.transactionList[index], 'funcName', this.newData[index])
             }
+        },
+        GetWebConfig: function () {
+            getWebConfig().then((res) => {
+              let webName = res.data.data;
+              if (res.data.code === 0) {
+              localStorage.setItem("webName", webName.webName);
+              }
+            }).catch((err) => {
+              this.$message({
+              type: "error",
+              message: constant.ERROR,
+              });
+            });
         },
 
     },

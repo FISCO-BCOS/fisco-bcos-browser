@@ -27,24 +27,24 @@ export default {
         }
     ],
     MENU_LIST: [
-        {
-            title: '配置',
-            subMenu: [
-                {
-                    title: '群组配置',
-                    name: 'groupConfig',
-                },
-                {
-                    title: '节点配置',
-                    name: 'nodeConfig',
-                },
-                {
-                    title: '合约配置',
-                    name: 'contractConfig',
-                },
+        // {
+        //     title: '配置',
+        //     subMenu: [
+        //         {
+        //             title: '群组配置',
+        //             name: 'groupConfig',
+        //         },
+        //         {
+        //             title: '节点配置',
+        //             name: 'nodeConfig',
+        //         },
+        //         {
+        //             title: '合约配置',
+        //             name: 'contractConfig',
+        //         },
                 
-            ]
-        },
+        //     ]
+        // },
         {
             title: '区块链信息',
             subMenu: [
