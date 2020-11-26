@@ -29,6 +29,7 @@ import org.bcos.browser.util.CommonUtils;
 import org.bcos.browser.util.Web3jRpc;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -132,30 +133,35 @@ public class SchedulerService {
             sealer = blockInfo.getSealerList()
                     .get(CommonUtils.parseHexStr2Int(blockInfo.getSealer()));
         }
-        // add transaction info
-        List<TransactionFromChain> transList = blockInfo.getTransactions();
-        for (TransactionFromChain loop : transList) {
-            Transaction transaction = new Transaction();
-            transaction.setTransHash(loop.getHash());
-            transaction.setGroupId(groupId);
-            transaction.setBlockHash(blockInfo.getHash());
-            transaction.setBlockNumber(CommonUtils.parseHexStr2Int(blockInfo.getNumber()));
-            transaction.setBlockTime(timestamp);
-            transaction.setBlockDate(timestamp);
-            transaction.setTransFrom(loop.getFrom());
-            transaction.setTransTo(loop.getTo());
-            transaction.setTransIndex(CommonUtils.parseHexStr2Int(loop.getTransactionIndex()));
-            transactionMapper.add(transaction);
+
+        try {
+            // add transaction info
+            List<TransactionFromChain> transList = blockInfo.getTransactions();
+            for (TransactionFromChain loop : transList) {
+                Transaction transaction = new Transaction();
+                transaction.setTransHash(loop.getHash());
+                transaction.setGroupId(groupId);
+                transaction.setBlockHash(blockInfo.getHash());
+                transaction.setBlockNumber(CommonUtils.parseHexStr2Int(blockInfo.getNumber()));
+                transaction.setBlockTime(timestamp);
+                transaction.setBlockDate(timestamp);
+                transaction.setTransFrom(loop.getFrom());
+                transaction.setTransTo(loop.getTo());
+                transaction.setTransIndex(CommonUtils.parseHexStr2Int(loop.getTransactionIndex()));
+                transactionMapper.add(transaction);
+            }
+            // add block info
+            Block block = new Block();
+            block.setBlockHash(blockInfo.getHash());
+            block.setGroupId(groupId);
+            block.setNumber(number);
+            block.setSealer(sealer);
+            block.setBlockTime(timestamp);
+            block.setTxn(transList.size());
+            blockMapper.add(block);
+        } catch (DuplicateKeyException e) {
+            log.error("handleBlockInfo DuplicateKeyException:{}", e);
         }
-        // add block info
-        Block block = new Block();
-        block.setBlockHash(blockInfo.getHash());
-        block.setGroupId(groupId);
-        block.setNumber(number);
-        block.setSealer(sealer);
-        block.setBlockTime(timestamp);
-        block.setTxn(transList.size());
-        blockMapper.add(block);
     }
 
     /**
