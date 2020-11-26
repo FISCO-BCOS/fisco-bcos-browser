@@ -20,6 +20,9 @@ import org.springframework.http.MediaType;
 
 @Slf4j
 public class CommonUtils {
+    
+    static final String STR_0X = "0x";
+    
     /**
      * Remove all Spaces before and after the string.
      */
@@ -105,7 +108,11 @@ public class CommonUtils {
         if (StringUtils.isBlank(str)) {
             return 0;
         }
-        return Integer.parseInt(str.substring(2), 16);
+        // adapt fisco 2.7.0
+        if (str.startsWith(STR_0X)) {
+            return Integer.parseInt(str.substring(2), 16);
+        }
+        return Integer.parseInt(str);
     }
 
     /**
@@ -115,7 +122,7 @@ public class CommonUtils {
      * @return
      */
     public static String parseInt2HexStr(int value) {
-        String result = "0x" + Integer.toHexString(value);
+        String result = STR_0X + Integer.toHexString(value);
         return result;
     }
     
