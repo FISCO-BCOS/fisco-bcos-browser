@@ -32,7 +32,18 @@ export default {
         cn: "节点p2p端口不能为空",
         en: "node p2pPort cannot be empty"
     },
-
+    "205007": {
+        cn: "用户ID不能为空",
+        en: "user id cannot be empty"
+    },
+    "205008": {
+        cn: "用户名不能为空",
+        en: "user name cannot be empty"
+    },
+    "205009": {
+        cn: "用户公钥地址不能为空",
+        en: "address cannot be empty"
+    },
     "305001": {
         cn: "群组编号已经存在",
         en: "group id is existed"
