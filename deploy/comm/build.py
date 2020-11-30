@@ -164,6 +164,7 @@ def changeWebConfig():
     # get properties
     server_port = getCommProperties("server.port")
     web_port = getCommProperties("web.port")
+    pid_file = currentDir + "/nginx-browser-web.pid"
 
     # init configure file
     web_conf_dir = currentDir + "/comm"
@@ -180,23 +181,25 @@ def changeWebConfig():
     doCmd('sed -i "s/5100/{}/g" {}/comm/nginx.conf'.format(web_port, currentDir))
     doCmd('sed -i "s:log_path:{}:g" {}/comm/nginx.conf'.format(web_log_dir, currentDir))
     doCmd('sed -i "s:web_page_url:{}:g" {}/comm/nginx.conf'.format(web_dir, currentDir))
+    doCmd('sed -i "s:pid_file:{}:g" {}/comm/nginx.conf'.format(pid_file, currentDir))
 
     return
     
 def startWeb():
     os.chdir(currentDir)
-    if os.path.exists("/run/nginx-browser-web.pid"):
+    pid_file = currentDir + "/nginx-browser-web.pid"
+    if os.path.exists(pid_file):
         info = "n"
         if sys.version_info.major == 2:
             info = raw_input("web进程已经存在，是否kill进程强制重启？[y/n]:")
         else:
             info = input("web进程已经存在，是否kill进程强制重启？[y/n]:")
         if info == "y" or info == "Y":
-            fin = open('/run/nginx-browser-web.pid', 'r')
+            fin = open(pid_file, 'r')
             pid = fin.read()
             cmd = "sudo kill -QUIT {}".format(pid)
             os.system(cmd)
-            doCmdIgnoreException("sudo rm -rf /run/nginx-webase-web.pid")
+            doCmdIgnoreException("sudo rm -rf " + pid_file)
         else:
             sys.exit(0)
     
@@ -215,12 +218,13 @@ def startWeb():
     return
     
 def stopWeb():
-    if os.path.exists("/run/nginx-browser-web.pid"):
-        fin = open('/run/nginx-browser-web.pid', 'r')
+    pid_file = currentDir + "/nginx-browser-web.pid"
+    if os.path.exists(pid_file):
+        fin = open(pid_file, 'r')
         pid = fin.read()
         cmd = "sudo kill -QUIT {}".format(pid)
         os.system(cmd)
-        doCmdIgnoreException("sudo rm -rf /run/nginx-browser-web.pid")
+        doCmdIgnoreException("sudo rm -rf " + pid_file)
         print("=======  web   stop success! =======")
     else:
         print("=======  web   is not running! =======")
