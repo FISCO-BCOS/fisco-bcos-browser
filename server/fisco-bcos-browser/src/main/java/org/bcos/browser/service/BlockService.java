@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.Constants;
 import org.bcos.browser.base.exception.BaseException;
@@ -47,13 +48,18 @@ public class BlockService {
 
         // check group id
         groupService.checkGroupId(groupId);
+        // check blockNumber
+        String number = CommonUtils.trimSpaces(blockNumber);
+        if (!StringUtils.isBlank(number) && Integer.parseInt(number) > web3j.getBlockNumber(groupId)) {
+            throw new BaseException(ConstantCode.NUMBER_TALLER_THAN_LATEST);
+        }
 
         int start = Optional.ofNullable(pageNumber).map(page -> (page - 1) * pageSize).orElse(null);
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("groupId", groupId);
         map.put("blockHash", CommonUtils.trimSpaces(blockHash));
-        map.put("number", CommonUtils.trimSpaces(blockNumber));
+        map.put("number", number);
         map.put("start", start);
         map.put("pageSize", pageSize);
 

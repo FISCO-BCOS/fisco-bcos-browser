@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.lang3.StringUtils;
 import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.Constants;
 import org.bcos.browser.base.exception.BaseException;
@@ -60,13 +61,18 @@ public class TransactionService {
 
         // check group id
         groupService.checkGroupId(groupId);
+        // check blockNumber
+        String number = CommonUtils.trimSpaces(blockNumber);
+        if (!StringUtils.isBlank(number) && Integer.parseInt(number) > web3jRpc.getBlockNumber(groupId)) {
+            throw new BaseException(ConstantCode.NUMBER_TALLER_THAN_LATEST);
+        }
 
         int start = Optional.ofNullable(pageNumber).map(page -> (page - 1) * pageSize).orElse(null);
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("groupId", groupId);
         map.put("transHash", CommonUtils.trimSpaces(transHash));
-        map.put("number", CommonUtils.trimSpaces(blockNumber));
+        map.put("number", number);
         map.put("start", start);
         map.put("pageSize", pageSize);
 
@@ -112,7 +118,7 @@ public class TransactionService {
             } else if (CommonUtils.trimSpaces(blockNumber) != null) {
                 log.info("getTransInfoByPage blockNumber:{} get from chain", blockNumber);
                 BlockFromChain blockInfo =
-                        web3jRpc.getBlockByNumber(groupId, Integer.valueOf(blockNumber));
+                        web3jRpc.getBlockByNumber(groupId, Integer.parseInt(blockNumber));
                 for (TransactionFromChain transInfo : blockInfo.getTransactions()) {
                     RspGetTransaction rspEntity =
                             getTransactionFromChain(transInfo, blockInfo.getTimestamp());
