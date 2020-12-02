@@ -4,6 +4,7 @@
 from . import log as deployLog
 import sys
 from .utils import *
+from .mysql import *
 
 log = deployLog.getLocalLogger()
 checkDependent = ["git","wget","openssl","curl"]
@@ -16,6 +17,7 @@ def do():
     checkServerPort()
     checkWebPort()
     checkDbConnect()
+    checkDbAuthorized()
     print("===================== envrionment ready... =====================")
     
 def installRequirements():

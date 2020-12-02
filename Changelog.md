@@ -12,7 +12,7 @@
 - **注意：**
 
 1. 从v2.2.1的版本进行更新，前后端都需要替换，mapper文件也要替换，重启服务。
-2. 配置页默认展示，如果要关闭配置页，需修改后端服务配置项`constant.configAuth`为`true`，重启服务。
+2. 配置页默认展示，如果要关闭配置页，需修改后端服务配置文件conf/application.yml的配置项`constant.configAuth`为`false`，重启后端服务。
 
 ### v2.2.1
 
