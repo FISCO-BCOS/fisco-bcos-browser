@@ -207,10 +207,11 @@
                             this.pagination.total = res.data.totalCount;
                         }else{
                             this.transactionList = [];
-                            this.pagination.totalCount = res.data.totalCount
+                            this.pagination.total = res.data.totalCount
                         }
                     }else{
                         this.transactionList = [];
+                        this.pagination.total = 0;
                         message(errorcode[res.data.code].cn,'error')
                     }
                     this.blockHeight = "";
