@@ -183,6 +183,7 @@
                     }else{
                         window.clearInterval(this.setIntervalTime);
                         this.blockList = [];
+                        this.pagination.total = 0;
                         message(errorcode[res.data.code].cn,'error')
                     }
                     this.blockNumber = "";
