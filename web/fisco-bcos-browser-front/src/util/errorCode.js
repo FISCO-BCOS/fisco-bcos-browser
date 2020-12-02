@@ -108,6 +108,14 @@ export default {
         cn: "没权限，请检查配置",
         en: "Do not have permission, please check configAuth"
     },
+    "305017": {
+        cn: "群组编号不存在",
+        en: "group id not exists"
+    },
+    "305018": {
+        cn: "请求块高大于最新的块高",
+        en: "request block number is taller than the latest"
+    },
     "305101": {
         cn: "用户已存在",
         en: "User already exists"
