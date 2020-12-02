@@ -33,6 +33,7 @@ public interface ConstantCode {
     RetCode NODE_ABNORMAL = new RetCode(305015, "node may be abnormal, please confirm");
     RetCode NOT_HAVE_PERMISSION = new RetCode(305016, "do not have permission, please check configAuth");
     RetCode GROUP_ID_NOT_EXISTS = RetCode.mark(305017, "group id not exists");
+    RetCode NUMBER_TALLER_THAN_LATEST = RetCode.mark(305018, "request block number is taller than the latest");
     
     /* user code */
     RetCode USER_EXISTS = new RetCode(305101, "user already exists");

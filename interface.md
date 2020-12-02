@@ -1888,6 +1888,8 @@ http://localhost:5101/fisco-bcos-browser/user/deleteById/700001
 | 305014 | folder is already exist                         | 文件夹已存在                    |
 | 305015 | node may be abnormal, please confirm            | 节点异常，请确认                |
 | 305016 | do not have permission, please check configAuth | 没权限，请检查配置              |
+| 305017 | group id not exists                             | 群组编号不存在                  |
+| 305018 | request block number is taller than the latest  | 请求块高大于最新的块高          |
 | 305101 | user already exists                             | 用户已存在                      |
 | 305102 | user id not exists                              | 用户不存在                      |
 | 305103 | publickey address is invalid                    | 用户公钥地址错误                |
