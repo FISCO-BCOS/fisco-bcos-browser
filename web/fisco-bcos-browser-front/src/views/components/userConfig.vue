@@ -221,6 +221,7 @@ export default {
             this.getUserInfoData();
         },
         search(){
+            this.currentPage = 1
             this.getUserInfoData()
         }
     }
