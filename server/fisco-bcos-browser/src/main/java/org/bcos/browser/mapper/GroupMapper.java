@@ -24,6 +24,8 @@ public interface GroupMapper {
     
     void createTbFunction(@Param(value = "tableName")String tableName);
     
+    void createTbUser(@Param(value = "tableName")String tableName);
+    
     void dropTableByName(@Param(value = "tableName")String tableName);
     
     void addGroup(Group group);

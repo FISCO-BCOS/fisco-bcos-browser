@@ -65,7 +65,6 @@ public class ContractController extends BaseController {
      * 
      * @return
      */
-    @ConfigAuth
     @GetMapping("/contractList/{pageNumber}/{pageSize}")
     public BasePageResponse getContractList(
             @PathVariable("pageNumber") int pageNumber,

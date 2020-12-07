@@ -20,7 +20,7 @@ export default {
             value: 0
         },
         {
-            label: 'PBFT 当前视图',
+            label: '节点数量',
             route: '',
             class: 'bg-89c3f8 margin-top-15  margin-left-15',
             value: 0
@@ -42,7 +42,10 @@ export default {
                     title: '合约配置',
                     name: 'contractConfig',
                 },
-                
+                {
+                    title: '用户配置',
+                    name: 'userConfig',
+                },
             ]
         },
         {

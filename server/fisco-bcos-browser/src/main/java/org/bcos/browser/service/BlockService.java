@@ -1,12 +1,12 @@
 package org.bcos.browser.service;
 
-import com.alibaba.fastjson.JSON;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.Constants;
 import org.bcos.browser.base.exception.BaseException;
@@ -17,6 +17,7 @@ import org.bcos.browser.entity.rsp.RspGetBlock;
 import org.bcos.browser.mapper.BlockMapper;
 import org.bcos.browser.util.CommonUtils;
 import org.bcos.browser.util.DateTimeUtils;
+import org.bcos.browser.util.JsonTools;
 import org.bcos.browser.util.Web3jRpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,8 @@ public class BlockService {
     BlockMapper blockMapper;
     @Autowired
     Web3jRpc web3j;
+    @Autowired
+    GroupService groupService;
 
     /**
      * getBlockInfoByPage.
@@ -39,20 +42,27 @@ public class BlockService {
      * @param blockNumber blockNumber
      * @return
      */
-    public BasePageResponse getBlockInfoByPage(int groupId, int pageNumber,
-            int pageSize, String blockHash, String blockNumber) {
+    public BasePageResponse getBlockInfoByPage(int groupId, int pageNumber, int pageSize,
+            String blockHash, String blockNumber) throws BaseException {
         BasePageResponse response = new BasePageResponse(ConstantCode.SUCCESS);
 
-        int start =
-                Optional.ofNullable(pageNumber).map(page -> (page - 1) * pageSize).orElse(null);
+        // check group id
+        groupService.checkGroupId(groupId);
+        // check blockNumber
+        String number = CommonUtils.trimSpaces(blockNumber);
+        if (!StringUtils.isBlank(number) && Integer.parseInt(number) > web3j.getBlockNumber(groupId)) {
+            throw new BaseException(ConstantCode.NUMBER_TALLER_THAN_LATEST);
+        }
+
+        int start = Optional.ofNullable(pageNumber).map(page -> (page - 1) * pageSize).orElse(null);
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("groupId", groupId);
         map.put("blockHash", CommonUtils.trimSpaces(blockHash));
-        map.put("number", CommonUtils.trimSpaces(blockNumber));
+        map.put("number", number);
         map.put("start", start);
         map.put("pageSize", pageSize);
-        
+
         int total = blockMapper.getAllBlockCount(map);
 
         List<RspGetBlock> list = new ArrayList<RspGetBlock>();
@@ -80,16 +90,16 @@ public class BlockService {
      * @param groupId groupId
      * @param blockHash blockHash
      * @return
-     * @throws BaseException 
+     * @throws BaseException
      */
     public BaseResponse getBlockInfoByHash(int groupId, String blockHash) throws BaseException {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         Object[] params = new Object[] {groupId, blockHash, true};
         Object result = web3j.rpcRequest(groupId, Constants.GET_BLOCK_BY_HASH, params);
         if (result != null) {
-            response.setData(JSON.parse(JSON.toJSONString(result)));
+            response.setData(JsonTools.stringToJsonNode(JsonTools.toJSONString(result)));
         } else {
-        	throw new BaseException(ConstantCode.NODE_ABNORMAL);
+            throw new BaseException(ConstantCode.NODE_ABNORMAL);
         }
         log.debug("###getBlockInfoByHash response:{}###", response);
         return response;

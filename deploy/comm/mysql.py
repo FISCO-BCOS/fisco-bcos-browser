@@ -48,5 +48,27 @@ def dbConnect():
         traceback.print_exc()
         sys.exit(0)
     
+def checkDbAuthorized():
+    print ("check db user/password...")
+    # get properties
+    mysql_ip = getCommProperties("mysql.ip")
+    mysql_port = int(getCommProperties("mysql.port"))
+    mysql_user = getCommProperties("mysql.user")
+    mysql_password = getCommProperties("mysql.password")
+
+    try:
+        # connect
+        conn = mdb.connect(host=mysql_ip, port=mysql_port, user=mysql_user, passwd=mysql_password)
+        # conn = mdb.connect(host=mysql_ip, port=mysql_port, user=mysql_user, passwd=mysql_password, database=mysql_database, charset='utf8')
+        conn.close()
+        print("check finished Sucessfully.")
+        log.info("check db user/password correct!")
+    except:
+        import traceback
+        print ("  error! wrong db user/password!")
+        log.info("  check db user/password error {}".format(traceback.format_exc()))
+        traceback.print_exc()
+        sys.exit(0)
+    
 if __name__ == '__main__':
     pass

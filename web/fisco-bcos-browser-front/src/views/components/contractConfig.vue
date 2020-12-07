@@ -16,6 +16,12 @@
                         <i class="el-icon-info"></i>
                     </el-tooltip>
                 </div>
+                <div class="hashInput">
+                    <el-select v-model="version" placeholder="请选择" @change="onchangeLoadVersion" style="padding-left: 20px;" class="more-version">
+                        <el-option v-for="item in versionList" :key="item.versionId" :label="item.solcName" :value="item.solcName">
+                        </el-option>
+                    </el-select>
+                </div>
             </div>
             <div class="search-table" style="font-size: 0; box-sizing: border-box;height: calc(100% - 114px);">
                 <div class="contract-menu" style="height: 100%">
@@ -38,7 +44,7 @@
 <script>
 let Base64 = require("js-base64").Base64;
 import navs from '@/components/content-nav'
-import { addContract, getContractList, deleteContract, updateContract, uploadData, addAbiFunction } from "@/api/api"
+import { addContract, getContractList, deleteContract, updateContract, uploadData, addAbiFunction, getEncryptType } from "@/api/api"
 import { message } from '@/util/util'
 import constant from '@/util/constant'
 import errorcode from "@/util/errorCode"
@@ -55,7 +61,7 @@ import 'ace-builds/src-noconflict/ext-language_tools';
 require('ace-mode-solidity/build/remix-ide/mode-solidity')
 import Bus from "@/bus"
 import web3 from "@/util/ethAbi"
-
+import webworkify from 'webworkify-webpack'
 export default {
     name: "contractConfig",
     components: {
@@ -95,7 +101,21 @@ export default {
             compliteData: null,
             contractAbi: "",
             contractData: null,
+            allVersion: [],
+            versionList: [],
+            version: localStorage.getItem('solcName') ? localStorage.getItem('solcName') : '',
+            baseURLWasm: '../../../static/js',
+            versionId: localStorage.getItem('versionId') ? localStorage.getItem('versionId') : '',
+            versionData: null,
+            loading: false,
+            host: location.host,
         }
+    },
+    beforeCreate() {
+        // localStorage.removeItem('solcName')
+        // localStorage.removeItem('versionId')
+        // console.log('编译', localStorage.getItem('encryptionId'))
+
     },
     beforeDestroy: function () {
         Bus.$off("check")
@@ -105,9 +125,54 @@ export default {
         Bus.$off("complite")
     },
     beforeMount() {
-
+        this.getEncrypt(this.querySolcList);
     },
     mounted: function () {
+        this.allVersion = [
+            {
+                solcName: "v0.4.25",
+                url: `http://${this.host}/static/js/v0.4.25.js`,
+                versionId: 0,
+                encryptType: 0,
+                net: 0
+            },
+            {
+                solcName: "v0.4.24-gm",
+                url: `http://${this.host}/static/js/v0.4.24-gm.js`,
+                versionId: 1,
+                encryptType: 1,
+                net: 0
+            },
+            {
+                solcName: "v0.5.1",
+                versionId: 2,
+                url: `http://${this.host}/static/js/v0.5.1.js`,
+                encryptType: 0,
+                net: 0
+            },
+            {
+                solcName: "v0.5.1-gm",
+                versionId: 3,
+                url: `http://${this.host}/static/js/v0.5.1-gm.js`,
+                encryptType: 1,
+                net: 0
+            },
+            {
+                solcName: "v0.6.10",
+                versionId: 4,
+                url: `http://${this.host}/static/js/v0.6.10.js`,
+                encryptType: 0,
+                net: 1
+            },
+            {
+                solcName: "v0.6.10-gm",
+                versionId: 5,
+                url: `http://${this.host}/static/js/v0.6.10-gm.js`,
+                encryptType: 1,
+                net: 1
+            }
+        ]
+        this.initWorker()
         this.groupId = localStorage.getItem("groupId")
         this.initEditor();
         this.getContracts();
@@ -150,17 +215,21 @@ export default {
         })
         Bus.$on("complite", data => {
             this.loading = true
+            let version = this.$store.state.versionData;
             for (let i = 0; i < data.length; i++) {
-                this.complieContract(data[i], this.editContract)
-                // if(i == data.length -1 ){
-                //     setTimeout(() => {
-                //         this.editContract(data)
-                //     },100)
-                // }
+                if (version && version.net !== 0) {
+                    this.compileHighVersion(data[i], this.editContract)
+                } else {
+                    this.complieContract(data[i], this.editContract);
+                }
             }
         })
     },
     methods: {
+        initWorker() {
+            let w = webworkify(require.resolve('@/util/file.worker'));
+            this.$store.state.worker = w
+        },
         selectData: function (data) {
             this.setContent(data);
             this.resultList.forEach(value => {
@@ -387,6 +456,7 @@ export default {
                 if (res.data.code === 0) {
                     this.contractList = res.data.data;
                     this.allContractList = res.data.data;
+                    this.$store.dispatch('set_contract_dataList_action', this.contractList);
                     this.changeAllcontarctList(this.allContractList)
                     if (res.data.data && res.data.data.length) {
                         this.changeContractData(res.data.data)
@@ -649,18 +719,101 @@ export default {
         },
         // lots of Compilation Contracts
         complie: function () {
-            if(!this.contractList.length) return
+            if (!this.contractList.length) return
+            let version = this.$store.state.versionData;
             this.buttonShow = true;
             this.loading = true;
-            this.contractList.forEach((value, index) => {
-                // if(value.contractStatus != 1){
-                this.compliteData = value;
-                this.complieContract(value, this.editContract);
-                // }
+            for (let i = 0; i < this.contractList.length; i++) {
+                if (version && version.net !== 0) {
+                    this.compileHighVersion(this.contractList[i], this.editContract, i)
+                } else {
+                    this.complieContract(this.contractList[i], this.editContract);
+                }
+            }
+            // this.contractList.forEach((value, index) => {
+            //     if (version && version.net !== 0) {
+            //         this.compileHighVersion(value, this.editContract)
+            //     } else {
+            //         this.complieContract(value, this.editContract);
+            //     }
+
+            // });
+        },
+        compileHighVersion(val, callback, i) {
+
+            let that = this
+            this.loading = true;
+            this.contractList = this.$store.state.contractDataList
+            let content = "";
+            let output;
+            let input = {
+                language: "Solidity",
+                settings: {
+                    outputSelection: {
+                        "*": {
+                            "*": ["*"]
+                        }
+                    }
+                }
+            };
+            input.sources = {};
+            input.sources[val.contractName + ".sol"] = {};
+            let libs = [];
+            input.sources[val.contractName + ".sol"] = {
+                content: Base64.decode(val.contractSource)
+            };
+            let w = this.$store.state.worker;
+            w.postMessage({
+                cmd: "compile",
+                input: JSON.stringify(input),
+                list: this.$store.state.contractDataList,
+                path: val.contractPath
             });
-            // setTimeout(() => {
-            //     this.editContract()
-            // },1500)   
+            w.addEventListener('message', (ev) => {
+                if (ev.data.cmd == 'compiled') {
+                    that.loading = false
+                    try {
+                        output = JSON.parse(ev.data.data);
+                        if (output && output.contracts && JSON.stringify(output.contracts) != "{}") {
+                            if (output.contracts[val.contractName + ".sol"]) {
+                                let outputData = that.changeOutput(
+                                    output.contracts[val.contractName + ".sol"]
+                                );
+                                val.contractAbi = outputData.abiFile
+                                val.contractBin = outputData.bin
+                                if (outputData.errorInfo) {
+                                    val.contractErrorINfo = outputData.errorInfo
+                                }
+                            }
+
+                        } else {
+                            if (output) {
+                                if (typeof output.errors[0] != 'string') {
+                                    val.errorInfo = JSON.stringify(output.errors[0]);
+                                } else {
+                                    console.log((new Date()).getTime())
+                                    val.errorInfo = output.errors[0];
+                                }
+                            }
+                        }
+                        setTimeout(() => {
+                            callback()
+                        }, 500);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                } else {
+                    console.log(ev.data);
+                    console.log(JSON.parse(ev.data.data))
+                }
+            });
+            w.addEventListener("error", function (ev) {
+                val.errorInfo = ev;
+                that.loading = false;
+                setTimeout(() => {
+                    callback()
+                }, 500);
+            })
         },
         complieContract: function (val, callback) {
             // this.loading = false;
@@ -688,8 +841,7 @@ export default {
                 content: Base64.decode(val.contractSource)
             };
             try {
-                output = JSON.parse(solc.compileStandard(JSON.stringify(input), this.findImports))
-
+                output = JSON.parse(solc.compile(JSON.stringify(input), { import: this.findImports }));
             } catch (error) {
                 if (typeof error != 'string') {
                     val.errorInfo = JSON.stringify(error);
@@ -718,6 +870,7 @@ export default {
         },
         // Compile contract callback function
         findImports: function (path) {
+            this.contractList = this.$store.state.contractDataList
             let arry = path.split("/");
             // let newpath = "";
             let newpath = arry[arry.length - 1];
@@ -818,33 +971,11 @@ export default {
                     } else {
                         value.contractAbi = JSON.stringify(value.contractAbi)
                     }
-                    constant.SYSTEM_CONTRACT_ADDRESS.forEach(val => {
-                        if (val.contractName == value.contractName) {
-                            value.contractAddress = val.contractAddress
-                        }
-                    })
                     arry.push(value)
                 } else if (value.errorInfo && value.contractStatus != 1) {
                     arry.push(value)
                 }
             })
-            if (val) {
-                val.forEach(value => {
-                    if (typeof (value.contractAbi) == "string") {
-                        value.contractAbi = value.contractAbi
-                    } else if (value.contractAbi) {
-                        value.contractAbi = JSON.stringify(value.contractAbi)
-                    } else {
-                        value.contractAbi = ""
-                    }
-                    constant.SYSTEM_CONTRACT_ADDRESS.forEach(val => {
-                        if (val.contractName == value.contractName) {
-                            value.contractAddress = val.contractAddress
-                        }
-                    })
-                })
-                arry = val
-            }
             let data = {
                 data: arry
             }
@@ -889,7 +1020,103 @@ export default {
         handleCurrentChange(val) {
             this.pagination.currentPage = val;
             this.getContracts();
-        }
+        },
+        getEncrypt: function (callback) {
+            this.loading = true
+            getEncryptType(localStorage.getItem("groupId")).then(res => {
+                if (res.data.code === 0) {
+                    this.loading = false;
+                    localStorage.setItem("encryptionId", res.data.data)
+                    callback();
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: errorcode[res.data.code].cn
+                    })
+                }
+            }).catch(err => {
+                this.$message({
+                    type: 'error',
+                    message: constant.ERROR
+                })
+            })
+        },
+        querySolcList() {
+            for (let i = 0; i < this.allVersion.length; i++) {
+                if (localStorage.getItem("encryptionId") == this.allVersion[i].encryptType) {
+                    this.versionList.push(this.allVersion[i])
+                }
+            }
+            if (!localStorage.getItem('solcName')) {
+                this.version = this.versionList[0]['solcName'];
+                this.versionId = this.versionList[0]['id'];
+                localStorage.setItem("solcName", this.versionList[0]['solcName'])
+                localStorage.setItem("versionId", this.versionList[0]['versionId'])
+            }
+            this.initSolc(localStorage.getItem("versionId"))
+        },
+        initSolc(versionId) {
+            let that = this
+            // let w = webworkify(require.resolve('@/util/file.worker'));
+            for (let i = 0; i < this.versionList.length; i++) {
+                if (this.versionList[i].versionId == versionId) {
+                    this.versionData = this.versionList[i];
+                    this.version = this.versionList[i]['solcName'];
+                    this.$store.dispatch("set_version_data_action", this.versionData)
+                }
+            }
+            if (this.versionData && this.versionData.net) {
+                let w = webworkify(require.resolve('@/util/file.worker'));
+                this.$store.state.worker = w
+                w.addEventListener('message', function (ev) {
+                    if (ev.data.cmd == 'versionLoaded') {
+                        console.log(ev.data, that);
+                        that.loading = false
+                    } else {
+                        console.log('lllll', ev.data);
+                        console.log(JSON.parse(ev.data.data))
+                    }
+                });
+                w.postMessage({
+                    cmd: "loadVersion",
+                    data: this.versionData.url
+                });
+            } else {
+                var head = document.head;
+                var script = document.createElement("script");
+                script.src = `${this.baseURLWasm}/${this.version}.js`;
+                script.setAttribute('id', 'soljson');
+                if (!document.getElementById('soljson')) {
+                    head.append(script)
+                    console.time("耗时");
+                    script.onload = function () {
+                        console.log('加载成功.');
+                        console.timeEnd("耗时");
+                        that.loading = false
+                    }
+                }else {
+                    that.loading = false
+                }
+                
+            }
+
+        },
+        onchangeLoadVersion(version) {
+            this.loading = true
+            localStorage.setItem('solcName', version)
+            var versionId = '';
+            this.versionList.forEach(item => {
+                if (item.solcName == version) {
+                    versionId = item.versionId
+                }
+            });
+            localStorage.setItem('versionId', versionId)
+            this.initSolc(versionId)
+            if (this.$store.state.versionData && this.$store.state.versionData.net == 0) {
+                this.$router.go(0)
+            }
+            this.getContracts()
+        },
     },
     filters: {
         Status: function (value) {
@@ -945,7 +1172,7 @@ export default {
     background-color: rgb(39, 40, 34);
     z-index: 999999;
     color: #fff;
-    padding: 10px 20px;
+    padding: 24px 20px;
 }
 .contract-errorInfo .title {
     display: inline-block;
@@ -953,6 +1180,9 @@ export default {
 }
 .contract-content >>> .ace_print-margin {
     width: 0;
+}
+.more-version >>> .el-input__inner {
+    width: 120px;
 }
 </style>
 

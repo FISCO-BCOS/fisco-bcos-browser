@@ -4,6 +4,7 @@
 from . import log as deployLog
 import sys
 from .utils import *
+from .mysql import *
 
 log = deployLog.getLocalLogger()
 checkDependent = ["git","wget","openssl","curl"]
@@ -16,6 +17,7 @@ def do():
     checkServerPort()
     checkWebPort()
     checkDbConnect()
+    checkDbAuthorized()
     print("===================== envrionment ready... =====================")
     
 def installRequirements():
@@ -86,7 +88,7 @@ def hasInstallServer(server):
         return False
 
 def installByYum(server):
-    if isCentos() or isRedHat():
+    if isCentos():
         result = doCmdIgnoreException("sudo yum -y install {}".format(server))
         if result["status"] != 0:
             os.system("sudo yum -y install epel-release")

@@ -1,15 +1,16 @@
 package org.bcos.browser.util;
 
-import com.alibaba.fastjson.JSON;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bcos.browser.base.ConstantCode;
@@ -19,6 +20,9 @@ import org.springframework.http.MediaType;
 
 @Slf4j
 public class CommonUtils {
+    
+    static final String STR_0X = "0x";
+    
     /**
      * Remove all Spaces before and after the string.
      */
@@ -90,8 +94,8 @@ public class CommonUtils {
             log.warn("Object2JavaBean. obj or clazz null");
             return null;
         }
-        String jsonStr = JSON.toJSONString(obj);
-        return JSON.parseObject(jsonStr, clazz);
+        String jsonStr = JsonTools.toJSONString(obj);
+        return JsonTools.toJavaObject(jsonStr, clazz);
     }
 
     /**
@@ -104,7 +108,11 @@ public class CommonUtils {
         if (StringUtils.isBlank(str)) {
             return 0;
         }
-        return Integer.parseInt(str.substring(2), 16);
+        // adapt fisco 2.7.0
+        if (str.startsWith(STR_0X)) {
+            return Integer.parseInt(str.substring(2), 16);
+        }
+        return Integer.parseInt(str);
     }
 
     /**
@@ -114,7 +122,7 @@ public class CommonUtils {
      * @return
      */
     public static String parseInt2HexStr(int value) {
-        String result = "0x" + Integer.toHexString(value);
+        String result = STR_0X + Integer.toHexString(value);
         return result;
     }
     

@@ -136,6 +136,7 @@
                 }else if(this.searchKeyValue){
                     message("请输入块高或完整的哈希",'error')
                 }
+                this.pagination.currentPage = 1;
                 this.searchTbBlockInfo();
                 this.searchKeyValue = "";
                 router.push({
@@ -182,6 +183,7 @@
                     }else{
                         window.clearInterval(this.setIntervalTime);
                         this.blockList = [];
+                        this.pagination.total = 0;
                         message(errorcode[res.data.code].cn,'error')
                     }
                     this.blockNumber = "";

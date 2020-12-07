@@ -14,7 +14,7 @@ public class Constants {
     private String cronBlockChainInfo = "0/10 * * * * ?";
     private String cronBlockInfo = "0/10 * * * * ?";
     private String cronTxnByDay = "30 0/1 * * * ?";
-    private String cronAyncNode = "0 0 0/1 * * ?";
+    private String cronAyncNode = "0 0/1 * * * ?";
     private String cronIfNodeActive = "0/10 * * * * ?";
     private String cronDeleteTxn = "0 0 * * * ?";
     private int handleBlocks = 50;
@@ -43,6 +43,7 @@ public class Constants {
     public static final String TB_GROUP = "tb_group";
     public static final String TB_CONTRACT = "tb_contract";
     public static final String TB_FUNCTION = "tb_function";
+    public static final String TB_USER = "tb_user";
     public static final String PREFIX_TB_NODE = "tb_node_";
     public static final String PREFIX_TB_BLOCKCHAININFO = "tb_blockChainInfo_";
     public static final String PREFIX_TB_TXNBYDAY = "tb_txnByDay_";

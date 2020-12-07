@@ -166,6 +166,7 @@
                 }else if(this.searchKeyValue){
                     message("请输入块高或完整的哈希",'error')
                 }
+                this.pagination.currentPage = 1
                 this.searchTbTransactionInfo()
                 this.searchKeyValue = "";
                 router.push({
@@ -206,10 +207,11 @@
                             this.pagination.total = res.data.totalCount;
                         }else{
                             this.transactionList = [];
-                            this.pagination.totalCount = res.data.totalCount
+                            this.pagination.total = res.data.totalCount
                         }
                     }else{
                         this.transactionList = [];
+                        this.pagination.total = 0;
                         message(errorcode[res.data.code].cn,'error')
                     }
                     this.blockHeight = "";

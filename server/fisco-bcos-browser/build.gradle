@@ -36,6 +36,14 @@ List spring_boot =[
 	"org.springframework.boot:spring-boot-configuration-processor:1.5.9.RELEASE",
 ]
 
+List jaxb = [
+     "javax.xml.bind:jaxb-api:2.3.0",
+     "com.sun.xml.bind:jaxb-impl:2.3.0",
+     "com.sun.xml.bind:jaxb-core:2.3.0",
+     "javax.activation:activation:1.1.1",
+     "javax.validation:validation-api:2.0.1.Final"
+]
+
 def log4j_version="2.13.1"
 List logger = [
 		"org.apache.logging.log4j:log4j-api:$log4j_version",
@@ -56,11 +64,12 @@ List io = [
 	'commons-fileupload:commons-fileupload:1.4'
 ]
 
+def jackson_version="2.11.0"
 List jackson = [
-    "com.fasterxml.jackson.core:jackson-databind:2.10.0",
-    "com.fasterxml.jackson.module:jackson-module-parameter-names:2.10.0",
-    "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.10.0",
-    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.10.0"
+    "com.fasterxml.jackson.core:jackson-databind:$jackson_version",
+    "com.fasterxml.jackson.module:jackson-module-parameter-names:$jackson_version",
+    "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jackson_version",
+    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
 ]
 
 List swagger = [
@@ -69,11 +78,10 @@ List swagger = [
 ]
 
 dependencies {
-    compile spring,spring_boot,logger,mysql,io,jackson,swagger
+    compile spring,spring_boot,jaxb,logger,mysql,io,jackson,swagger
     compile "com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.1"
 	compile "org.apache.commons:commons-lang3:3.10"
 
-    compile 'com.alibaba:fastjson:1.2.70'
     annotationProcessor 'org.projectlombok:lombok:1.18.2'
     compileOnly 'org.projectlombok:lombok:1.18.2'
 }

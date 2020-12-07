@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+import org.apache.commons.lang3.StringUtils;
 import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.Constants;
 import org.bcos.browser.base.exception.BaseException;
@@ -29,7 +29,6 @@ import org.bcos.browser.util.DateTimeUtils;
 import org.bcos.browser.util.Web3jRpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -41,6 +40,8 @@ public class TransactionService {
     Web3jRpc web3jRpc;
     @Autowired
     NodeMapper nodeMapper;
+    @Autowired
+    GroupService groupService;
 
     /**
      * getTransInfoByPage.
@@ -52,17 +53,26 @@ public class TransactionService {
      * @param blockNumber blockNumber
      * @return
      */
-    public BasePageResponse getTransInfoByPage(int groupId, int pageNumber,
-            int pageSize, String transHash, String blockNumber) {
-        log.info("getTransInfoByPage groupId:{} pageNumber:{} pageSize:{} transHash:{} blockNumber:{}",
+    public BasePageResponse getTransInfoByPage(int groupId, int pageNumber, int pageSize,
+            String transHash, String blockNumber) throws BaseException {
+        log.info(
+                "getTransInfoByPage groupId:{} pageNumber:{} pageSize:{} transHash:{} blockNumber:{}",
                 groupId, pageNumber, pageSize, transHash, blockNumber);
-        int start =
-                Optional.ofNullable(pageNumber).map(page -> (page - 1) * pageSize).orElse(null);
+
+        // check group id
+        groupService.checkGroupId(groupId);
+        // check blockNumber
+        String number = CommonUtils.trimSpaces(blockNumber);
+        if (!StringUtils.isBlank(number) && Integer.parseInt(number) > web3jRpc.getBlockNumber(groupId)) {
+            throw new BaseException(ConstantCode.NUMBER_TALLER_THAN_LATEST);
+        }
+
+        int start = Optional.ofNullable(pageNumber).map(page -> (page - 1) * pageSize).orElse(null);
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("groupId", groupId);
         map.put("transHash", CommonUtils.trimSpaces(transHash));
-        map.put("number", CommonUtils.trimSpaces(blockNumber));
+        map.put("number", number);
         map.put("start", start);
         map.put("pageSize", pageSize);
 
@@ -98,16 +108,20 @@ public class TransactionService {
                 log.info("getTransInfoByPage transHash:{} get from chain", transHash);
                 TransactionFromChain transInfo = web3jRpc.getTransByHash(groupId, transHash);
                 if (transInfo != null) {
-                    BlockFromChain blockInfo = web3jRpc.getBlockByNumber(groupId, CommonUtils.parseHexStr2Int(transInfo.getBlockNumber()));
-                    RspGetTransaction rspEntity = getTransactionFromChain(transInfo, blockInfo.getTimestamp());
+                    BlockFromChain blockInfo = web3jRpc.getBlockByNumber(groupId,
+                            CommonUtils.parseHexStr2Int(transInfo.getBlockNumber()));
+                    RspGetTransaction rspEntity =
+                            getTransactionFromChain(transInfo, blockInfo.getTimestamp());
                     list.add(rspEntity);
                 }
                 total = list.size();
             } else if (CommonUtils.trimSpaces(blockNumber) != null) {
                 log.info("getTransInfoByPage blockNumber:{} get from chain", blockNumber);
-                BlockFromChain blockInfo = web3jRpc.getBlockByNumber(groupId, Integer.valueOf(blockNumber));
+                BlockFromChain blockInfo =
+                        web3jRpc.getBlockByNumber(groupId, Integer.parseInt(blockNumber));
                 for (TransactionFromChain transInfo : blockInfo.getTransactions()) {
-                    RspGetTransaction rspEntity = getTransactionFromChain(transInfo, blockInfo.getTimestamp());
+                    RspGetTransaction rspEntity =
+                            getTransactionFromChain(transInfo, blockInfo.getTimestamp());
                     list.add(rspEntity);
                 }
                 total = list.size();
@@ -118,7 +132,7 @@ public class TransactionService {
         response.setData(list);
         return response;
     }
-    
+
     /**
      * getTransactionFromChain.
      * 
@@ -126,13 +140,14 @@ public class TransactionService {
      * @param timeStr time
      * @return
      */
-    private RspGetTransaction getTransactionFromChain(TransactionFromChain transInfo, String timeStr) {
+    private RspGetTransaction getTransactionFromChain(TransactionFromChain transInfo,
+            String timeStr) {
         RspGetTransaction rspEntity = new RspGetTransaction();
         rspEntity.setTransHash(transInfo.getHash());
         rspEntity.setBlockHash(transInfo.getBlockHash());
         rspEntity.setBlockNumber(CommonUtils.parseHexStr2Int(transInfo.getBlockNumber()));
         rspEntity.setBlockTimesStr(DateTimeUtils.timestamp2String(
-                new Timestamp(Long.parseLong(timeStr.substring(2), 16)), 
+                new Timestamp(Long.parseLong(timeStr.substring(2), 16)),
                 Constants.DEFAULT_DATA_TIME_FORMAT));
         rspEntity.setFrom(transInfo.getFrom());
         rspEntity.setTo(transInfo.getTo());
@@ -151,7 +166,7 @@ public class TransactionService {
         List<Transaction> transHashList = reqTransaction.getData();
         int groupId = reqTransaction.getGroupId();
         List<TransactionAndReceipt> data = new ArrayList<>();
-        
+
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("groupId", groupId);
         map.put("type", 0);
@@ -161,16 +176,16 @@ public class TransactionService {
         if (total > 0) {
             for (int i = 0; i < transHashList.size(); i++) {
                 TransactionAndReceipt result = new TransactionAndReceipt();
-                TransactionFromChain transInfo = web3jRpc.getTransByHash(groupId, 
-                        transHashList.get(i).getTransHash());
-                ReceiptFromChain receiptInfo = web3jRpc.getReceiptByHash(groupId, 
-                        transHashList.get(i).getTransHash());
+                TransactionFromChain transInfo =
+                        web3jRpc.getTransByHash(groupId, transHashList.get(i).getTransHash());
+                ReceiptFromChain receiptInfo =
+                        web3jRpc.getReceiptByHash(groupId, transHashList.get(i).getTransHash());
                 result.setTransactionFromChain(transInfo);
                 result.setReceiptFromChain(receiptInfo);
                 data.add(result);
             }
         }
-        
+
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         response.setData(data);
         log.debug("###analyzeData response:{}###", response);
@@ -199,15 +214,15 @@ public class TransactionService {
      * @param groupId groupId
      * @param transHash transHash
      * @return
-     * @throws BaseException 
+     * @throws BaseException
      */
     public BaseResponse getTransactionByHash(int groupId, String transHash) throws BaseException {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         TransactionFromChain info = web3jRpc.getTransByHash(groupId, transHash);
         if (info != null) {
-        	response.setData(info);
+            response.setData(info);
         } else {
-        	throw new BaseException(ConstantCode.NODE_ABNORMAL);
+            throw new BaseException(ConstantCode.NODE_ABNORMAL);
         }
         log.debug("###getTransactionByHash response:{}###", response);
         return response;
@@ -219,15 +234,15 @@ public class TransactionService {
      * @param groupId groupId
      * @param transHash transHash
      * @return
-     * @throws BaseException 
+     * @throws BaseException
      */
     public BaseResponse getReceiptByHash(int groupId, String transHash) throws BaseException {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         ReceiptFromChain info = web3jRpc.getReceiptByHash(groupId, transHash);
         if (info != null) {
-        	response.setData(info);
+            response.setData(info);
         } else {
-        	throw new BaseException(ConstantCode.NODE_ABNORMAL);
+            throw new BaseException(ConstantCode.NODE_ABNORMAL);
         }
         log.debug("###getTransactionReceiptByHash response:{}###", response);
         return response;
@@ -242,20 +257,20 @@ public class TransactionService {
     public BaseResponse getCode(ReqGetCode reqGetCode) {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         List<String> data = new ArrayList<>();
-        
+
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("groupId", reqGetCode.getGroupId());
         map.put("type", 0);
         map.put("status", 0);
         int total = nodeMapper.getNodeCnts(map);
         if (total > 0) {
-        	for (int i = 0; i < reqGetCode.getData().size(); i++) {
-        		String code = web3jRpc.getCode(reqGetCode.getGroupId(), 
-        				reqGetCode.getData().get(i));
-        		data.add(code);
-        	}
+            for (int i = 0; i < reqGetCode.getData().size(); i++) {
+                String code =
+                        web3jRpc.getCode(reqGetCode.getGroupId(), reqGetCode.getData().get(i));
+                data.add(code);
+            }
         }
-        
+
         response.setData(data);
         log.debug("###getCode response:{}###", response);
         return response;

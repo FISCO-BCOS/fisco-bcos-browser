@@ -30,10 +30,10 @@ public class BlockController extends BaseController {
      */
     @GetMapping("/blockList/{groupId}/{pageNumber}/{pageSize}")
     public BasePageResponse getBlockInfoByPage(@PathVariable("groupId") int groupId,
-            @PathVariable("pageNumber") int pageNumber,
-            @PathVariable("pageSize") int pageSize,
+            @PathVariable("pageNumber") int pageNumber, @PathVariable("pageSize") int pageSize,
             @RequestParam(value = "blockHash", required = false) String blockHash,
-            @RequestParam(value = "blockNumber", required = false) String blockNumber) {
+            @RequestParam(value = "blockNumber", required = false) String blockNumber)
+            throws BaseException {
         BasePageResponse response = blockService.getBlockInfoByPage(groupId, pageNumber, pageSize,
                 blockHash, blockNumber);
         return response;
@@ -45,7 +45,7 @@ public class BlockController extends BaseController {
      * @param groupId groupId
      * @param blockHash blockHash
      * @return
-     * @throws BaseException 
+     * @throws BaseException
      */
     @GetMapping("/blockByHash/{groupId}/{blockHash}")
     public BaseResponse getBlockInfoByHash(@PathVariable("groupId") int groupId,

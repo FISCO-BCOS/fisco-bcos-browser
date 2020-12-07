@@ -1,12 +1,11 @@
 package org.bcos.browser.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.googlecode.jsonrpc4j.JsonRpcHttpClient;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.bcos.browser.base.Constants;
@@ -122,9 +121,9 @@ public class Web3jRpc {
         Object[] params = new Object[] {groupId};
         Object object = rpcRequest(groupId, Constants.GET_TOTAL_TRANSACTION_COUNT, params);
         if (object != null) {
-            JSONObject json = JSONObject.parseObject(JSON.toJSONString(object));
-            result.setBlockNumber(CommonUtils.parseHexStr2Int(json.getString("blockNumber")));
-            result.setTxn(CommonUtils.parseHexStr2Int(json.getString("txSum")));
+            Map<String, Object> restult = JsonTools.toMap(object);
+            result.setBlockNumber(CommonUtils.parseHexStr2Int(restult.get("blockNumber").toString()));
+            result.setTxn(CommonUtils.parseHexStr2Int(restult.get("txSum").toString()));
         }
         return result;
     }
@@ -240,7 +239,8 @@ public class Web3jRpc {
         List<Object> list = null;
         if (object != null) {
             list = CommonUtils.object2JavaBean(object, List.class);
-            result = JSONArray.parseArray(list.get(1).toString(), Peer.class);
+            result = JsonTools.stringToObj(JsonTools.toJSONString(list.get(1)),
+                    new TypeReference<List<Peer>>() {});
         }
         return result;
     }
