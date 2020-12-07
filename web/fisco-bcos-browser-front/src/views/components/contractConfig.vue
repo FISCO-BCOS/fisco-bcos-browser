@@ -137,8 +137,8 @@ export default {
                 net: 0
             },
             {
-                solcName: "v0.4.25-gm",
-                url: `http://${this.host}/static/js/v0.4.25-gm.js`,
+                solcName: "v0.4.24-gm",
+                url: `http://${this.host}/static/js/v0.4.24-gm.js`,
                 versionId: 1,
                 encryptType: 1,
                 net: 0
