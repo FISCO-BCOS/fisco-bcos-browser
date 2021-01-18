@@ -14,7 +14,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/icon/iconfont.css'
 import '@/assets/icon/iconfont.js'
 import '@/assets/icon/iconfont_webaas.css'
-
+import filters from './util/filter.js'
 promise.polyfill();
 
 axios.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest';
