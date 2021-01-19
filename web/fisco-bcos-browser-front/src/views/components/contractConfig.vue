@@ -31,9 +31,26 @@
                     <div ref='codeContent' :style="{height: codeHight}">
                         <div class="ace-editor" ref="ace" v-show='editorShow' id='aceEditor'></div>
                     </div>
-                    <div v-if='errorInfo && !contractAbi' class="contract-errorInfo">
-                        <span class='title'>错误信息</span><br>
-                        <span style="width: 100%;word-break:break-all;">{{errorInfo}}</span>
+                    <div v-if='errorInfo && !contractAbi' class="contract-errorInfo error-item">
+                        <el-scrollbar style="height:100%">
+                            <span class='title'>错误信息</span> <i class="el-icon-copy-document font-12 copy-public-key" @click="copyPubilcKey(errorInfo)" title="复制错误信息"></i> <br>
+                            <span style="width: 100%;word-break:break-all;">
+                                <el-collapse v-model="activeNames" @change="handleChange">
+                                    <el-collapse-item :name="index" v-for="(item, index) in JSON.parse(errorInfo)" :key="index" :style="{'color': severityColor(item)}">
+                                        <template slot="title">
+                                            {{index+1}}、{{item | formatErrorMessage}}
+                                        </template>
+                                        <span style="display:inline-block;width:calc(100% - 120px);word-wrap:break-word;">
+                                            <span>
+                                                <pre :style="{'color': severityColor(item)}">{{item}}</pre>
+                                            </span>
+                                        </span>
+                                    </el-collapse-item>
+
+                                </el-collapse>
+                            </span>
+                        </el-scrollbar>
+
                     </div>
                 </div>
                 <div style="clear: both"></div>
@@ -109,6 +126,7 @@ export default {
             versionData: null,
             loading: false,
             host: location.host,
+            activeNames: []
         }
     },
     beforeCreate() {
@@ -789,10 +807,10 @@ export default {
                         } else {
                             if (output) {
                                 if (typeof output.errors[0] != 'string') {
-                                    val.errorInfo = JSON.stringify(output.errors[0]);
+                                    val.errorInfo = JSON.stringify(output.errors);
                                 } else {
                                     console.log((new Date()).getTime())
-                                    val.errorInfo = output.errors[0];
+                                    val.errorInfo = JSON.stringify(output.errors);
                                 }
                             }
                         }
@@ -816,8 +834,6 @@ export default {
             })
         },
         complieContract: function (val, callback) {
-            // this.loading = false;
-            // this.loading = true
             this.contractData = val
             console.log('solc未加载...')
             let wrapper = require("solc/wrapper");
@@ -842,6 +858,7 @@ export default {
             };
             try {
                 output = JSON.parse(solc.compile(JSON.stringify(input), { import: this.findImports }));
+
             } catch (error) {
                 if (typeof error != 'string') {
                     val.errorInfo = JSON.stringify(error);
@@ -858,21 +875,16 @@ export default {
                 }
             } else {
                 if (output) {
-                    if (typeof output.errors[0] != 'string') {
-                        val.errorInfo = JSON.stringify(output.errors[0]);
-                    } else {
-                        console.log((new Date()).getTime())
-                        val.errorInfo = output.errors[0];
-                    }
+                    console.log("errors:", output.errors);
+                    val.errorInfo = JSON.stringify(output.errors)
+
                 }
             }
             callback()
         },
         // Compile contract callback function
         findImports: function (path) {
-            this.contractList = this.$store.state.contractDataList
             let arry = path.split("/");
-            // let newpath = "";
             let newpath = arry[arry.length - 1];
             let num = 0;
             if (arry.length > 1) {
@@ -1094,10 +1106,10 @@ export default {
                         console.timeEnd("耗时");
                         that.loading = false
                     }
-                }else {
+                } else {
                     that.loading = false
                 }
-                
+
             }
 
         },
@@ -1116,6 +1128,40 @@ export default {
                 this.$router.go(0)
             }
             this.getContracts()
+        },
+        severityColor(item) {
+            let key = item.severity
+            switch (key) {
+                case "error":
+                    return '#F56C6C';
+                    break;
+
+                case "warning":
+                    return '#E6A23C';
+                    break;
+            }
+        },
+        handleChange(val) {
+            console.log(val);
+        },
+        copyPubilcKey(val) {
+            if (!val) {
+                this.$message({
+                    type: "fail",
+                    showClose: true,
+                    message: "key为空，不复制。",
+                    duration: 2000
+                });
+            } else {
+                this.$copyText(val).then(e => {
+                    this.$message({
+                        type: "success",
+                        showClose: true,
+                        message: "复制成功",
+                        duration: 2000
+                    });
+                });
+            }
         },
     },
     filters: {
@@ -1167,12 +1213,12 @@ export default {
     color: #fff;
 }
 .contract-errorInfo {
-    height: 30%;
     border-top: 1px solid #fff;
     background-color: rgb(39, 40, 34);
     z-index: 999999;
     color: #fff;
     padding: 24px 20px;
+    height: 196px;
 }
 .contract-errorInfo .title {
     display: inline-block;
@@ -1184,6 +1230,29 @@ export default {
 .more-version >>> .el-input__inner {
     width: 120px;
 }
+.error-item >>> .el-collapse {
+    border-bottom: 1px solid #2b374d;
+    border-top: 1px solid #2b374d;
+}
+.error-item >>> .el-collapse-item__header {
+    color: inherit;
+    background-color: inherit;
+    height: inherit;
+    line-height: inherit;
+    border-bottom: 1px solid #2b374d;
+    font-size: 12px;
+    font-weight: none;
+}
+.error-item >>> .el-collapse-item__content {
+    background-color: #2b374d;
+}
+.error-item >>> .el-collapse-item__wrap {
+    border-bottom: 1px solid #2b374d;
+}
+.error-item >>>.el-scrollbar__wrap{
+  overflow-x: hidden;
+}
+
 </style>
 
 
