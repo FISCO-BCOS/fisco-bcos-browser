@@ -48,7 +48,7 @@ public class UserService {
     @Transactional
     public Integer addUserInfo(ReqAddUser user) throws BaseException {
         log.debug("start addUserInfo User:{}", JsonTools.toJSONString(user));
-        
+
         // check group id
         int groupId = user.getGroupId();
         groupService.checkGroupId(groupId);
@@ -70,8 +70,7 @@ public class UserService {
         }
 
         // add row
-        User newUserRow =
-                new User(user.getUserName(), groupId, address, user.getDescription());
+        User newUserRow = new User(user.getUserName(), groupId, address, user.getDescription());
         Integer affectRow = userMapper.addUserRow(newUserRow);
         if (affectRow == 0) {
             log.warn("addUserInfo affect 0 rows of tb_user");
@@ -148,6 +147,17 @@ public class UserService {
      */
     public User queryByUserId(Integer userId) throws BaseException {
         return queryUser(userId, null, null, null);
+    }
+
+    /**
+     * query name by address.
+     */
+    public String queryNameByAddress(Integer groupId, String address) throws BaseException {
+        User user = queryUser(null, groupId, null, address);
+        if (user != null) {
+            return user.getUserName();
+        }
+        return address;
     }
 
     /**
