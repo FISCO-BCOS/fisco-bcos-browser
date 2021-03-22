@@ -1,8 +1,7 @@
 package org.bcos.browser.config;
 
 import lombok.Data;
-import org.bcos.browser.base.Constants;
-import org.bcos.browser.mapper.GroupMapper;
+import org.bcos.browser.service.TableService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -11,13 +10,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class InitTable implements InitializingBean {
     @Autowired
-    GroupMapper groupMapper;
+    TableService tableService;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        groupMapper.createTbGroup(Constants.TB_GROUP);
-        groupMapper.createTbContract(Constants.TB_CONTRACT);
-        groupMapper.createTbFunction(Constants.TB_FUNCTION);
-        groupMapper.createTbUser(Constants.TB_USER);
+        tableService.newCommonTable();
     }
 }

@@ -20,7 +20,6 @@ public class Constants {
     private int handleBlocks = 50;
     private int keepTxnCnt = 500000;
 
-
     public static final String RPC_BASE_URI = "http://%s:%s";
     public static final String GET_BLOCK_NUMBER = "getBlockNumber";
     public static final String GET_PBFT_VIEW = "getPbftView";
@@ -40,13 +39,4 @@ public class Constants {
 
     public static final String DEFAULT_DATA_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss:SSS";
     public static final String DATE_FORMAT_YYMMDD = "yyyy-MM-dd";
-    public static final String TB_GROUP = "tb_group";
-    public static final String TB_CONTRACT = "tb_contract";
-    public static final String TB_FUNCTION = "tb_function";
-    public static final String TB_USER = "tb_user";
-    public static final String PREFIX_TB_NODE = "tb_node_";
-    public static final String PREFIX_TB_BLOCKCHAININFO = "tb_blockChainInfo_";
-    public static final String PREFIX_TB_TXNBYDAY = "tb_txnByDay_";
-    public static final String PREFIX_TB_BLOCK = "tb_block_";
-    public static final String PREFIX_TB_TRANSACTION = "tb_transaction_";
 }

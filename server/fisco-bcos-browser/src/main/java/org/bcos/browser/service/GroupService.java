@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.bcos.browser.base.ConstantCode;
-import org.bcos.browser.base.Constants;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BaseResponse;
 import org.bcos.browser.entity.dto.Group;
@@ -42,6 +41,8 @@ public class GroupService {
     ContractMapper contractMapper;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    TableService tableService;
 
     /**
      * addGroup.
@@ -65,16 +66,7 @@ public class GroupService {
             }
         }
         // create table by group
-        String tableName = Constants.PREFIX_TB_NODE + groupId;
-        groupMapper.createTbNode(tableName);
-        tableName = Constants.PREFIX_TB_BLOCKCHAININFO + groupId;
-        groupMapper.createTbBlockChainInfo(tableName);
-        tableName = Constants.PREFIX_TB_TXNBYDAY + groupId;
-        groupMapper.createTbTxnByDay(tableName);
-        tableName = Constants.PREFIX_TB_BLOCK + groupId;
-        groupMapper.createTbBlock(tableName);
-        tableName = Constants.PREFIX_TB_TRANSACTION + groupId;
-        groupMapper.createTbTransaction(tableName);
+        tableService.newTableByGroupId(groupId);
 
         label:
         for(Group loop : list){
@@ -128,22 +120,13 @@ public class GroupService {
         // check group id
         groupService.checkGroupId(groupId);
         // drop table
-        String tableName = Constants.PREFIX_TB_NODE + groupId;
-        groupMapper.dropTableByName(tableName);
-        tableName = Constants.PREFIX_TB_BLOCKCHAININFO + groupId;
-        groupMapper.dropTableByName(tableName);
-        tableName = Constants.PREFIX_TB_TXNBYDAY + groupId;
-        groupMapper.dropTableByName(tableName);
-        tableName = Constants.PREFIX_TB_BLOCK + groupId;
-        groupMapper.dropTableByName(tableName);
-        tableName = Constants.PREFIX_TB_TRANSACTION + groupId;
-        groupMapper.dropTableByName(tableName);
-
+        tableService.dropTableByGroupId(groupId);
         // delete group info
         groupMapper.deleteGroup(groupId);
+        // delete blockChainInfo
+        blockChainInfoMapper.deleteByGroupId(groupId);
         // delete user info
         userMapper.deleteByGroupId(groupId);
-        
         return new BaseResponse(ConstantCode.SUCCESS);
     }
     
