@@ -5,7 +5,7 @@
 - Add
 
 1. 使用数据导出jar（data-export-sdk.jar）导出区块和交易数据。
-2. 升级mysql-connector-java.jar到8.0.22。
+2. 升级mysql-connector-java.jar到8.0.22，MySQL数据库使用5.7或以上版本。
 3. 数据库初始化预编译合约的方法，用于浏览器解析预编译合约。
 4. 一键部署增加数据库数据初始化操作。
 
