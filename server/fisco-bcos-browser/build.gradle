@@ -122,8 +122,8 @@ jar {
             into 'dist/conf_template'
         }
         copy {
-            from file('files/')
-            into 'dist/files'
+            from file('script/')
+            into 'dist/script'
         }
         copy {
             from configurations.runtime

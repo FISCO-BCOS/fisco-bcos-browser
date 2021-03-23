@@ -41,7 +41,7 @@
             gmt_modify datetime COMMENT '修改时间',
             PRIMARY KEY (contract_id),
             UNIQUE KEY (contract_name, contract_path)
-        ) ENGINE=InnoDB AUTO_INCREMENT=300001 DEFAULT CHARSET=utf8 COMMENT='合约信息表'
+        ) COMMENT='合约信息表' ENGINE=InnoDB AUTO_INCREMENT=100001 DEFAULT CHARSET=utf8
     </update>
     
     <update id="createTbFunction">
@@ -67,7 +67,7 @@
           PRIMARY KEY (user_id),
           UNIQUE KEY unique_name (group_id,user_name),
           KEY index_address (address)
-        ) ENGINE=InnoDB AUTO_INCREMENT=700001 DEFAULT CHARSET=utf8 COMMENT='用户信息表';
+        ) COMMENT='用户信息表' ENGINE=InnoDB AUTO_INCREMENT=200001 DEFAULT CHARSET=utf8
     </update>
     
     <update id="createTbNode">
