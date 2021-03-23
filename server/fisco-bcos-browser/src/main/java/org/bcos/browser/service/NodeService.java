@@ -1,13 +1,23 @@
 package org.bcos.browser.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.webank.blockchain.data.export.ExportDataSDK;
+import com.webank.blockchain.data.export.common.entity.ChainInfo;
+import com.webank.blockchain.data.export.common.entity.ExportConfig;
+import com.webank.blockchain.data.export.common.entity.ExportDataSource;
+import com.webank.blockchain.data.export.common.entity.MysqlDataSource;
+import com.webank.blockchain.data.export.task.DataExportExecutor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.bcos.browser.base.ConstantCode;
+import org.bcos.browser.base.Constants;
+import org.bcos.browser.base.enums.NodeStatus;
+import org.bcos.browser.base.enums.NodeSyncType;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BasePageResponse;
 import org.bcos.browser.entity.base.BaseResponse;
@@ -37,6 +47,10 @@ public class NodeService {
     SchedulerService schedulerService;
     @Autowired
     GroupService groupService;
+    @Autowired
+    private TableService tableService;
+
+    public static Map<String, DataExportExecutor> DATA_EXPORT_MAP = new ConcurrentHashMap<>();
 
     /**
      * addNode.
@@ -94,16 +108,18 @@ public class NodeService {
                     SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groupIds.get(k), node);
                     node.setNodeId(syncInfo.getNodeId());
                     node.setGroupId(groupIds.get(k));
-                    node.setType(0);
+                    node.setType(NodeSyncType.MANUAL.getValue());
                     nodeMapper.add(node);
                     // sync node info
                     for (Peer peer : syncInfo.getPeers()) {
                         Node syncNode = new Node();
                         syncNode.setNodeId(peer.getNodeId());
                         syncNode.setGroupId(groupIds.get(k));
-                        syncNode.setType(1);
+                        syncNode.setType(NodeSyncType.AUTO.getValue());
                         nodeMapper.sync(syncNode);
                     }
+                    // add data export
+                    dataExportStart(node);
                 }
             }
 
@@ -156,6 +172,8 @@ public class NodeService {
      */
     public BaseResponse deleteNodeById(int groupId, String nodeId) {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
+        // stop data export
+        dataExportStop(groupId, nodeId);
         nodeMapper.updateToSync(groupId, nodeId);
         return response;
     }
@@ -179,5 +197,82 @@ public class NodeService {
         }
         response.setData(encryptType);
         return response;
+    }
+
+    /**
+     * dataExportInit.
+     */
+    public void dataExportInit() {
+        List<Group> list = groupService.getGroupList();
+        for (Group group : list) {
+            int groupId = group.getGroupId();
+            List<Node> nodeList = nodeMapper.getManualNode(groupId);
+            for (Node node : nodeList) {
+                if (node.getStatus() == NodeStatus.NORMAL.getValue()) {
+                    dataExportStart(node);
+                }
+            }
+        }
+    }
+
+    /**
+     * dataExportStart.
+     */
+    public void dataExportStart(Node node) {
+        int groupId = node.getGroupId();
+        String key = groupId + "_" + node.getNodeId();
+        DataExportExecutor exportExecutor = DATA_EXPORT_MAP.get(key);
+        if (exportExecutor != null) {
+            return;
+        }
+        MysqlDataSource mysqlDataSourc = MysqlDataSource.builder().jdbcUrl(tableService.getDbUrl())
+                .user(tableService.getDbUser()).pass(tableService.getDbPwd()).build();
+        List<MysqlDataSource> mysqlDataSourceList = new ArrayList<>();
+        mysqlDataSourceList.add(mysqlDataSourc);
+        ExportDataSource dataSource = ExportDataSource.builder()
+                .mysqlDataSources(mysqlDataSourceList).autoCreateTable(true).build();
+        ExportConfig exportConfig = new ExportConfig();
+        exportConfig.setTablePostfix("_" + groupId);
+        try {
+            exportExecutor =
+                    ExportDataSDK.create(dataSource,
+                            ChainInfo.builder()
+                                    .rpcUrl(String.format(Constants.RPC_BASE_URI, node.getIp(),
+                                            node.getRpcPort()))
+                                    .groupId(groupId).build(),
+                            exportConfig);
+            ExportDataSDK.start(exportExecutor);
+            DATA_EXPORT_MAP.put(key, exportExecutor);
+        } catch (Exception e) {
+            log.error("dataExportStart key:{} error:{}", key, e);
+        }
+    }
+
+    /**
+     * dataExportStopByGroupId.
+     * 
+     * @param groupId
+     */
+    public void dataExportStopByGroupId(int groupId) {
+        List<Node> nodeList = nodeMapper.getManualNode(groupId);
+        for (Node node : nodeList) {
+            dataExportStop(groupId, node.getNodeId());
+        }
+    }
+
+    /**
+     * dataExportStop.
+     * 
+     * @param groupId
+     * @param nodeId
+     */
+    public void dataExportStop(int groupId, String nodeId) {
+        String key = groupId + "_" + nodeId;
+        DataExportExecutor exportExecutor = DATA_EXPORT_MAP.get(key);
+        if (exportExecutor == null) {
+            return;
+        }
+        ExportDataSDK.stop(exportExecutor);
+        DATA_EXPORT_MAP.remove(key);
     }
 }

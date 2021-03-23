@@ -17,7 +17,7 @@
 
     <insert id="addTxnByDay" parameterType="org.bcos.browser.entity.dto.TransactionByDay">
         REPLACE INTO
-        tb_txnByDay_#{groupId}(pk_date,group_id,txn,block_number,gmt_create,gmt_modify)
+        tb_txn_daily(pk_date,group_id,txn,block_number,gmt_create,gmt_modify)
         VALUES(#{pkDate},#{groupId},#{txn},#{blockNumber},now(),now())
     </insert>
 
@@ -35,8 +35,8 @@
 
     <select id="getLastTbTxnByDay" resultType="org.bcos.browser.entity.dto.TransactionByDay">
         SELECT pk_date as pkDate,group_id as groupId,txn
-        FROM tb_txnByDay_#{groupId}
-        WHERE 1 = 1
+        FROM tb_txn_daily
+        WHERE group_id=#{groupId}
         <if test="dateTimeBegin != null and dateTimeBegin!=''">
             <![CDATA[
                 AND pk_date >= STR_TO_DATE(#{dateTimeBegin},'%Y-%m-%d')

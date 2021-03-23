@@ -1,5 +1,6 @@
 package org.bcos.browser.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +51,8 @@ public class BlockService {
         groupService.checkGroupId(groupId);
         // check blockNumber
         String number = CommonUtils.trimSpaces(blockNumber);
-        if (!StringUtils.isBlank(number) && Integer.parseInt(number) > web3j.getBlockNumber(groupId)) {
+        if (!StringUtils.isBlank(number)
+                && Integer.parseInt(number) > web3j.getBlockNumber(groupId)) {
             throw new BaseException(ConstantCode.NUMBER_TALLER_THAN_LATEST);
         }
 
@@ -69,10 +71,16 @@ public class BlockService {
         if (total > 0) {
             List<Block> blockInfoList = blockMapper.getBlockInfoByBage(map);
             for (Block blockInfo : blockInfoList) {
+                String sealer = "0x0";
                 RspGetBlock rspEntity = new RspGetBlock();
                 rspEntity.setBlockHash(blockInfo.getBlockHash());
                 rspEntity.setNumber(blockInfo.getNumber());
-                rspEntity.setSealer(blockInfo.getSealer());
+                if (blockInfo.getNumber() != 0) {
+                    List<String> sealerList = JsonTools.stringToObj(blockInfo.getSealerList(),
+                            new TypeReference<List<String>>() {});
+                    sealer = sealerList.get(CommonUtils.parseHexStr2Int(blockInfo.getSealer()));
+                }
+                rspEntity.setSealer(sealer);
                 rspEntity.setDateTimeStr(DateTimeUtils.timestamp2String(blockInfo.getBlockTime(),
                         Constants.DEFAULT_DATA_TIME_FORMAT));
                 rspEntity.setTxn(blockInfo.getTxn());

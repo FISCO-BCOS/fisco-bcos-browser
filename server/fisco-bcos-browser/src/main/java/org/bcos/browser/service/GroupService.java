@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import org.bcos.browser.base.ConstantCode;
+import org.bcos.browser.base.enums.NodeSyncType;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BaseResponse;
 import org.bcos.browser.entity.dto.Group;
@@ -11,11 +12,8 @@ import org.bcos.browser.entity.dto.Node;
 import org.bcos.browser.entity.dto.Peer;
 import org.bcos.browser.entity.dto.SyncInfoFromChain;
 import org.bcos.browser.mapper.BlockChainInfoMapper;
-import org.bcos.browser.mapper.BlockMapper;
-import org.bcos.browser.mapper.ContractMapper;
 import org.bcos.browser.mapper.GroupMapper;
 import org.bcos.browser.mapper.NodeMapper;
-import org.bcos.browser.mapper.TransactionMapper;
 import org.bcos.browser.mapper.UserMapper;
 import org.bcos.browser.util.Web3jRpc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,23 +24,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class GroupService {
     @Autowired
-    GroupService groupService;
-    @Autowired
     GroupMapper groupMapper;
     @Autowired
     BlockChainInfoMapper blockChainInfoMapper;
     @Autowired
     NodeMapper nodeMapper;
     @Autowired
-    BlockMapper blockMapper;
-    @Autowired
-    TransactionMapper transactionMapper;
-    @Autowired
-    ContractMapper contractMapper;
-    @Autowired
     UserMapper userMapper;
     @Autowired
     TableService tableService;
+    @Autowired
+    NodeService nodeService;
 
     /**
      * addGroup.
@@ -68,25 +60,26 @@ public class GroupService {
         // create table by group
         tableService.newTableByGroupId(groupId);
 
-        label:
-        for(Group loop : list){
+        label: for (Group loop : list) {
             List<Node> nodes = nodeMapper.getAllNode(loop.getGroupId());
-            for (Node node : nodes){
-                if (node.getType() == 0) {
+            for (Node node : nodes) {
+                if (node.getType() == NodeSyncType.MANUAL.getValue()) {
                     SyncInfoFromChain syncInfo = web3jRpc.getSyncInfo(groupId, node);
                     if (syncInfo != null) {
                         node.setGroupId(groupId);
                         node.setNodeId(syncInfo.getNodeId());
-                        node.setType(0);
+                        node.setType(NodeSyncType.MANUAL.getValue());
                         nodeMapper.add(node);
                         // sync node info
                         for (Peer peer : syncInfo.getPeers()) {
                             Node syncNode = new Node();
                             syncNode.setNodeId(peer.getNodeId());
                             syncNode.setGroupId(groupId);
-                            syncNode.setType(1);
+                            syncNode.setType(NodeSyncType.AUTO.getValue());
                             nodeMapper.sync(syncNode);
                         }
+                        // add data export
+                        nodeService.dataExportStart(node);
                         break label;
                     }
                 }
@@ -102,11 +95,9 @@ public class GroupService {
      * 
      * @return
      */
-    public BaseResponse getGroupList() {
-        BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
+    public List<Group> getGroupList() {
         List<Group> list = groupMapper.getGroupList();
-        response.setData(list);
-        return response;
+        return list;
     }
 
     /**
@@ -118,7 +109,9 @@ public class GroupService {
     @Transactional
     public BaseResponse deleteGroup(int groupId) throws BaseException {
         // check group id
-        groupService.checkGroupId(groupId);
+        checkGroupId(groupId);
+        // stop data export
+        nodeService.dataExportStopByGroupId(groupId);
         // drop table
         tableService.dropTableByGroupId(groupId);
         // delete group info
@@ -129,14 +122,14 @@ public class GroupService {
         userMapper.deleteByGroupId(groupId);
         return new BaseResponse(ConstantCode.SUCCESS);
     }
-    
+
     public void checkGroupId(int groupId) throws BaseException {
         Group group = groupMapper.getGroupById(groupId);
         if (Objects.isNull(group)) {
-            throw new BaseException(ConstantCode.GROUP_ID_NOT_EXISTS); 
+            throw new BaseException(ConstantCode.GROUP_ID_NOT_EXISTS);
         }
     }
-    
+
     public Group getGroupById(int groupId) {
         Group group = groupMapper.getGroupById(groupId);
         return group;

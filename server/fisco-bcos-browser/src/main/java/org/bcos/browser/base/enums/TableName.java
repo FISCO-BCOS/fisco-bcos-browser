@@ -17,7 +17,15 @@ package org.bcos.browser.base.enums;
  * table name.
  */
 public enum TableName {
-    NODE("tb_node_"), TXN("tb_txnByDay_"), BLOCK("tb_block_"), TRANS("tb_transaction_");
+    TASK_POOL("block_task_pool_"), 
+    BLOCK_DATA("block_raw_data_"), 
+    BLOCK_DETAIL("block_detail_info_"), 
+    TX_DATA("tx_raw_data_"), 
+    RECEIPT_DATA("tx_receipt_raw_data_"),
+    TX_DETAIL("block_tx_detail_info_"), 
+    CONTRACT_INFO("contract_info_"), 
+    ACCOUNT_INFO("deployed_account_info_");
+    
     String value;
 
     TableName(String value) {

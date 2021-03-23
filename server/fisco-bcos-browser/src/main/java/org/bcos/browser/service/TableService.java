@@ -15,6 +15,7 @@ package org.bcos.browser.service;
 
 import java.time.Instant;
 import java.util.List;
+import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.bcos.browser.base.ConstantCode;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 /**
  * service of table
  */
+@Data
 @Log4j2
 @Service
 public class TableService {
@@ -36,7 +38,11 @@ public class TableService {
     private TableMapper tableMapper;
     @Value("${spring.datasource.url}")
     private String dbUrl;
-    
+    @Value("${spring.datasource.username}")
+    private String dbUser;
+    @Value("${spring.datasource.password}")
+    private String dbPwd;
+
     /**
      * create common table.
      */
@@ -46,6 +52,8 @@ public class TableService {
         tableMapper.createTbContract();
         tableMapper.createTbFunction();
         tableMapper.createTbUser();
+        tableMapper.createTbNode();
+        tableMapper.createTbTxnDaily();
     }
 
     /**
@@ -55,12 +63,10 @@ public class TableService {
         if (groupId == 0) {
             return;
         }
-        tableMapper.createTbNode(TableName.NODE.getTableName(groupId));
-        tableMapper.createTbTxnByDay(TableName.TXN.getTableName(groupId));
-        tableMapper.createTbBlock(TableName.BLOCK.getTableName(groupId));
-        tableMapper.createTbTransaction(TableName.TRANS.getTableName(groupId));
+        tableMapper.createTbBlock(TableName.BLOCK_DATA.getTableName(groupId));
+        tableMapper.createTbTransaction(TableName.TX_DATA.getTableName(groupId));
     }
-
+    
     /**
      * deop table.
      */
@@ -76,6 +82,20 @@ public class TableService {
     }
 
     /**
+     * check tableName.
+     */
+    public boolean checkTableExist(String tableName) throws BaseException {
+        if (StringUtils.isBlank(tableName)) {
+            return false;
+        }
+        List<String> tableNameList = tableMapper.queryTables(getDbName(), tableName);
+        if (tableNameList == null || tableNameList.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * drop table by tableName.
      */
     private void dropTableByName(String tableName) throws BaseException {
@@ -83,8 +103,7 @@ public class TableService {
         if (StringUtils.isBlank(tableName)) {
             return;
         }
-        List<String> tableNameList = tableMapper.queryTables(getDbName(), tableName);
-        if (tableNameList == null || tableNameList.isEmpty()) {
+        if (!checkTableExist(tableName)) {
             log.warn("fail dropTableByName. not fount this table, tableName:{}", tableName);
             return;
         }

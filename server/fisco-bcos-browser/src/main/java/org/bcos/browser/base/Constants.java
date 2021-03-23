@@ -12,12 +12,10 @@ public class Constants {
     public static final String CONSTANT_PREFIX = "constant";
     private boolean configAuth = true;
     private String cronBlockChainInfo = "0/10 * * * * ?";
-    private String cronBlockInfo = "0/10 * * * * ?";
     private String cronTxnByDay = "30 0/1 * * * ?";
     private String cronAyncNode = "0 0/1 * * * ?";
     private String cronIfNodeActive = "0/10 * * * * ?";
     private String cronDeleteTxn = "0 0 * * * ?";
-    private int handleBlocks = 50;
     private int keepTxnCnt = 500000;
 
     public static final String RPC_BASE_URI = "http://%s:%s";

@@ -1,37 +1,31 @@
 package org.bcos.browser.schedule;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.bcos.browser.base.Constants;
 import org.bcos.browser.base.enums.NodeStatus;
+import org.bcos.browser.base.enums.NodeSyncType;
 import org.bcos.browser.base.enums.NodeType;
-import org.bcos.browser.entity.dto.Block;
 import org.bcos.browser.entity.dto.BlockChainInfo;
-import org.bcos.browser.entity.dto.BlockFromChain;
 import org.bcos.browser.entity.dto.BlockNumberAndTxn;
 import org.bcos.browser.entity.dto.Group;
 import org.bcos.browser.entity.dto.LatestTransCount;
 import org.bcos.browser.entity.dto.Node;
 import org.bcos.browser.entity.dto.Peer;
 import org.bcos.browser.entity.dto.SyncInfoFromChain;
-import org.bcos.browser.entity.dto.Transaction;
 import org.bcos.browser.entity.dto.TransactionByDay;
-import org.bcos.browser.entity.dto.TransactionFromChain;
 import org.bcos.browser.mapper.BlockChainInfoMapper;
 import org.bcos.browser.mapper.BlockMapper;
-import org.bcos.browser.mapper.GroupMapper;
 import org.bcos.browser.mapper.NodeMapper;
 import org.bcos.browser.mapper.TransactionMapper;
+import org.bcos.browser.service.GroupService;
 import org.bcos.browser.util.CommonUtils;
 import org.bcos.browser.util.Web3jRpc;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 @Slf4j
@@ -42,7 +36,7 @@ public class SchedulerService {
     @Autowired
     SchedulerService schedulerService;
     @Autowired
-    GroupMapper groupMapper;
+    GroupService groupService;
     @Autowired
     BlockChainInfoMapper blockChainInfoMapper;
     @Autowired
@@ -58,7 +52,7 @@ public class SchedulerService {
      * handleBlockChainInfo.
      */
     public void handleBlockChainInfo() {
-        List<Group> list = groupMapper.getGroupList();
+        List<Group> list = groupService.getGroupList();
         for (Group loop : list) {
             Object[] params = new Object[] {loop.getGroupId()};
             // get block number and txn
@@ -81,94 +75,10 @@ public class SchedulerService {
     }
 
     /**
-     * handleBlocks.
-     */
-    public void handleBlocks() {
-        List<Group> list = groupMapper.getGroupList();
-        for (Group loop : list) {
-            int groupId = loop.getGroupId();
-            int latestNumber = blockChainInfoMapper.getBlockNumber(groupId);
-            int maxNumber = blockMapper.getMaxBlockNumber(groupId);
-            // check if block number change
-            if (latestNumber == 0 || latestNumber == maxNumber) {
-                continue;
-            }
-            // per task handle blocks
-            int diffNumber = latestNumber - maxNumber;
-            if (diffNumber > constants.getHandleBlocks()) {
-                latestNumber = maxNumber + constants.getHandleBlocks();
-            }
-            for (int i = maxNumber + 1; i <= latestNumber; i++) {
-                if (i == 1) {
-                    schedulerService.handleBlockInfo(groupId, 0);
-                }
-                schedulerService.handleBlockInfo(groupId, i);
-            }
-        }
-    }
-
-
-    /**
-     * handleBlockInfo.
-     * 
-     * @param groupId groupId
-     * @param number block number
-     */
-    @Transactional
-    public void handleBlockInfo(int groupId, int number) {
-        BlockFromChain blockInfo = web3jRpc.getBlockByNumber(groupId, number);
-        if (blockInfo == null) {
-            return;
-        }
-
-        Timestamp timestamp = null;
-        String sealer = "0x0";
-        // Compatibility with older version
-        if (number == 0 && "0xffffffffffffffff".equals(blockInfo.getTimestamp())) {
-            timestamp = Timestamp.valueOf("2000-01-01 08:00:01");
-        } else {
-            timestamp = new Timestamp(Long.parseLong(blockInfo.getTimestamp().substring(2), 16));
-        }
-        if (number != 0) {
-            sealer = blockInfo.getSealerList()
-                    .get(CommonUtils.parseHexStr2Int(blockInfo.getSealer()));
-        }
-
-        try {
-            // add transaction info
-            List<TransactionFromChain> transList = blockInfo.getTransactions();
-            for (TransactionFromChain loop : transList) {
-                Transaction transaction = new Transaction();
-                transaction.setTransHash(loop.getHash());
-                transaction.setGroupId(groupId);
-                transaction.setBlockHash(blockInfo.getHash());
-                transaction.setBlockNumber(CommonUtils.parseHexStr2Int(blockInfo.getNumber()));
-                transaction.setBlockTime(timestamp);
-                transaction.setBlockDate(timestamp);
-                transaction.setTransFrom(loop.getFrom());
-                transaction.setTransTo(loop.getTo());
-                transaction.setTransIndex(CommonUtils.parseHexStr2Int(loop.getTransactionIndex()));
-                transactionMapper.add(transaction);
-            }
-            // add block info
-            Block block = new Block();
-            block.setBlockHash(blockInfo.getHash());
-            block.setGroupId(groupId);
-            block.setNumber(number);
-            block.setSealer(sealer);
-            block.setBlockTime(timestamp);
-            block.setTxn(transList.size());
-            blockMapper.add(block);
-        } catch (DuplicateKeyException e) {
-            log.error("handleBlockInfo DuplicateKeyException:{}", e);
-        }
-    }
-
-    /**
      * handleTxnByDay.
      */
     public void handleTxnByDay() {
-        List<Group> list = groupMapper.getGroupList();
+        List<Group> list = groupService.getGroupList();
         for (Group loop : list) {
             statisticByGroupId(loop.getGroupId());
         }
@@ -203,7 +113,7 @@ public class SchedulerService {
      * deleteTxnSchedule.
      */
     public void deleteTxnSchedule() {
-        List<Group> list = groupMapper.getGroupList();
+        List<Group> list = groupService.getGroupList();
         for (Group loop : list) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("groupId", loop.getGroupId());
@@ -219,7 +129,7 @@ public class SchedulerService {
      * syncNodeInfo.
      */
     public void syncNodeInfo() {
-        List<Group> list = groupMapper.getGroupList();
+        List<Group> list = groupService.getGroupList();
         for (Group group : list) {
             int groupId = group.getGroupId();
             // sync node
@@ -229,7 +139,7 @@ public class SchedulerService {
                     Node syncNode = new Node();
                     syncNode.setNodeId(peer.getNodeId());
                     syncNode.setGroupId(groupId);
-                    syncNode.setType(1);
+                    syncNode.setType(NodeSyncType.AUTO.getValue());
                     nodeMapper.sync(syncNode);
                 }
             }
@@ -248,7 +158,7 @@ public class SchedulerService {
      * checkNodeActive.
      */
     public void checkNodeActive() {
-        List<Group> list = groupMapper.getGroupList();
+        List<Group> list = groupService.getGroupList();
         for (Group group : list) {
             int groupId = group.getGroupId();
             List<Node> nodeList = nodeMapper.getAllNode(groupId);

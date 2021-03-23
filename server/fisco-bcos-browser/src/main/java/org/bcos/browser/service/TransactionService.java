@@ -60,7 +60,6 @@ public class TransactionService {
         log.info(
                 "getTransInfoByPage groupId:{} pageNumber:{} pageSize:{} transHash:{} blockNumber:{}",
                 groupId, pageNumber, pageSize, transHash, blockNumber);
-
         // check group id
         groupService.checkGroupId(groupId);
         // check blockNumber
@@ -102,8 +101,8 @@ public class TransactionService {
                     rspEntity.setFrom(userService.queryNameByAddress(groupId,
                             tbTransactionDto.getTransFrom()));
                     rspEntity.setTo(tbTransactionDto.getTransTo());
-                    rspEntity.setTransIndex(tbTransactionDto.getTransIndex());
-                    rspEntity.setMethod(tbTransactionDto.getMethod());
+                    rspEntity.setTransIndex(
+                            CommonUtils.parseHexStr2Int(tbTransactionDto.getTransIndex()));
                     list.add(rspEntity);
                 }
             }
@@ -195,22 +194,6 @@ public class TransactionService {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         response.setData(data);
         log.debug("###analyzeData response:{}###", response);
-        return response;
-    }
-
-    /**
-     * updateMethod.
-     * 
-     * @param reqTransaction info
-     * @return
-     */
-    public BaseResponse updateMethod(ReqTransaction reqTransaction) {
-        log.info("updateTransInfo reqTransaction:{}", reqTransaction);
-        BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
-        for (Transaction transaction : reqTransaction.getData()) {
-            transaction.setGroupId(reqTransaction.getGroupId());
-            transactionMapper.updateMethod(transaction);
-        }
         return response;
     }
 

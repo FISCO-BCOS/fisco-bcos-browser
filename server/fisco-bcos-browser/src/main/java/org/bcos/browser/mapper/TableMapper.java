@@ -33,15 +33,16 @@ public interface TableMapper {
     
     void createTbUser();
     
+    void createTbNode();
+    
+    void createTbTxnDaily();
+    
     // sub table
-    void createTbNode(@Param(value = "tableName")String tableName);
-    
-    void createTbTxnByDay(@Param(value = "tableName")String tableName);
-    
     void createTbBlock(@Param(value = "tableName")String tableName);
     
     void createTbTransaction(@Param(value = "tableName")String tableName);
     
+    // query
     List<String> queryTables(@Param("dbName") String dbName, @Param("tableName") String tableName);
     
     int deleteByTableName(@Param("tableName") String tableName);
