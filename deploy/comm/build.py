@@ -4,7 +4,7 @@
 import sys
 import os
 from .utils import *
-from .mysql import dbConnect
+from .mysql import *
 
 baseDir = getBaseDir()
 currentDir = getCurrentBaseDir()
@@ -12,9 +12,7 @@ currentDir = getCurrentBaseDir()
 def do():
     print("=====================    deploy   start... =====================")
     pullSource()
-    changeServerConfig()
-    dbConnect()
-    startServer()
+    installServer()
     changeWebConfig()
     startWeb()
     print("=====================    deploy   end...   =====================")
@@ -76,6 +74,19 @@ def pullSource():
                 print("file extract failed!")
                 sys.exit(0)
 
+def installServer():
+    os.chdir(currentDir)
+    changeServerConfig()
+    # if no re-create db, no need to init tables in db
+    whether_init = serverDbInit()
+    server_dir = currentDir + "/server"
+    script_dir = server_dir + "/script"    
+    if whether_init == True:
+        serverScriptInit(script_dir)
+        
+    startServer()
+    return     
+
 def changeServerConfig():
     os.chdir(currentDir)
     # get properties
@@ -87,19 +98,32 @@ def changeServerConfig():
     server_port = getCommProperties("server.port")
 
     # change server config
-    server_dir = currentDir + "/server/conf"
+    server_dir = currentDir + "/server"
+    script_dir = server_dir + "/script"
+    conf_dir = server_dir + "/conf"
     
-    if not os.path.exists(server_dir + "/temp.yml"):
-        doCmd('cp -f {}/application.yml {}/temp.yml'.format(server_dir, server_dir))
+    if not os.path.exists(script_dir + "/temp.sh"):
+        doCmd('cp -f {}/browser.sh {}/temp.sh'.format(script_dir, script_dir))
     else:
-        doCmd('cp -f {}/temp.yml {}/application.yml'.format(server_dir, server_dir))
+        doCmd('cp -f {}/temp.sh {}/browser.sh'.format(script_dir, script_dir))
     
-    doCmd('sed -i "s/127.0.0.1/{}/g" {}/application.yml'.format(mysql_ip, server_dir))
-    doCmd('sed -i "s/3306/{}/g" {}/application.yml'.format(mysql_port, server_dir))
-    doCmd('sed -i "s/dbUsername/{}/g" {}/application.yml'.format(mysql_user, server_dir))
-    doCmd('sed -i "s/dbPassword/{}/g" {}/application.yml'.format(mysql_password, server_dir))
-    doCmd('sed -i "s/db_browser/{}/g" {}/application.yml'.format(mysql_database, server_dir))
-    doCmd('sed -i "s/5101/{}/g" {}/application.yml'.format(server_port, server_dir))
+    if not os.path.exists(conf_dir + "/temp.yml"):
+        doCmd('cp -f {}/application.yml {}/temp.yml'.format(conf_dir, conf_dir))
+    else:
+        doCmd('cp -f {}/temp.yml {}/application.yml'.format(conf_dir, conf_dir))
+    
+    # change script config
+    doCmd('sed -i "s/dbUsername/{}/g" {}/browser.sh'.format(mysql_user, script_dir))
+    doCmd('sed -i "s/dbPassword/{}/g" {}/browser.sh'.format(mysql_password, script_dir))
+    doCmd('sed -i "s/db_browser/{}/g" {}/browser.sh'.format(mysql_database, script_dir))
+    
+    # change server config
+    doCmd('sed -i "s/127.0.0.1/{}/g" {}/application.yml'.format(mysql_ip, conf_dir))
+    doCmd('sed -i "s/3306/{}/g" {}/application.yml'.format(mysql_port, conf_dir))
+    doCmd('sed -i "s/dbUsername/{}/g" {}/application.yml'.format(mysql_user, conf_dir))
+    doCmd('sed -i "s/dbPassword/{}/g" {}/application.yml'.format(mysql_password, conf_dir))
+    doCmd('sed -i "s/db_browser/{}/g" {}/application.yml'.format(mysql_database, conf_dir))
+    doCmd('sed -i "s/5101/{}/g" {}/application.yml'.format(server_port, conf_dir))
 
     return
 

@@ -49,7 +49,7 @@ Parameter:
     stopWeb : stop web
     
 Attention:
-    1. Need to install python, jdk, mysql, MySQL-python or PyMySQL first
+    1. Need to install python3.6, jdk, mysql, PyMySQL first
     2. Need to ensure a smooth network
     3. You need to install git, wget, nginx; if it is not installed, the installation script will automatically install these components, but this may fail.
     '''

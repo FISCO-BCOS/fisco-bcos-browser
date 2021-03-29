@@ -11,5 +11,4 @@ public class RspGetTransaction {
     private String from;
     private String to;
     private int transIndex;
-    private String method;
 }

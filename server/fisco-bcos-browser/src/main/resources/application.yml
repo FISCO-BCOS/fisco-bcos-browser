@@ -15,12 +15,10 @@ mybatis:
 constant: 
   configAuth: true
   cronBlockChainInfo: 0/10 * * * * ?
-  cronBlockInfo: 0/10 * * * * ?
   cronTxnByDay: 30 0/1 * * * ?
   cronAyncNode: 0 0/1 * * * ?
   cronIfNodeActive: 0 0/1 * * * ?
   cronDeleteTxn: 0 0/10 * * * ?
-  handleBlocks: 50
   keepTxnCnt: 500000
   
 logging: 

@@ -52,11 +52,15 @@ public class BlockChainInfoService {
 
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         BlockChainInfo tbBlockChainInfo = blockChainInfoMapper.getBlockChainInfo(groupId);
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("groupId", groupId);
-        int nodeCount = nodeMapper.getNodeCnts(map);
-        tbBlockChainInfo.setNodeCount(nodeCount);
-        response.setData(tbBlockChainInfo);
+        if (tbBlockChainInfo == null) {
+            response.setData(new BlockChainInfo(groupId));
+        } else {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("groupId", groupId);
+            int nodeCount = nodeMapper.getNodeCnts(map);
+            tbBlockChainInfo.setNodeCount(nodeCount);
+            response.setData(tbBlockChainInfo);
+        }
         return response;
     }
 

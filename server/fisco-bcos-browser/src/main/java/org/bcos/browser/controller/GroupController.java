@@ -1,8 +1,10 @@
 package org.bcos.browser.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 import org.bcos.browser.auth.ConfigAuth;
 import org.bcos.browser.base.BaseController;
+import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.exception.BaseException;
 import org.bcos.browser.entity.base.BaseResponse;
 import org.bcos.browser.entity.dto.Group;
@@ -46,7 +48,9 @@ public class GroupController extends BaseController {
      */
     @GetMapping("/groupList")
     public BaseResponse getGroupList() {
-        BaseResponse response = groupService.getGroupList();
+        BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
+        List<Group> list = groupService.getGroupList();
+        response.setData(list);
         return response;
     }
 
