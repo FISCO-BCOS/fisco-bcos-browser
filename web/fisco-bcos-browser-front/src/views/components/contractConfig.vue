@@ -1189,6 +1189,8 @@ export default {
     top: 0;
     width: 100px;
     height: 40px;
+    font-size: 0;
+    cursor: pointer;
 }
 .contract-menu {
     display: inline-block;
