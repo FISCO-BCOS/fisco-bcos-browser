@@ -118,6 +118,7 @@ export default {
 <style>
 .main {
     width: 100%;
+    min-width: 1200px;
     background-color: #2a2c3b;
 }
 .el-message__content {
