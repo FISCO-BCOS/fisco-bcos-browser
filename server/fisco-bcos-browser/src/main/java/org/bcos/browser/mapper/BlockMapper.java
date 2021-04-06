@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BlockMapper {
 
-    void add(Block block);
-
     int getAllBlockCount(Map<String, Object> map);
 
     List<Block> getBlockInfoByBage(Map<String, Object> map);

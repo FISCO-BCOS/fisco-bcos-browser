@@ -20,4 +20,6 @@ public interface BlockChainInfoMapper {
             @Param(value = "dateTimeEnd") String dateTimeEnd);
 
     int getBlockNumber(int groupId);
+    
+    void deleteByGroupId(@Param("groupId") Integer groupId);
 }

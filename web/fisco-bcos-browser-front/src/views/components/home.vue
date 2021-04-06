@@ -91,7 +91,7 @@
 
                                 <div class="right">
                                     <div>{{itemlist.blockTimesStr}}</div>
-                                    <div>{{itemlist.funcName || ""}}</div>
+                                    <div class="trans-funcName" :title='itemlist.funcName'>{{itemlist.funcName || ""}}</div>
                                 </div>
                             </li>
                         </ul>
@@ -263,6 +263,7 @@
     width: 50%;
     text-align: right;
     cursor: pointer;
+    box-sizing: border-box;
 }
 .home-foot-box-content ul {
     padding: 0;
@@ -326,6 +327,13 @@ table {
 .node-false {
     color: #f00 !important;
 }
+.trans-funcName{
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    vertical-align: middle;
+}
 @media screen and (max-width: 1200px) {
     .home-head-data {
         display: inline-block;
@@ -368,6 +376,13 @@ table {
         white-space: nowrap !important;
         vertical-align: middle;
     }
+    /* .trans-funcName{
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        vertical-align: middle;
+    } */
 }
 @media screen and (max-width: 1000px) {
     .home-head-data {
@@ -430,6 +445,13 @@ table {
         text-align: center;
         cursor: pointer;
     }
+    /* .trans-funcName{
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        vertical-align: middle;
+    } */
 }
 </style>
 <script type="text/babel">

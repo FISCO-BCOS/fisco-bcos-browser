@@ -27,10 +27,6 @@ public class SchedulerConfig implements SchedulingConfigurer {
             (context) -> new CronTrigger(constants.getCronBlockChainInfo())
                         .nextExecutionTime(context));
 
-        taskRegistrar.addTriggerTask(() -> schedulerService.handleBlocks(),
-            (context) -> new CronTrigger(constants.getCronBlockInfo())
-                        .nextExecutionTime(context));
-
         taskRegistrar.addTriggerTask(() -> schedulerService.handleTxnByDay(),
             (context) -> new CronTrigger(constants.getCronTxnByDay())
                         .nextExecutionTime(context));

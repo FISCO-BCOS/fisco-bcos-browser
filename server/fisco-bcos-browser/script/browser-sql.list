@@ -1,0 +1,4 @@
+#!/bin/sh
+
+source browser-ddl.sql;
+source browser-dml.sql;

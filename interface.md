@@ -974,76 +974,7 @@ http://localhost:5101/fisco-bcos-browser/transaction/code
 }
 ```
 
-## 5.5 更新交易调用的方法
-
-更新该笔交易调用的方法
-
-### 传输协议规范
-
-a)、网络传输协议：使用HTTP协议
-
-b)、请求地址：`/fisco-bcos-browser/transaction/updateMethod`
-
-c)、请求方式：PUT
-
-d)、返回格式：json
-
-### 参数信息详情
-
-| 序号     | 输入参数     | 类型     | 可为空     | 备注                  |
-| -------- | ------------ | -------- | ---------- | --------------------- |
-| 1        | groupId      | int      | 否         | 群组编号              |
-| 2        | data         | List     | 否         | 列表                  |
-| 2.1      | transHash    | String   | 是         | 交易hash              |
-| 2.2      | method       | String   | 是         | 交易调用的方法        |
-| **序号** | **输出参数** | **类型** | **可为空** | **备注**              |
-| 1        | code         | int      | 否         | 返回码信息请参看附录1 |
-| 2        | message      | String   | 否         | 描述                  |
-| 3        | data         | object   | 是         | 返回信息实体          |
-
-### 入参事例
-
-http://localhost:5101/fisco-bcos-browser/transaction/updateMethod
-
-```
-{
-  "groupId": 1,
-  "data": [
-    {
-      "transHash": "XXXX",
-      "method": "XXXX"
-    },
-    {
-      "transHash": "XXXX",
-      "method": "XXXX"
-    }
-  ]
-}
-```
-
-### 出参示例
-
-**a)、成功：**
-
-```
-{
-  "code": 0,
-  "message": "success",
-  "data": null
-}
-```
-
-**b)、失败：**
-
-```.
-{
-  "code": 105001,
-  "message": "system error",
-  "data": null
-}
-```
-
-## 5.6 交易解析数据列表
+## 5.5 交易解析数据列表
 
 根据交易hash调用获取交易解析所需数据
 

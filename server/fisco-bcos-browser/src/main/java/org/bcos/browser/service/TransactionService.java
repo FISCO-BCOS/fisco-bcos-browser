@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bcos.browser.base.ConstantCode;
 import org.bcos.browser.base.Constants;
@@ -29,7 +30,6 @@ import org.bcos.browser.util.DateTimeUtils;
 import org.bcos.browser.util.Web3jRpc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -42,6 +42,8 @@ public class TransactionService {
     NodeMapper nodeMapper;
     @Autowired
     GroupService groupService;
+    @Autowired
+    UserService userService;
 
     /**
      * getTransInfoByPage.
@@ -58,12 +60,12 @@ public class TransactionService {
         log.info(
                 "getTransInfoByPage groupId:{} pageNumber:{} pageSize:{} transHash:{} blockNumber:{}",
                 groupId, pageNumber, pageSize, transHash, blockNumber);
-
         // check group id
         groupService.checkGroupId(groupId);
         // check blockNumber
         String number = CommonUtils.trimSpaces(blockNumber);
-        if (!StringUtils.isBlank(number) && Integer.parseInt(number) > web3jRpc.getBlockNumber(groupId)) {
+        if (!StringUtils.isBlank(number)
+                && Integer.parseInt(number) > web3jRpc.getBlockNumber(groupId)) {
             throw new BaseException(ConstantCode.NUMBER_TALLER_THAN_LATEST);
         }
 
@@ -96,10 +98,11 @@ public class TransactionService {
                     rspEntity.setBlockNumber(tbTransactionDto.getBlockNumber());
                     rspEntity.setBlockTimesStr(DateTimeUtils.timestamp2String(
                             tbTransactionDto.getBlockTime(), Constants.DEFAULT_DATA_TIME_FORMAT));
-                    rspEntity.setFrom(tbTransactionDto.getTransFrom());
+                    rspEntity.setFrom(userService.queryNameByAddress(groupId,
+                            tbTransactionDto.getTransFrom()));
                     rspEntity.setTo(tbTransactionDto.getTransTo());
-                    rspEntity.setTransIndex(tbTransactionDto.getTransIndex());
-                    rspEntity.setMethod(tbTransactionDto.getMethod());
+                    rspEntity.setTransIndex(
+                            CommonUtils.parseHexStr2Int(tbTransactionDto.getTransIndex()));
                     list.add(rspEntity);
                 }
             }
@@ -112,6 +115,7 @@ public class TransactionService {
                             CommonUtils.parseHexStr2Int(transInfo.getBlockNumber()));
                     RspGetTransaction rspEntity =
                             getTransactionFromChain(transInfo, blockInfo.getTimestamp());
+                    rspEntity.setFrom(userService.queryNameByAddress(groupId, transInfo.getFrom()));
                     list.add(rspEntity);
                 }
                 total = list.size();
@@ -122,6 +126,7 @@ public class TransactionService {
                 for (TransactionFromChain transInfo : blockInfo.getTransactions()) {
                     RspGetTransaction rspEntity =
                             getTransactionFromChain(transInfo, blockInfo.getTimestamp());
+                    rspEntity.setFrom(userService.queryNameByAddress(groupId, transInfo.getFrom()));
                     list.add(rspEntity);
                 }
                 total = list.size();
@@ -189,22 +194,6 @@ public class TransactionService {
         BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
         response.setData(data);
         log.debug("###analyzeData response:{}###", response);
-        return response;
-    }
-
-    /**
-     * updateMethod.
-     * 
-     * @param reqTransaction info
-     * @return
-     */
-    public BaseResponse updateMethod(ReqTransaction reqTransaction) {
-        log.info("updateTransInfo reqTransaction:{}", reqTransaction);
-        BaseResponse response = new BaseResponse(ConstantCode.SUCCESS);
-        for (Transaction transaction : reqTransaction.getData()) {
-            transaction.setGroupId(reqTransaction.getGroupId());
-            transactionMapper.updateMethod(transaction);
-        }
         return response;
     }
 

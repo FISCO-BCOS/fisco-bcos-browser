@@ -13,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,21 +58,6 @@ public class TransactionController extends BaseController {
             BindingResult result) throws BaseException {
         checkParamResult(result);
         BaseResponse response = transactionService.analyzeData(reqTransaction);
-        return response;
-    }
-
-    /**
-     * updateMethod.
-     * 
-     * @param reqTransaction info
-     * @param result checkResult
-     * @return
-     */
-    @PutMapping("/updateMethod")
-    public BaseResponse updateMethod(@Valid @RequestBody ReqTransaction reqTransaction,
-            BindingResult result) throws BaseException {
-        checkParamResult(result);
-        BaseResponse response = transactionService.updateMethod(reqTransaction);
         return response;
     }
 

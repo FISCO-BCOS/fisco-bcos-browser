@@ -15,7 +15,7 @@
 
     <insert id="add" useGeneratedKeys="true"
         parameterType="org.bcos.browser.entity.dto.Node">
-        INSERT INTO tb_node_#{groupId}
+        INSERT INTO tb_node
             (node_id,group_id,ip,rpc_port,p2p_port,type,gmt_create,gmt_modify)
         VALUES(#{nodeId},#{groupId},#{ip},#{rpcPort},#{p2pPort},#{type},now(),now())
         ON DUPLICATE KEY
@@ -28,7 +28,7 @@
     
     <insert id="sync" useGeneratedKeys="true"
         parameterType="org.bcos.browser.entity.dto.Node">
-        INSERT INTO tb_node_#{groupId}
+        INSERT INTO tb_node
             (node_id,group_id,type,gmt_create,gmt_modify)
         VALUES(#{nodeId},#{groupId},#{type},now(),now())
         ON DUPLICATE KEY
@@ -36,8 +36,8 @@
     </insert>
 
     <select id="getNodeCnts" resultType="java.lang.Integer">
-        SELECT count(1) FROM tb_node_#{groupId} 
-        WHERE 1 = 1
+        SELECT count(1) FROM tb_node 
+        WHERE group_id=#{groupId}
         <if test="type == 0">
             AND type = 0
         </if>
@@ -58,8 +58,8 @@
     <select id="getNodeListByPage" resultType="org.bcos.browser.entity.dto.Node">
         SELECT
         <include refid="ALL_COLUMN" />
-        FROM tb_node_#{groupId} 
-        WHERE 1 = 1
+        FROM tb_node 
+        WHERE group_id=#{groupId}
         <if test="type == 0">
             AND type = 0
         </if>
@@ -81,37 +81,42 @@
 
     <select id="getManualNode" resultType="org.bcos.browser.entity.dto.Node">
         SELECT <include refid="ALL_COLUMN" />
-        FROM tb_node_#{groupId} 
-        WHERE type=0
+        FROM tb_node 
+        WHERE group_id=#{groupId}
+          AND type=0
     </select>
 
     <select id="getAllNode" resultType="org.bcos.browser.entity.dto.Node">
         SELECT <include refid="ALL_COLUMN" />
-        FROM tb_node_#{groupId}
+        FROM tb_node
+        WHERE group_id=#{groupId}
     </select>
 
     <update id="updateStatus">
-        UPDATE tb_node_#{groupId}
+        UPDATE tb_node
         SET block_number = #{blockNumber},
             pbft_view = #{pbftView},
             status = #{status},
             gmt_modify = now()
-        WHERE node_id = #{nodeId}
+        WHERE group_id=#{groupId}
+          AND node_id = #{nodeId}
     </update>
 
     <update id="updateToSync">
-        UPDATE tb_node_#{groupId}
+        UPDATE tb_node
         SET ip = null,
             rpc_port = null,
             p2p_port = null,
             type = 1,
             gmt_modify = now()
-        WHERE node_id = #{nodeId}
+        WHERE group_id=#{groupId}
+          AND node_id = #{nodeId}
     </update>
     
     <update id="deleteNodeById">
-        DELETE FROM tb_node_#{groupId}
-        WHERE node_id = #{nodeId}
+        DELETE FROM tb_node
+        WHERE group_id=#{groupId}
+          AND node_id = #{nodeId}
     </update>
 
 </mapper>
