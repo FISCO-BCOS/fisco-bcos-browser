@@ -54,5 +54,10 @@
         delete from tb_blockchaininfo where
         group_id = #{groupId}
     </delete>
+    
+    <delete id="deleteTxnByGroupId" parameterType="java.lang.Integer">
+        delete from tb_txn_daily where
+        group_id = #{groupId}
+    </delete>
 
 </mapper>

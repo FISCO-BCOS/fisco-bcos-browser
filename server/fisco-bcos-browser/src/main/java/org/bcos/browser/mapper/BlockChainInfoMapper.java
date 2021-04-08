@@ -22,4 +22,6 @@ public interface BlockChainInfoMapper {
     int getBlockNumber(int groupId);
     
     void deleteByGroupId(@Param("groupId") Integer groupId);
+    
+    void deleteTxnByGroupId(@Param("groupId") Integer groupId);
 }
