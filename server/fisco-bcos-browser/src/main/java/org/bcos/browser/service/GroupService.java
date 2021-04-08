@@ -112,12 +112,16 @@ public class GroupService {
         checkGroupId(groupId);
         // stop data export
         nodeService.dataExportStopByGroupId(groupId);
+        // delete node
+        nodeMapper.deleteNodeByGroupId(groupId);
         // drop table
         tableService.dropTableByGroupId(groupId);
         // delete group info
         groupMapper.deleteGroup(groupId);
         // delete blockChainInfo
         blockChainInfoMapper.deleteByGroupId(groupId);
+        // delete txn
+        blockChainInfoMapper.deleteTxnByGroupId(groupId);
         // delete user info
         userMapper.deleteByGroupId(groupId);
         return new BaseResponse(ConstantCode.SUCCESS);

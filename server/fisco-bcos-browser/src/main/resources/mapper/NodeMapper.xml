@@ -118,5 +118,10 @@
         WHERE group_id=#{groupId}
           AND node_id = #{nodeId}
     </update>
+    
+    <update id="deleteNodeByGroupId">
+        DELETE FROM tb_node
+        WHERE group_id=#{groupId}
+    </update>
 
 </mapper>

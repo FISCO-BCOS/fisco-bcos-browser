@@ -28,4 +28,6 @@ public interface NodeMapper {
 
     void deleteNodeById(@Param(value = "groupId") int groupId,
             @Param(value = "nodeId") String nodeId);
+    
+    void deleteNodeByGroupId(@Param(value = "groupId") int groupId);
 }
