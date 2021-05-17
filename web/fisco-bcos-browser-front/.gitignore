@@ -16,3 +16,5 @@ yarn-error.log*
 *.local
 
 package-lock.json
+static/js/v0.*.js
+static/js/v0.*.js.gz
