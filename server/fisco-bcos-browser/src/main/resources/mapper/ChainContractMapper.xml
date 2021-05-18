@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.bcos.browser.mapper.ChainContractMapper">
+    <sql id="ALL_COLUMN">
+        id as id,
+        contract_address as contractAddress,
+        block_height as blockHeight,
+        `from` as transFrom,
+        block_time_stamp as blockTime,
+        tx_hash as transHash
+    </sql>
+
+    <insert id="addChainContract" parameterType="org.bcos.browser.entity.dto.ChainContract">
+        INSERT INTO tb_chain_contract(
+            group_id,
+            contract_address,
+            block_height,
+            `from`,
+             tx_hash,
+            block_time_stamp,
+            gmt_create,
+            gmt_modify
+        ) VALUES (
+            #{groupId},
+            #{contractAddress},
+            #{blockHeight},
+            #{transFrom},
+            #{transHash},
+            #{blockTime},
+            now(),
+            now()
+        )
+    </insert>
+
+    <select id="getChainContractCount" resultType="java.lang.Integer">
+        SELECT count(1) FROM tb_chain_contract
+        where group_id = #{groupId}
+        <if test="contractAddress != null and contractAddress != ''">
+           and contract_address = #{contractAddress}
+        </if>
+    </select>
+
+    <select id="getChainContractList" resultType="org.bcos.browser.entity.dto.ChainContract">
+        SELECT <include refid="ALL_COLUMN" />
+        FROM tb_chain_contract
+        WHERE group_id = #{groupId}
+        <if test="contractAddress != null and contractAddress != ''">
+           and contract_address = #{contractAddress}
+        </if>
+        ORDER BY id DESC
+        LIMIT #{start},#{pageSize}
+    </select>
+
+</mapper>

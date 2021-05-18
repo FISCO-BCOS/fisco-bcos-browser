@@ -43,7 +43,7 @@
           }
         },
         methods: {
-            linkPage: function (name) {
+            linkPage: function (name) { 
                router.push({
                    name: name,
                    query: this.pages

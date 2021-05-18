@@ -250,3 +250,40 @@ export function userDelete(data) {
         method: 'delete'
     })
 }
+
+
+export function getChainUserInfo(data,list) {
+    const params = reviseParam(data, list);
+    return get({
+        url: `${url.GET_CHAIN_USER_INFO}/${params.str}`,
+        method: 'get',
+        params: params.querys
+    })
+}
+
+export function getChainContarctInfo(data,list) {
+    const params = reviseParam(data, list);
+    return get({
+        url: `${url.GET_CHAIN_CONTRACT_INFO}/${params.str}`,
+        method: 'get',
+        params: params.querys
+    })
+}
+
+export function getChainUserList(data,list) {
+    const params = reviseParam(data, list);
+    return get({
+        url: `${url.GET_CHAIN_USER_DETAIL}/${params.str}`,
+        method: 'get',
+        params: params.querys
+    })
+}
+
+export function getContractTransactionList(data,list) {
+    const params = reviseParam(data, list);
+    return get({
+        url: `${url.GET_CONTRACT_TRANSACTION_LIST}/${params.str}`,
+        method: 'get',
+        params: params.querys
+    })
+}

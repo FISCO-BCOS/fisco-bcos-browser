@@ -63,5 +63,15 @@ export default {
     GET_USER_UPDATE: `${api}/user/update`,
 
     GET_USER_DELETE: `${api}/user/deleteById`,
+
+    GET_CHAIN_USER_INFO: `${api}/chainUser/list`,  //get blocks
+
+    GET_CHAIN_USER_DETAIL: `${api}/chainUser/transactionList`,  //get blocks 
+
+    GET_CHAIN_CONTRACT_INFO: `${api}/chainContract/list`,  //get blocks
+
+    GET_CONTRACT_TRANSACTION_LIST: `${api}/chainContract/transactionList`,  //get blocks
+
+  
     
 }
