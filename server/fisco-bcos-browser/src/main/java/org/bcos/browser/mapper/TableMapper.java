@@ -36,7 +36,11 @@ public interface TableMapper {
     void createTbNode();
     
     void createTbTxnDaily();
-    
+
+    void createTbChainUser();
+
+    void createTbChainContract();
+
     // sub table
     void createTbBlock(@Param(value = "tableName")String tableName);
     

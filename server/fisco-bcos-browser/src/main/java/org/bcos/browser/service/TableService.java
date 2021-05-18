@@ -54,6 +54,8 @@ public class TableService {
         tableMapper.createTbUser();
         tableMapper.createTbNode();
         tableMapper.createTbTxnDaily();
+        tableMapper.createTbChainUser();
+        tableMapper.createTbChainContract();
     }
 
     /**

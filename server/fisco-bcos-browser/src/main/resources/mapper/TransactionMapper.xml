@@ -55,4 +55,64 @@
           ORDER BY pkDate ASC
      </select>
 
+    <select id="getTransFormByGroup" parameterType="java.lang.Integer"
+            resultType="org.bcos.browser.entity.dto.Transaction">
+        SELECT  DISTINCT t.`from` as transFrom FROM tx_raw_data_#{groupId} t
+        WHERE NOT EXISTS (
+        SELECT 1 FROM tb_chain_user WHERE group_id = #{groupId} AND address = t.`from`
+        ) ORDER BY t.block_height DESC,t.tx_index DESC
+    </select>
+
+    <select id="getTbTransactionByGroup" parameterType="java.lang.Integer"
+            resultType="org.bcos.browser.entity.dto.Transaction">
+            SELECT  DISTINCT
+                 `tx_hash` as transHash,
+                `block_hash` as blockHash,
+                `block_height` as blockNumber,
+                `tx_index` as transIndex,
+                `block_time_stamp` as blockTime,
+                `from` as transFrom,
+                `to` as transTo,
+                `contract_address` as contractAddress
+           FROM tx_receipt_raw_data_#{groupId} t
+           WHERE t.`to` = '0x0000000000000000000000000000000000000000'
+             AND NOT EXISTS (
+                SELECT 1 FROM tb_chain_contract WHERE group_id = #{groupId} AND contract_address = t.`contract_address`
+            ) ORDER BY t.block_height DESC,t.tx_index DESC
+    </select>
+
+
+    <select id="queryCountByFromOrTo" parameterType="java.util.Map"
+            resultType="java.lang.Integer">
+        SELECT count(1) FROM tx_raw_data_#{groupId}
+        WHERE 1 = 1
+        <if test="from != null and from !=''">
+            AND `from` = #{address}
+        </if>
+        <if test="userParam != null and userParam !=''">
+            AND tx_hash = #{userParam}
+        </if>
+        <if test="to != null and to !=''">
+            AND `to` = #{to}
+        </if>
+    </select>
+
+    <select id="queryTransactionListFromOrTo" parameterType="java.util.Map"
+        resultType="org.bcos.browser.entity.dto.Transaction">
+        SELECT <include refid="ALL_COLUMN" />
+        FROM tx_raw_data_#{groupId}
+        WHERE 1 = 1
+        <if test="from != null and from !=''">
+            AND `from` = #{from}
+        </if>
+        <if test="userParam != null and userParam !=''">
+            AND tx_hash = #{userParam}
+        </if>
+        <if test="to != null and to !=''">
+            AND `to` = #{to}
+        </if>
+        ORDER BY block_height DESC,tx_index DESC
+        LIMIT #{start},#{pageSize}
+    </select>
+
 </mapper>

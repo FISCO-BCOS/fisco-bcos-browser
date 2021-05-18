@@ -147,6 +147,33 @@
             KEY `block_timestamp` (`block_time_stamp`)
         ) COMMENT='交易信息表' ENGINE=InnoDB DEFAULT CHARSET=utf8
     </update>
+
+    <update id="createTbChainUser">
+        CREATE TABLE IF NOT EXISTS tb_chain_user (
+        `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户编号',
+        `group_id` int(11) DEFAULT NULL COMMENT '所属群组编号',
+        `address` varchar(64) DEFAULT NULL COMMENT '公钥地址',
+        `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+        `modify_time` datetime DEFAULT NULL COMMENT '修改时间',
+        PRIMARY KEY (id),
+        KEY index_address (address)
+        ) COMMENT='链上全量用户信息表' ENGINE=InnoDB AUTO_INCREMENT=200001 DEFAULT CHARSET=utf8
+    </update>
+
+    <update id="createTbChainContract">
+        CREATE TABLE IF NOT EXISTS tb_chain_contract (
+        `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+        `group_id` int(11) DEFAULT NULL COMMENT '所属群组编号',
+        `contract_address` varchar(128) COMMENT '合约地址',
+        `tx_hash` varchar(255) DEFAULT NULL COMMENT '交易哈希',
+        `block_height` bigint(20) DEFAULT NULL COMMENT '块高',
+        `from` varchar(255) DEFAULT NULL COMMENT '发送者地址',
+        `block_time_stamp` datetime(6) DEFAULT NULL COMMENT '合约创建时间',
+        `gmt_create` datetime COMMENT '创建时间',
+        `gmt_modify` datetime COMMENT '修改时间',
+        PRIMARY KEY (id)
+        ) COMMENT='链上全量合约信息表' ENGINE=InnoDB AUTO_INCREMENT=100001 DEFAULT CHARSET=utf8
+    </update>
     
     <select id="queryTables" resultType="java.lang.String">
         select table_name from information_schema.tables where table_schema=#{dbName}
