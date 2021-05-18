@@ -118,6 +118,36 @@ const routes = [
                 },
                 component: resolve => require(['@/views/components/userConfig'], resolve),
             },
+            {
+                path: '/chainUser',
+                name: 'chainUser',
+                meta: {
+                    requireAuth: true, //
+                },
+                component: resolve => require(['@/views/components/chainUser'],resolve),
+            },{
+                path: '/chainContract',
+                name: 'chainContract',
+                meta: {
+                    requireAuth: true, //
+                },
+                component: resolve => require(['@/views/components/chainContract'],resolve),
+            },{
+                path: '/chainUser/userTransactionList',
+                name: 'userTransactionList',
+                meta: {
+                    requireAuth: true, //
+                },
+                component: resolve => require(['@/views/components/userTransactionList'],resolve),
+            },
+            {
+                path: '/chainContract/contractTransactionList',
+                name: 'contractTransactionList',
+                meta: {
+                    requireAuth: true, //
+                },
+                component: resolve => require(['@/views/components/contractTransactionList'],resolve),
+            },
         ]
         }
     ]

@@ -63,6 +63,14 @@ export default {
                     title: '查看交易',
                     name: 'transaction',
                 },
+                {
+                    title: '查看用户',
+                    name: 'chainUser',
+                },
+                {
+                    title: '查看合约',
+                    name: 'chainContract',
+                },
                 // {
                 //     title: '正在处理的交易',
                 //     name: 'pendingTransaction',

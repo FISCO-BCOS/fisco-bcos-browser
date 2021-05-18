@@ -16,12 +16,12 @@
                           element-loading-background="rgba(0, 0, 0, 0.8)">
                     <el-table-column prop="pkHash" label="哈希"  :show-overflow-tooltip="true" align="center" min-width="350px">
                         <template slot-scope="scope">
-                            <span @click="linkPage('transactionDetail','pkHash',scope.row.transHash)" class="table-link" >{{scope.row.transHash}}</span>
+                            <span @click="linkPage('transactionDetail','pkHash','transaction',scope.row.transHash)" class="table-link" >{{scope.row.transHash}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="blockNumber" label="所属块" align="center" :show-overflow-tooltip="true" min-width="100px">
                         <template slot-scope="scope">
-                            <span @click="linkPage('blockDetail','blockHash',scope.row.blockHash)" class="table-link" >{{scope.row.blockNumber}}</span>
+                            <span @click="linkPage('blockDetail','blockHash','transaction',scope.row.blockHash)" class="table-link" >{{scope.row.blockNumber}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="transIndex" label="交易块内ID" align="center" :show-overflow-tooltip="true"></el-table-column>
@@ -144,10 +144,11 @@
             clear: function () {
                 window.clearInterval(this.setIntervalTime);
             },
-            linkPage: function (name,label,data) {
+            linkPage: function (name,label,v,data) {
                 let resData = {
                     pageSize: this.pagination.pageSize,
                     pageNumber: this.pagination.currentPage,
+                    v_page: v
                 };
                 resData[label] = data
                 router.push({
