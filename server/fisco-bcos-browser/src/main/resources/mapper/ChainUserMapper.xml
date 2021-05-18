@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.bcos.browser.mapper.ChainUserMapper">
+
+    <resultMap id="chainUserMap" type="org.bcos.browser.entity.rsp.RsqChainUser">
+        <id column="id" javaType="java.lang.Integer" jdbcType="INTEGER"
+            property="id" />
+        <id column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER"
+            property="userId" />
+        <id column="user_name" javaType="java.lang.String" jdbcType="VARCHAR"
+            property="userName" />
+        <result column="group_id" javaType="java.lang.Integer"
+                jdbcType="INTEGER" property="groupId" />
+        <result column="address" javaType="java.lang.String" jdbcType="VARCHAR"
+                property="address" />
+        <result column="tx_hash" javaType="java.lang.String" jdbcType="VARCHAR"
+                property="transHash" />
+        <result column="description" javaType="java.lang.String"
+                jdbcType="VARCHAR" property="description" />
+        <result column="create_time" javaType="java.time.LocalDateTime"
+                jdbcType="TIMESTAMP" property="createTime" />
+        <result column="modify_time" javaType="java.time.LocalDateTime"
+                jdbcType="TIMESTAMP" property="modifyTime" />
+    </resultMap>
+
+	<insert id="addChainUser" parameterType="org.bcos.browser.entity.dto.ChainUser">
+		insert into
+        tb_chain_user(group_id,address,create_time,modify_time)
+		values(#{groupId},#{address},NOW(),NOW())
+	</insert>
+
+    <select id="queryChainUserCount" parameterType="org.bcos.browser.entity.dto.UserQueryParam"
+            resultType="java.lang.Integer">
+        select count(1) from tb_chain_user
+           where group_id = #{groupId}
+        <if test="userParam !=null and userParam != ''">
+            and address = #{userParam}
+        </if>
+
+    </select>
+
+    <select id="queryChainUserList" parameterType="org.bcos.browser.entity.dto.UserQueryParam"
+            resultMap="chainUserMap">
+        select
+            t2.user_id,
+            t2.user_name,
+            t2.description,
+            t1.address
+        from tb_chain_user t1 left join tb_user t2
+        on t1.address = t2.address
+        where t1.group_id = #{groupId}
+        <if test="userParam !=null and userParam != ''">
+            and t1.address = #{userParam}
+        </if>
+        order by t1.id desc
+        <if test="start != null and pageSize != null">
+            limit #{start},#{pageSize}
+        </if>
+    </select>
+
+</mapper>

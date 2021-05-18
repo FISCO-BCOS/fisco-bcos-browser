@@ -16,6 +16,8 @@ public class Constants {
     private String cronAyncNode = "0 0/1 * * * ?";
     private String cronIfNodeActive = "0/10 * * * * ?";
     private String cronDeleteTxn = "0 0 * * * ?";
+    private String cronSyncChainUser = "0/10 * * * * ?";
+    private String cronSyncChainContract = "0/10 * * * * ?";
     private int keepTxnCnt = 500000;
 
     public static final String RPC_BASE_URI = "http://%s:%s";
