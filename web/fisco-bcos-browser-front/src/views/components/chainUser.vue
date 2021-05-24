@@ -1,33 +1,52 @@
 <template>
     <div class="search-main" style="height: auto;">
         <div class="container">
-           <v-nav :hrTitle="btitle" :hrcontent="btitle" :route="'block'"></v-nav>
+           <v-nav :hrTitle="btitle" :hrcontent="btitle" :route="'chainUser'"></v-nav>
             <div class="search-nav">
                 <div class="hashInput">
-                    <el-input placeholder="请输入区块哈希或块高" v-model="searchKeyValue" class="input-with-select">
+                    <el-input placeholder="请输入用户地址" v-model="searchKeyValue" class="input-with-select">
                         <el-button slot="append" icon="el-icon-search" @click="search" :disabled="submitDisabled"></el-button>
                     </el-input>
                 </div>
             </div>
             <div class="search-table">
-                <el-table :data="blockList"  v-loading="loading" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
-                    <el-table-column prop="number" label="块高" align="center" :class-name="'table-link'" :show-overflow-tooltip="true">
+
+                <el-table :data="list"  v-loading="loading" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
+
+                     <el-table-column  label="用户地址" min-width="200px" :show-overflow-tooltip="true" align="center">
+                         <template slot-scope="scope">
+                          <span  v-if="scope.row.address == null">-</span>
+                          <span  v-else>{{scope.row.address}}</span>
+                          </template>
+                    </el-table-column> 
+
+                    <el-table-column label="用户名" min-width="200px" :show-overflow-tooltip="true" align="center">
+                         <template slot-scope="scope">
+                          <span  v-if="scope.row.userName == null">-</span>
+                          <span  v-else>{{scope.row.userName}}</span>
+                          </template>
+                    </el-table-column> 
+
+                      <el-table-column label="描述" min-width="100px" :show-overflow-tooltip="true" align="center">
+                         <template slot-scope="scope">
+                          <span  v-if="scope.row.description == null">-</span>
+                          <span  v-else>{{scope.row.description}}</span>
+                          </template>
+                     </el-table-column> 
+
+                     <el-table-column label="用户ID" min-width="100px" :show-overflow-tooltip="true" align="center">
+                         <template slot-scope="scope">
+                          <span  v-if="scope.row.userId == 0">-</span>
+                          <span  v-else>{{scope.row.userId}}</span>
+                          </template>
+                     </el-table-column> 
+ 
+                     <el-table-column prop="pkHash" label="操作" min-width="100px" :show-overflow-tooltip="true" align="center" :class-name="'table-link'">
                         <template slot-scope="scope">
-                            <span @click="linkPage('blockDetail','blockHash','',scope.row.blockHash)">{{scope.row.number}}</span>
+                            <span @click="linkPage('userTransactionList','param',scope.row.address)">交易列表查看</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="dateTimeStr" label="生成时间" min-width="120px" align="center" :show-overflow-tooltip="true"></el-table-column>
-                    <el-table-column prop="txn" label="交易数量" align="center" :class-name="'table-link'" :show-overflow-tooltip="true">
-                        <template slot-scope="scope">
-                            <span @click="linkPage('transaction','blockHeight','',scope.row.number)">{{scope.row.txn}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="sealer" label="出块者" min-width="100px" :show-overflow-tooltip="true" align="center"></el-table-column>
-                    <el-table-column prop="pkHash" label="哈希" min-width="350px" :show-overflow-tooltip="true" align="center" :class-name="'table-link'">
-                        <template slot-scope="scope">
-                            <span @click="linkPage('blockDetail','blockHash','',scope.row.blockHash)">{{scope.row.blockHash}}</span>
-                        </template>
-                    </el-table-column>
+
                 </el-table>
                 <div class="search-pagation">
                     <div style="line-height: 40px;">
@@ -52,7 +71,7 @@
 </style>
 <script type="es6">
     import nav from '@/components/content-nav'
-    import {getTbBlockInfo} from '@/api/api'
+    import {getChainUserInfo} from '@/api/api'
     import url from '@/api/url'
     import router from '@/router'
     import constant from '@/util/constant'
@@ -67,7 +86,7 @@
     let maxMonthDate = null;
     let months = MonthState((new Date()).getTime())
     export default {
-        name: 'block',
+        name: 'chainUser',
         components: {
             'v-nav': nav
         },
@@ -75,9 +94,9 @@
             return{
                 searchKeyValue: "",
                 groupId: null,
-                btitle: '区块',
+                btitle: '用户信息',
                 hashData: this.$route.query.blockData || "",
-                blockList: [],
+                list: [],
                 pagination: {
                     currentPage:  this.$route.query.pageNumber || 1,
                     pageSize: this.$route.query.pageSize || 10,
@@ -91,7 +110,7 @@
         },
         mounted: function () {
             this.groupId = localStorage.getItem("groupId")
-            this.searchTbBlockInfo();
+            this.searchChainUserInfo();
             this.pagination.currentPage = this.$route.query.pageNumber || 1;
             this.pagination.pageSize = this.$route.query.pageSize || 10;
         },
@@ -99,26 +118,13 @@
             this.clear()
         },
         methods: {
-            dateBlur: function (val) {
-                if(val.value && val.value.length){
-                    let time1 = (new Date(val.value[0])).getTime();
-                    let time2 = (new Date(val.value[1])).getTime();
-                    let times = time2 - time1;
-                    let monthTime = 29*24*3600*1000;
-                    if(times > monthTime){
-                        time2 = time1 + monthTime
-                    }
-                    val.value[1] = timeState(time2)
-                }
-            },
             clear: function () {
                 window.clearInterval(this.setIntervalTime);
             },
-            linkPage: function (name,label,v,data) {
+            linkPage: function (name,label,data) {
                 let resData = {
                     pageSize: this.pageSize,
                     pageNumber: this.pageNumber,
-                    v_page: v
                 };
                 resData[label] = data
                 router.push({
@@ -127,30 +133,18 @@
                 })
             },
             search: function(){
-                let reg=/^[0-9]+.?[0-9]*$/;
-                if(this.searchKeyValue.length > 60){
-                    this.hashData = this.searchKeyValue;
-                    this.blockNumber = ""
-                }else if(reg.test(this.searchKeyValue) && this.searchKeyValue.substring(0,2) != "0x"){
-                    this.hashData = "";
-                    this.blockNumber = this.searchKeyValue
-                }else if(this.searchKeyValue){
-                    message("请输入块高或完整的哈希",'error')
-                }
                 this.pagination.currentPage = 1;
-                this.searchTbBlockInfo();
-                this.searchKeyValue = "";
+                this.searchChainUserInfo(); 
                 router.push({
                     // name: "block",
                     query: {
                         pageSize: this.pagination.pageSize,
                         pageNumber: this.pagination.currentPage,
-                        blockNumber: this.blockNumber,
-                        blockHash: this.hashData,
+                        address: this.searchKeyValue.trim()
                     }
                 })
             },
-            searchTbBlockInfo: function () {
+            searchChainUserInfo: function () {
                 this.submitDisabled = true;
                 this.loading = true;
                 let data = {
@@ -159,12 +153,11 @@
                     pageSize: this.pagination.pageSize
                 };
                 let query = {
-                    blockNumber: this.blockNumber,
-                    blockHash: this.hashData,
+                    address: this.searchKeyValue.trim()
                 }
-               getTbBlockInfo(data,query).then(res => {
+               getChainUserInfo(data,query).then(res => {
                     window.clearInterval(this.setIntervalTime);
-                    this.setIntervalTime = window.setInterval(() => {this.searchTbBlockInfo()}, constant.INTERVALTIME);
+                    this.setIntervalTime = window.setInterval(() => {this.searchChainUserInfo()}, constant.INTERVALTIME);
                     this.submitDisabled = false;
                     this.loading = false;
                     if(res.data.code === 0){
@@ -174,16 +167,16 @@
                                     res.data.data[i].dateTimeStr = res.data.data[i].dateTimeStr.slice(0, 19);
                                 }
                             }
-                            this.blockList = res.data.data;
+                            this.list = res.data.data;
                             this.pagination.total = res.data.totalCount;
 
                         }else{
-                            this.blockList = [];
+                            this.list = [];
                             this.pagination.total = res.data.totalCount;
                         }
                     }else{
                         window.clearInterval(this.setIntervalTime);
-                        this.blockList = [];
+                        this.list = [];
                         this.pagination.total = 0;
                         message(errorcode[res.data.code].cn,'error')
                     }
@@ -191,7 +184,7 @@
                     this.hashData = "";
                 }).catch(err => {
                     window.clearInterval(this.setIntervalTime);
-                    this.blockList = [];
+                    this.list = [];
                     this.submitDisabled = false;
                     this.loading = false;
                     if(err.response && err.response.code !== 200){
@@ -212,11 +205,10 @@
                     query: {
                         pageSize: this.pagination.pageSize,
                         pageNumber: this.pagination.currentPage,
-                        blockNumber: this.blockNumber,
-                        blockHash: this.hashData,
+                        address: this.searchKeyValue 
                     }
                 })
-                this.searchTbBlockInfo();
+                this.searchChainUserInfo();
             },
             handleCurrentChange(val) {
                 this.pagination.currentPage = val;
@@ -225,11 +217,10 @@
                     query: {
                         pageSize: this.pagination.pageSize,
                         pageNumber: this.pagination.currentPage,
-                        blockNumber: this.blockNumber,
-                        blockHash: this.hashData,
+                        address: this.searchKeyValue
                     }
                 })
-                this.searchTbBlockInfo();
+                this.searchChainUserInfo();
             }
         }
     }
