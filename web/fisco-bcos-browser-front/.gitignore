@@ -18,3 +18,5 @@ yarn-error.log*
 package-lock.json
 static/js/v0.*.js
 static/js/v0.*.js.gz
+v0.*.js
+v0.*.js.gz
