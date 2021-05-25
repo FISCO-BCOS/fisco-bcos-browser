@@ -270,7 +270,7 @@ export function getChainContarctInfo(data,list) {
     })
 }
 
-export function getChainUserList(data,list) {
+export function getUserTransaction(data,list) {
     const params = reviseParam(data, list);
     return get({
         url: `${url.GET_CHAIN_USER_DETAIL}/${params.str}`,

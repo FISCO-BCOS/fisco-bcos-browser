@@ -78,7 +78,7 @@
 </style>
 <script>
     import nav from '@/components/content-nav'
-    import {getChainUserList} from '@/api/api'
+    import {getUserTransaction} from '@/api/api'
     import url from '@/api/url'
     import {message} from '@/util/util'
     import constant from '@/util/constant'
@@ -169,7 +169,7 @@
                 let query = {
                      userParam: this.searchKeyValue.trim()
                 }
-               getChainUserList(data,query).then(res => {  
+               getUserTransaction(data,query).then(res => {  
                     window.clearInterval(this.setIntervalTime);
                     this.setIntervalTime = window.setInterval(() => {this.searchTransationInfo()}, constant.INTERVALTIME);
                     this.submitDisabled = false;
