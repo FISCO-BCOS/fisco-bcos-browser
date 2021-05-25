@@ -87,7 +87,7 @@
         SELECT count(1) FROM tx_raw_data_#{groupId}
         WHERE 1 = 1
         <if test="from != null and from !=''">
-            AND `from` = #{address}
+            AND `from` = #{from}
         </if>
         <if test="userParam != null and userParam !=''">
             AND tx_hash = #{userParam}
