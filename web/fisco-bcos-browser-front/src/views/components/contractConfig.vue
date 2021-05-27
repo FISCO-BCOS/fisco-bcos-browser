@@ -120,7 +120,7 @@ export default {
             contractData: null,
             allVersion: [],
             versionList: [],
-            version: localStorage.getItem('solcName') ? localStorage.getItem('solcName') : '',
+            version: "",
             baseURLWasm: '../../../static/js',
             versionId: localStorage.getItem('versionId') ? localStorage.getItem('versionId') : '',
             versionData: null,
@@ -1059,12 +1059,12 @@ export default {
                     this.versionList.push(this.allVersion[i])
                 }
             }
-            if (!localStorage.getItem('solcName')) {
-                this.version = this.versionList[0]['solcName'];
-                this.versionId = this.versionList[0]['id'];
-                localStorage.setItem("solcName", this.versionList[0]['solcName'])
-                localStorage.setItem("versionId", this.versionList[0]['versionId'])
-            }
+            this.version = this.versionList[0]['solcName'];
+            this.versionId = this.versionList[0]['id'];
+            // if (!localStorage.getItem('solcName')) {
+                // localStorage.setItem("solcName", this.versionList[0]['solcName'])
+                // localStorage.setItem("versionId", this.versionList[0]['versionId'])
+            // }
             this.initSolc(localStorage.getItem("versionId"))
         },
         initSolc(versionId) {
