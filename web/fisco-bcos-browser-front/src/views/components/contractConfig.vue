@@ -126,7 +126,8 @@ export default {
             versionData: null,
             loading: false,
             host: location.host,
-            activeNames: []
+            activeNames: [],
+            isGm: ""
         }
     },
     beforeCreate() {
@@ -1038,6 +1039,7 @@ export default {
             getEncryptType(localStorage.getItem("groupId")).then(res => {
                 if (res.data.code === 0) {
                     this.loading = false;
+                    this.isGm = res.data.data;
                     localStorage.setItem("encryptionId", res.data.data)
                     callback();
                 } else {
@@ -1061,11 +1063,11 @@ export default {
             }
             this.version = this.versionList[0]['solcName'];
             this.versionId = this.versionList[0]['id'];
-            // if (!localStorage.getItem('solcName')) {
-                // localStorage.setItem("solcName", this.versionList[0]['solcName'])
-                // localStorage.setItem("versionId", this.versionList[0]['versionId'])
-            // }
-            this.initSolc(localStorage.getItem("versionId"))
+            if (!localStorage.getItem('solcName')) {
+                localStorage.setItem("solcName", this.versionList[0]['solcName'])
+                localStorage.setItem("versionId", this.versionList[0]['versionId'])
+            }
+           this.initSolc(this.isGm)
         },
         initSolc(versionId) {
             let that = this
