@@ -14,6 +14,15 @@ nodejs下载地址：https://nodejs.org/en/download/
 > 使用命令：
 
     npm install
+    
+下载依赖包
+
+> 执行update修改依赖和下载相关文件：
+
+    ```
+    npm run update
+    ```
+    *注意：必须执行update，否则编译打包都是失败，此脚本会修改部分依赖文件并且从cdn下载solc的编译文件，执行成功后，后面无需再执行。*
 
 > 修改依赖：
 

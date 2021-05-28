@@ -120,7 +120,7 @@ export default {
             contractData: null,
             allVersion: [],
             versionList: [],
-            version: localStorage.getItem('solcName') ? localStorage.getItem('solcName') : '',
+            version: "",
             baseURLWasm: '../../../static/js',
             versionId: localStorage.getItem('versionId') ? localStorage.getItem('versionId') : '',
             versionData: null,
@@ -152,28 +152,28 @@ export default {
                 url: `http://${this.host}/static/js/v0.4.25.js`,
                 versionId: 0,
                 encryptType: 0,
-                net: 0
+                net: 1
             },
             {
-                solcName: "v0.4.24-gm",
-                url: `http://${this.host}/static/js/v0.4.24-gm.js`,
+                solcName: "v0.4.25-gm",
+                url: `http://${this.host}/static/js/v0.4.25-gm.js`,
                 versionId: 1,
                 encryptType: 1,
-                net: 0
+                net: 1
             },
             {
-                solcName: "v0.5.1",
+                solcName: "v0.5.2",
                 versionId: 2,
-                url: `http://${this.host}/static/js/v0.5.1.js`,
+                url: `http://${this.host}/static/js/v0.5.2.js`,
                 encryptType: 0,
-                net: 0
+                net: 1
             },
             {
-                solcName: "v0.5.1-gm",
+                solcName: "v0.5.2-gm",
                 versionId: 3,
-                url: `http://${this.host}/static/js/v0.5.1-gm.js`,
+                url: `http://${this.host}/static/js/v0.5.2-gm.js`,
                 encryptType: 1,
-                net: 0
+                net: 1
             },
             {
                 solcName: "v0.6.10",
@@ -1059,12 +1059,12 @@ export default {
                     this.versionList.push(this.allVersion[i])
                 }
             }
-            if (!localStorage.getItem('solcName')) {
-                this.version = this.versionList[0]['solcName'];
-                this.versionId = this.versionList[0]['id'];
-                localStorage.setItem("solcName", this.versionList[0]['solcName'])
-                localStorage.setItem("versionId", this.versionList[0]['versionId'])
-            }
+            this.version = this.versionList[0]['solcName'];
+            this.versionId = this.versionList[0]['id'];
+            // if (!localStorage.getItem('solcName')) {
+                // localStorage.setItem("solcName", this.versionList[0]['solcName'])
+                // localStorage.setItem("versionId", this.versionList[0]['versionId'])
+            // }
             this.initSolc(localStorage.getItem("versionId"))
         },
         initSolc(versionId) {
