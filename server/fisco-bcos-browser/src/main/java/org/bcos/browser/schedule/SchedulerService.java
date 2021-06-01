@@ -8,18 +8,8 @@ import org.bcos.browser.base.Constants;
 import org.bcos.browser.base.enums.NodeStatus;
 import org.bcos.browser.base.enums.NodeSyncType;
 import org.bcos.browser.base.enums.NodeType;
-import org.bcos.browser.entity.dto.BlockChainInfo;
-import org.bcos.browser.entity.dto.BlockNumberAndTxn;
-import org.bcos.browser.entity.dto.Group;
-import org.bcos.browser.entity.dto.LatestTransCount;
-import org.bcos.browser.entity.dto.Node;
-import org.bcos.browser.entity.dto.Peer;
-import org.bcos.browser.entity.dto.SyncInfoFromChain;
-import org.bcos.browser.entity.dto.TransactionByDay;
-import org.bcos.browser.mapper.BlockChainInfoMapper;
-import org.bcos.browser.mapper.BlockMapper;
-import org.bcos.browser.mapper.NodeMapper;
-import org.bcos.browser.mapper.TransactionMapper;
+import org.bcos.browser.entity.dto.*;
+import org.bcos.browser.mapper.*;
 import org.bcos.browser.service.GroupService;
 import org.bcos.browser.util.CommonUtils;
 import org.bcos.browser.util.Web3jRpc;
@@ -47,6 +37,10 @@ public class SchedulerService {
     NodeMapper nodeMapper;
     @Autowired
     private Constants constants;
+    @Autowired
+    ChainUserMapper chainUserMapper;
+    @Autowired
+    ChainContractMapper chainContractMapper;
 
     /**
      * handleBlockChainInfo.
@@ -224,5 +218,61 @@ public class SchedulerService {
                 nodeMapper.updateStatus(map);
             }
         }
+    }
+
+    /**
+     * syncChainUser
+     */
+    public void syncChainUser(){
+        log.info("==========syncChainUser begin=============");
+        List<Group> list = groupService.getGroupList();
+        for (Group group : list) {
+            List<Transaction> transFrom = transactionMapper.getTransFormByGroup(group.getGroupId());
+            log.info("syncChainUser groupId: {}, size: {}",group.getGroupId(), transFrom.size());
+            transFrom.stream().forEach(ts -> saveChainUser(ts,group.getGroupId()));
+        }
+        log.info("==========syncChainUser end=============");
+    }
+
+    /**
+     * saveChainUser
+     * @param transaction
+     * @param groupId
+     */
+    public void saveChainUser(Transaction transaction , int groupId){
+        ChainUser chainUser = new ChainUser();
+        chainUser.setAddress(transaction.getTransFrom());
+        chainUser.setGroupId(groupId);
+        chainUserMapper.addChainUser(chainUser);
+    }
+
+    /**
+     * syncChainContract
+     */
+    public void syncChainContract(){
+        log.info("==========syncChainContract begin=============");
+        List<Group> list = groupService.getGroupList();
+        for (Group group : list) {
+           List<Transaction> transactions = transactionMapper.getTbTransactionByGroup(group.getGroupId());
+            log.info("syncChainContract groupId: {}, size: {}",group.getGroupId(), transactions.size());
+            transactions.stream().forEach(ts -> saveChainContract(ts,group.getGroupId()));
+        }
+        log.info("==========syncChainContract end=============");
+    }
+
+    /**
+     * saveChainContract
+     * @param ts
+     * @param groupId
+     */
+    public void saveChainContract(Transaction ts , int groupId ){
+        ChainContract chainContract = new ChainContract();
+        chainContract.setGroupId(groupId);
+        chainContract.setBlockHeight(ts.getBlockNumber());
+        chainContract.setContractAddress(ts.getContractAddress());
+        chainContract.setTransFrom(ts.getTransFrom());
+        chainContract.setTransHash(ts.getTransHash());
+        chainContract.setBlockTime(ts.getBlockTime());
+        chainContractMapper.addChainContract(chainContract);
     }
 }

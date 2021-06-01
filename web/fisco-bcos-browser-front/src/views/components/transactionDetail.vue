@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="search-main padding-bottom-0">
-            <div class="container padding-bottom-0">
-                <v-nav :page='page' :hrTitle="'交易'" :navContent="PkHash" :navSubtitle="'交易'" :hrcontent="'交易信息'" :route="'transaction'"></v-nav>
+            <div class="container padding-bottom-0"  v-if="v_page == action">
+                <v-nav :page='page' :hrTitle="hrTitle" :navContent="PkHash" :navSubtitle="navSubtitle" :hrcontent="hrcontent" :route="route"></v-nav>
             </div>
         </div>
         <div class="hash-content-info-tran">
@@ -366,7 +366,7 @@ export default {
             eventTitle: "解码",
             eventContent: true,
             eventSHow: false,
-            page: {
+            page: { 
                 pageSize: this.$route.pageSize || 10,
                 pageNumber: this.$route.pageNumber || 1
             },
@@ -380,15 +380,59 @@ export default {
             showOutputDecode: false,
             transOutputData: "",
             outputType: null,
-            userName: ''
+            userName: '',
+            v_page:'', 
+            action:'',
+            hrTitle:"",
+            navSubtitle:"",
+            hrcontent:"",
+            route:""
         }
     },
-    mounted: function () {
 
+    beforeMount(){ 
+        this.page.param = this.$route.query.param;
+        this.v_page = this.$route.query.v_page;
+        let navlist = [
+            {
+                action:"contractTransaction",
+                hrTitle:"合约",
+                navSubtitle:"合约交易列表",
+                hrcontent:"交易信息",
+                route:"contractTransactionList"
+
+            },{
+                action:"userTransaction",
+                hrTitle:"用户",
+                navSubtitle:"用户交易列表",
+                hrcontent:"交易信息",
+                route:"userTransactionList"
+            },{
+                action:"transaction",
+                hrTitle:"交易",
+                navSubtitle:"交易",
+                hrcontent:"交易信息",
+                route:"transaction"
+            }
+        ];
+
+        navlist.forEach((item)=>{ 
+            if(this.v_page == item.action){
+                this.action = item.action;
+                this.hrTitle = item.hrTitle;
+                this.navSubtitle = item.navSubtitle;
+                this.hrcontent = item.hrcontent;
+                this.route = item.route;
+            }
+        }); 
+    },
+    
+    mounted: function () { 
         this.$nextTick(function () {
             this.searchTbTransactionByPkHash();
         });
     },
+    
     methods: {
         decode: function (val) {
             this.eventContent = false;
@@ -858,7 +902,7 @@ export default {
                     userName: val
                 }
             });
-        },
+        }, 
     }
 }
 </script>

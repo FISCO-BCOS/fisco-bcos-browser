@@ -13,19 +13,19 @@
                 <el-table :data="blockList"  v-loading="loading" element-loading-text="数据加载中..." element-loading-background="rgba(0, 0, 0, 0.8)">
                     <el-table-column prop="number" label="块高" align="center" :class-name="'table-link'" :show-overflow-tooltip="true">
                         <template slot-scope="scope">
-                            <span @click="linkPage('blockDetail','blockHash',scope.row.blockHash)">{{scope.row.number}}</span>
+                            <span @click="linkPage('blockDetail','blockHash','',scope.row.blockHash)">{{scope.row.number}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="dateTimeStr" label="生成时间" min-width="120px" align="center" :show-overflow-tooltip="true"></el-table-column>
                     <el-table-column prop="txn" label="交易数量" align="center" :class-name="'table-link'" :show-overflow-tooltip="true">
                         <template slot-scope="scope">
-                            <span @click="linkPage('transaction','blockHeight',scope.row.number)">{{scope.row.txn}}</span>
+                            <span @click="linkPage('transaction','blockHeight','',scope.row.number)">{{scope.row.txn}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="sealer" label="出块者" min-width="100px" :show-overflow-tooltip="true" align="center"></el-table-column>
                     <el-table-column prop="pkHash" label="哈希" min-width="350px" :show-overflow-tooltip="true" align="center" :class-name="'table-link'">
                         <template slot-scope="scope">
-                            <span @click="linkPage('blockDetail','blockHash',scope.row.blockHash)">{{scope.row.blockHash}}</span>
+                            <span @click="linkPage('blockDetail','blockHash','',scope.row.blockHash)">{{scope.row.blockHash}}</span>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -114,10 +114,11 @@
             clear: function () {
                 window.clearInterval(this.setIntervalTime);
             },
-            linkPage: function (name,label,data) {
+            linkPage: function (name,label,v,data) {
                 let resData = {
                     pageSize: this.pageSize,
                     pageNumber: this.pageNumber,
+                    v_page: v
                 };
                 resData[label] = data
                 router.push({

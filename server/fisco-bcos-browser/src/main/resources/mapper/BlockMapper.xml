@@ -9,7 +9,7 @@
             AND block_hash = #{blockHash}
         </if>
         <if test="number != null and number !=''">
-            AND number = #{number}
+            AND block_height = #{number}
         </if>
     </select>
 
@@ -28,7 +28,7 @@
             AND t1.block_hash = #{blockHash}
         </if>
         <if test="number != null and number !=''">
-            AND t1.number = #{number}
+            AND t1.block_height = #{number}
         </if>
         ORDER BY t1.block_height DESC
         LIMIT #{start},#{pageSize}

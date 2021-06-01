@@ -12,4 +12,5 @@ public class Transaction {
     private String transFrom;
     private String transTo;
     private String transIndex;
+    private String contractAddress;
 }

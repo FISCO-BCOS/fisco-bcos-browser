@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="search-main padding-bottom-0">
-            <div class="container padding-bottom-0">
-                <v-nav :page='page' :hrTitle="'区块'" :navContent="blockName" :navSubtitle="'区块'" :hrcontent="'区块信息'" :route="'block'"></v-nav>
+            <div class="container padding-bottom-0" >
+                <v-nav  v-if="v_page == action" :page='page' :hrTitle="hrTitle" :navContent="navContent" :navSubtitle="navSubtitle" :hrcontent="hrcontent" :route="route"></v-nav>
                 <div class="detail-content">
                    <div class="c-title">
                        <div>区块信息</div>
@@ -54,9 +54,59 @@
                 page: {
                     pageSize: this.$route.pageSize || 10,
                     pageNumber: this.$route.pageNumber || 1
-                }
+                },
+                v_page:'', 
+                action:'',
+                hrTitle:"",
+                navSubtitle:"",
+                hrcontent:"",
+                route:""
             }
         },
+
+         beforeMount(){ 
+        this.page.param = this.$route.query.param;
+        this.v_page = this.$route.query.v_page;
+        let navlist = [
+            {    
+                action : "",
+                hrTitle : "区块",
+                navSubtitle : this.blockName,
+                hrcontent : "区块信息",
+                route : "block"
+
+            },{  
+                action : "transaction",
+                hrTitle : "交易",
+                navSubtitle : "交易",
+                hrcontent : "区块信息",
+                route : "transaction"
+            },{       
+                action : "contractTransaction",
+                hrTitle : "合约",
+                navSubtitle : "合约交易列表",
+                hrcontent : "区块信息",
+                route : "contractTransactionList"
+            },{       
+                action : "userTransaction",
+                hrTitle : "用户",
+                navSubtitle : "用户交易列表",
+                hrcontent : "区块信息",
+                route : "userTransactionList"
+            }
+        ];
+
+        navlist.forEach((item)=>{ 
+            if(this.v_page == item.action){
+                this.action = item.action;
+                this.hrTitle = item.hrTitle;
+                this.navSubtitle = item.navSubtitle;
+                this.hrcontent = item.hrcontent;
+                this.route = item.route;
+            }
+        }); 
+    },
+
         created: function () {
             this.blockName = "#"+ this.$route.query.blockHash;
         },
