@@ -130,7 +130,7 @@ jar {
             into 'dist/lib'
         }
         copy {
-            from file('.').listFiles().findAll{File f -> (f.name.endsWith('.bat') || f.name.endsWith('.sh') || f.name.endsWith('.env'))}
+            from file('.').listFiles().findAll{File f -> (f.name.endsWith('.sh') || f.name.endsWith('.env'))}
             into 'dist'
         }
     }
