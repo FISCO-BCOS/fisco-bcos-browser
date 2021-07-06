@@ -76,11 +76,14 @@ List swagger = [
     'io.springfox:springfox-swagger-ui:2.8.0'
 ]
 
+
+
 dependencies {
     compile spring,spring_boot,jaxb,logger,mysql,io,jackson,swagger
     compile "com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.1"
     compile "org.apache.commons:commons-lang3:3.10"
-    compile ('com.webank:data-export-sdk:1.7.3'){
+
+    compile ('com.webank:data-export-sdk:1.7.4-SNAPSHOT'){
         exclude group: 'ch.qos.logback', module: '*'
     }
 

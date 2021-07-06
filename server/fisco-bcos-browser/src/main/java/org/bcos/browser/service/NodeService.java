@@ -6,6 +6,8 @@ import com.webank.blockchain.data.export.common.entity.ChainInfo;
 import com.webank.blockchain.data.export.common.entity.ExportConfig;
 import com.webank.blockchain.data.export.common.entity.ExportDataSource;
 import com.webank.blockchain.data.export.common.entity.MysqlDataSource;
+import com.webank.blockchain.data.export.common.enums.DataType;
+import com.webank.blockchain.data.export.common.enums.IgnoreBasicDataParam;
 import com.webank.blockchain.data.export.task.DataExportExecutor;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +56,7 @@ public class NodeService {
 
     /**
      * addNode.
-     * 
+     *
      * @param reqAddNode node info
      * @return
      */
@@ -129,7 +131,7 @@ public class NodeService {
 
     /**
      * getNodeList.
-     * 
+     *
      * @param groupId groupId
      * @param pageNumber pageNumber
      * @param pageSize pageSize
@@ -166,7 +168,7 @@ public class NodeService {
 
     /**
      * deleteNodeById.
-     * 
+     *
      * @param nodeId nodeId
      * @return
      */
@@ -180,7 +182,7 @@ public class NodeService {
 
     /**
      * getEncryptType.
-     * 
+     *
      * @param groupId groupId
      * @return
      */
@@ -233,6 +235,45 @@ public class NodeService {
                 .mysqlDataSources(mysqlDataSourceList).autoCreateTable(true).build();
         ExportConfig exportConfig = new ExportConfig();
         exportConfig.setTablePostfix("_" + groupId);
+        Map<String, List<String>> ignoreBasicDataTableParam = new HashMap<>();
+        List<String> ignoreBlockRawData = new ArrayList<>();
+
+        ignoreBlockRawData.add(IgnoreBasicDataParam.BlockRawDataParams.DB_HASH.name());
+        ignoreBlockRawData.add(IgnoreBasicDataParam.BlockRawDataParams.EXTRA_DATA.name());
+        ignoreBlockRawData.add(IgnoreBasicDataParam.BlockRawDataParams.GAS_LIMIT.name());
+        ignoreBlockRawData.add(IgnoreBasicDataParam.BlockRawDataParams.GAS_USED.name());
+        ignoreBlockRawData.add(IgnoreBasicDataParam.BlockRawDataParams.LOGS_BLOOM.name());
+        ignoreBlockRawData.add(IgnoreBasicDataParam.BlockRawDataParams.PARENT_HASH.name());
+        ignoreBlockRawData.add(IgnoreBasicDataParam.BlockRawDataParams.RECEIPTS_ROOT.name());
+        ignoreBlockRawData.add(IgnoreBasicDataParam.BlockRawDataParams.SEALER.name());
+        ignoreBlockRawData.add(IgnoreBasicDataParam.BlockRawDataParams.STATE_ROOT.name());
+        ignoreBlockRawData.add(IgnoreBasicDataParam.BlockRawDataParams.SIGNATURE_LIST.name());
+        ignoreBlockRawData.add(IgnoreBasicDataParam.BlockRawDataParams.TRANSACTION_LIST.name());
+        ignoreBlockRawData.add(IgnoreBasicDataParam.BlockRawDataParams.TRANSACTIONS_ROOT.name());
+
+        List<String> ignoreTxReceiptRawData = new ArrayList<>();
+        ignoreTxReceiptRawData.add(IgnoreBasicDataParam.TxReceiptRawDataParams.GAS_USED.name());
+        ignoreTxReceiptRawData.add(IgnoreBasicDataParam.TxReceiptRawDataParams.LOGS.name());
+        ignoreTxReceiptRawData.add(IgnoreBasicDataParam.TxReceiptRawDataParams.INPUT.name());
+        ignoreTxReceiptRawData.add(IgnoreBasicDataParam.TxReceiptRawDataParams.MESSAGE.name());
+        ignoreTxReceiptRawData.add(IgnoreBasicDataParam.TxReceiptRawDataParams.OUTPUT.name());
+        ignoreTxReceiptRawData.add(IgnoreBasicDataParam.TxReceiptRawDataParams.LOGS_BLOOM.name());
+        ignoreTxReceiptRawData.add(IgnoreBasicDataParam.TxReceiptRawDataParams.ROOT.name());
+        ignoreTxReceiptRawData.add(IgnoreBasicDataParam.TxReceiptRawDataParams.TX_INDEX.name());
+        ignoreTxReceiptRawData.add(IgnoreBasicDataParam.TxReceiptRawDataParams.TX_PROOF.name());
+        ignoreTxReceiptRawData.add(IgnoreBasicDataParam.TxReceiptRawDataParams.RECEIPT_PROOF.name());
+
+        List<String> ignoreTxRawData = new ArrayList<>();
+        ignoreTxRawData.add(IgnoreBasicDataParam.TxRawDataParams.GAS.name());
+        ignoreTxRawData.add(IgnoreBasicDataParam.TxRawDataParams.GAS_PRICE.name());
+        ignoreTxRawData.add(IgnoreBasicDataParam.TxRawDataParams.INPUT.name());
+        ignoreTxRawData.add(IgnoreBasicDataParam.TxRawDataParams.NONCE.name());
+        ignoreTxRawData.add(IgnoreBasicDataParam.TxRawDataParams.VALUE.name());
+
+        ignoreBasicDataTableParam.put(IgnoreBasicDataParam.IgnoreBasicDataTable.BLOCK_RAW_DATA_TABLE.name(),ignoreBlockRawData);
+        ignoreBasicDataTableParam.put(IgnoreBasicDataParam.IgnoreBasicDataTable.TX_RAW_DATA_TABLE.name(),ignoreTxRawData);
+        ignoreBasicDataTableParam.put(IgnoreBasicDataParam.IgnoreBasicDataTable.TX_RECEIPT_RAW_DATA_TABLE.name(),ignoreTxReceiptRawData);
+        exportConfig.setIgnoreBasicDataTableParam(ignoreBasicDataTableParam);
         try {
             exportExecutor =
                     ExportDataSDK.create(dataSource,
