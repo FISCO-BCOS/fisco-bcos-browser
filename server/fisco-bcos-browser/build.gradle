@@ -83,7 +83,7 @@ dependencies {
     compile "com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.1"
     compile "org.apache.commons:commons-lang3:3.10"
 
-    compile ('com.webank:data-export-sdk:1.7.4-SNAPSHOT'){
+    compile ('com.webank:data-export-sdk:1.7.4'){
         exclude group: 'ch.qos.logback', module: '*'
     }
 
