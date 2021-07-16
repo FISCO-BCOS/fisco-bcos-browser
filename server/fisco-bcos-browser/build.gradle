@@ -76,11 +76,14 @@ List swagger = [
     'io.springfox:springfox-swagger-ui:2.8.0'
 ]
 
+
+
 dependencies {
     compile spring,spring_boot,jaxb,logger,mysql,io,jackson,swagger
     compile "com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.1"
     compile "org.apache.commons:commons-lang3:3.10"
-    compile ('com.webank:data-export-sdk:1.7.3'){
+
+    compile ('com.webank:data-export-sdk:1.7.4'){
         exclude group: 'ch.qos.logback', module: '*'
     }
 
@@ -130,7 +133,7 @@ jar {
             into 'dist/lib'
         }
         copy {
-            from file('.').listFiles().findAll{File f -> (f.name.endsWith('.bat') || f.name.endsWith('.sh') || f.name.endsWith('.env'))}
+            from file('.').listFiles().findAll{File f -> (f.name.endsWith('.sh') || f.name.endsWith('.env'))}
             into 'dist'
         }
     }
