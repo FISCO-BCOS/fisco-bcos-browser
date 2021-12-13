@@ -44,7 +44,7 @@ List jaxb = [
      "javax.validation:validation-api:2.0.1.Final"
 ]
 
-def log4j_version="2.13.1"
+def log4j_version="2.15.0"
 List logger = [
         "org.apache.logging.log4j:log4j-api:$log4j_version",
         "org.apache.logging.log4j:log4j-core:$log4j_version",
@@ -75,8 +75,6 @@ List swagger = [
     'io.springfox:springfox-swagger2:2.8.0',
     'io.springfox:springfox-swagger-ui:2.8.0'
 ]
-
-
 
 dependencies {
     compile spring,spring_boot,jaxb,logger,mysql,io,jackson,swagger
