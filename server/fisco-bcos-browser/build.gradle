@@ -19,7 +19,7 @@ repositories {
     mavenCentral()
 }
 
-def spring_version="4.3.25.RELEASE"
+def spring_version="4.3.30.RELEASE"
 List spring =[ 
     "org.springframework:spring-core:$spring_version", 
     "org.springframework:spring-beans:$spring_version", 
@@ -31,9 +31,9 @@ List spring =[
 ]
 
 List spring_boot =[ 
-    "org.springframework.boot:spring-boot-starter-web:1.5.9.RELEASE",
-    "org.springframework.boot:spring-boot-autoconfigure:1.5.9.RELEASE",
-    "org.springframework.boot:spring-boot-configuration-processor:1.5.9.RELEASE",
+    "org.springframework.boot:spring-boot-starter-web:1.5.22.RELEASE",
+    "org.springframework.boot:spring-boot-autoconfigure:1.5.22.RELEASE",
+    "org.springframework.boot:spring-boot-configuration-processor:1.5.22.RELEASE",
 ]
 
 List jaxb = [
@@ -44,7 +44,7 @@ List jaxb = [
      "javax.validation:validation-api:2.0.1.Final"
 ]
 
-def log4j_version="2.15.0"
+def log4j_version="2.17.2"
 List logger = [
         "org.apache.logging.log4j:log4j-api:$log4j_version",
         "org.apache.logging.log4j:log4j-core:$log4j_version",
@@ -55,7 +55,7 @@ List logger = [
 
 List mysql = [
     'org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.1',
-    'mysql:mysql-connector-java:8.0.22'
+    'mysql:mysql-connector-java:8.0.26'
 ]
 
 List io = [
@@ -63,11 +63,11 @@ List io = [
     'commons-fileupload:commons-fileupload:1.4'
 ]
 
-def jackson_version="2.11.0"
+def jackson_version = "2.13.2"
 List jackson = [
-    "com.fasterxml.jackson.core:jackson-databind:$jackson_version",
-    "com.fasterxml.jackson.module:jackson-module-parameter-names:$jackson_version",
-    "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:$jackson_version",
+    "com.fasterxml.jackson.core:jackson-annotations:$jackson_version",
+    "com.fasterxml.jackson.core:jackson-core:$jackson_version",
+    "com.fasterxml.jackson.core:jackson-databind:2.13.2.2",
     "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
 ]
 
@@ -79,11 +79,12 @@ List swagger = [
 dependencies {
     compile spring,spring_boot,jaxb,logger,mysql,io,jackson,swagger
     compile "com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.1"
-    compile "org.apache.commons:commons-lang3:3.10"
+    compile "org.apache.commons:commons-lang3:3.12.0"
 
-    compile ('com.webank:data-export-sdk:1.7.4'){
+    compile ('com.webank:data-export-sdk:1.7.7'){
         exclude group: 'ch.qos.logback', module: '*'
     }
+    compile 'org.fisco-bcos.java-sdk:fisco-bcos-java-sdk:2.9.0'
 
     annotationProcessor 'org.projectlombok:lombok:1.18.2'
     compileOnly 'org.projectlombok:lombok:1.18.2'
