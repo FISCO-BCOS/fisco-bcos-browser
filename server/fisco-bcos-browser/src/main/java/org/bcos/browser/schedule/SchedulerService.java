@@ -223,23 +223,24 @@ public class SchedulerService {
     /**
      * syncChainUser
      */
-    public void syncChainUser(){
-        log.info("==========syncChainUser begin=============");
+    public void syncChainUser() {
+        log.debug("==========syncChainUser begin=============");
         List<Group> list = groupService.getGroupList();
         for (Group group : list) {
             List<Transaction> transFrom = transactionMapper.getTransFormByGroup(group.getGroupId());
-            log.info("syncChainUser groupId: {}, size: {}",group.getGroupId(), transFrom.size());
-            transFrom.stream().forEach(ts -> saveChainUser(ts,group.getGroupId()));
+            log.info("syncChainUser groupId: {}, size: {}", group.getGroupId(), transFrom.size());
+            transFrom.stream().forEach(ts -> saveChainUser(ts, group.getGroupId()));
         }
-        log.info("==========syncChainUser end=============");
+        log.debug("==========syncChainUser end=============");
     }
 
     /**
      * saveChainUser
+     * 
      * @param transaction
      * @param groupId
      */
-    public void saveChainUser(Transaction transaction , int groupId){
+    public void saveChainUser(Transaction transaction, int groupId) {
         ChainUser chainUser = new ChainUser();
         chainUser.setAddress(transaction.getTransFrom());
         chainUser.setGroupId(groupId);
@@ -249,23 +250,26 @@ public class SchedulerService {
     /**
      * syncChainContract
      */
-    public void syncChainContract(){
-        log.info("==========syncChainContract begin=============");
+    public void syncChainContract() {
+        log.debug("==========syncChainContract begin=============");
         List<Group> list = groupService.getGroupList();
         for (Group group : list) {
-           List<Transaction> transactions = transactionMapper.getTbTransactionByGroup(group.getGroupId());
-            log.info("syncChainContract groupId: {}, size: {}",group.getGroupId(), transactions.size());
-            transactions.stream().forEach(ts -> saveChainContract(ts,group.getGroupId()));
+            List<Transaction> transactions =
+                    transactionMapper.getTbTransactionByGroup(group.getGroupId());
+            log.info("syncChainContract groupId: {}, size: {}", group.getGroupId(),
+                    transactions.size());
+            transactions.stream().forEach(ts -> saveChainContract(ts, group.getGroupId()));
         }
-        log.info("==========syncChainContract end=============");
+        log.debug("==========syncChainContract end=============");
     }
 
     /**
      * saveChainContract
+     * 
      * @param ts
      * @param groupId
      */
-    public void saveChainContract(Transaction ts , int groupId ){
+    public void saveChainContract(Transaction ts, int groupId) {
         ChainContract chainContract = new ChainContract();
         chainContract.setGroupId(groupId);
         chainContract.setBlockHeight(ts.getBlockNumber());
