@@ -409,14 +409,15 @@ export default {
                             filsObj.fileString = Base64.encode(evt.target.result); // read file content
                             if (filsObj.fileString) {
                                 _this.fileList.push(filsObj)
+                                _this.saveContract();
                             }
                         };
                     }
                 }
                 this.$refs.file.value = "";
-                setTimeout(() => {
-                    this.saveContract();
-                }, 200)
+                // setTimeout(() => {
+                //     this.saveContract();
+                // }, 500)
             } else {
                 this.$message({
                     message: '同时上传合约不能超过10条',
