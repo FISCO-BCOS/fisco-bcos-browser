@@ -147,6 +147,34 @@
             KEY `block_timestamp` (`block_time_stamp`)
         ) COMMENT='交易信息表' ENGINE=InnoDB DEFAULT CHARSET=utf8
     </update>
+    
+    <update id="createTbReceipt">
+        CREATE TABLE IF NOT EXISTS ${tableName} (
+          `pk_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键Id',
+          `block_hash` varchar(128) DEFAULT NULL COMMENT '块哈希',
+          `block_height` bigint(20) DEFAULT NULL COMMENT '块高',
+          `block_time_stamp` datetime(6) DEFAULT NULL COMMENT '块时间',
+          `contract_address` varchar(255) DEFAULT NULL COMMENT '合约地址',
+          `depot_updatetime` datetime(6) DEFAULT NULL COMMENT '记录插入/更新时间',
+          `from` varchar(255) DEFAULT NULL COMMENT '发送者地址',
+          `gas_used` varchar(255) DEFAULT NULL COMMENT 'gas消耗',
+          `input` longtext COMMENT '交易的输入',
+          `logs` longtext COMMENT '交易的日志',
+          `logs_bloom` longtext COMMENT 'log的布隆过滤器值',
+          `message` varchar(255) DEFAULT NULL COMMENT '交易哈希',
+          `output` longtext COMMENT '交易的输出',
+          `receipt_proof` longtext COMMENT '回执证明',
+          `root` varchar(255) DEFAULT NULL COMMENT '状态根',
+          `status` varchar(255) DEFAULT NULL COMMENT '交易状态',
+          `to` varchar(255) DEFAULT NULL COMMENT '接收者地址',
+          `tx_hash` varchar(255) DEFAULT NULL COMMENT '交易哈希',
+          `tx_index` varchar(255) DEFAULT NULL COMMENT '交易序号',
+          `tx_proof` longtext COMMENT '交易根哈希',
+          PRIMARY KEY (`pk_id`),
+          KEY `block_hash` (`block_hash`),
+          KEY `block_timestamp` (`block_time_stamp`)
+        ) COMMENT='交易回执信息表' ENGINE=InnoDB DEFAULT CHARSET=utf8
+    </update>
 
     <update id="createTbChainUser">
         CREATE TABLE IF NOT EXISTS tb_chain_user (

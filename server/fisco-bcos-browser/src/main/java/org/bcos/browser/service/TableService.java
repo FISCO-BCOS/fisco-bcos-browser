@@ -67,6 +67,7 @@ public class TableService {
         }
         tableMapper.createTbBlock(TableName.BLOCK_DATA.getTableName(groupId));
         tableMapper.createTbTransaction(TableName.TX_DATA.getTableName(groupId));
+        tableMapper.createTbReceipt(TableName.RECEIPT_DATA.getTableName(groupId));
     }
     
     /**

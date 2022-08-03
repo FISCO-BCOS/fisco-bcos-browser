@@ -46,6 +46,8 @@ public interface TableMapper {
     
     void createTbTransaction(@Param(value = "tableName")String tableName);
     
+    void createTbReceipt(@Param(value = "tableName")String tableName);
+    
     // query
     List<String> queryTables(@Param("dbName") String dbName, @Param("tableName") String tableName);
     
